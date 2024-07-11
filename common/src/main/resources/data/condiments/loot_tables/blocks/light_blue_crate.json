@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "CrateItems",
+                  "target": "BlockEntityTag.CrateItems"
+                },
+                {
+                  "op": "replace",
+                  "source": "CrateLocked",
+                  "target": "BlockEntityTag.CrateLocked"
+                }
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "condiments:light_blue_crate"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "condiments:blocks/light_blue_crate"
+}

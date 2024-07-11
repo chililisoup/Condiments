@@ -1,0 +1,7 @@
+{
+  "parent": "condiments:block/bases/special_wall_inventory",
+  "textures": {
+    "wall": "minecraft:block/stripped_warped_stem",
+    "post": "minecraft:block/warped_stem"
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "textures": {
+        "particle": "#wall"
+    },
+    "elements": [
+        {   "from": [ 5, 0, 0 ],
+            "to": [ 11, 14, 8 ],
+            "faces": {
+                "down":  { "texture": "#wall", "cullface": "down" },
+                "up":    { "texture": "#wall" },
+                "north": { "texture": "#wall", "cullface": "north", "rotation": 90, "uv": [0, 0, 14, 6] },
+                "west":  { "texture": "#wall", "rotation": 90, "uv": [0, 0, 14, 8] },
+                "east":  { "texture": "#wall", "rotation": 90, "uv": [0, 8, 14, 16] }
+            },
+            "__comment": "wall"
+        }
+    ]
+}

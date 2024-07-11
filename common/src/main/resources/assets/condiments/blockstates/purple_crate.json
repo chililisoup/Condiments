@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "condiments:block/crates/purple_crate",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "condiments:block/crates/purple_crate",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "condiments:block/crates/purple_crate"
+    },
+    "facing=south": {
+      "model": "condiments:block/crates/purple_crate",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "condiments:block/crates/purple_crate",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "condiments:block/crates/purple_crate",
+      "y": 270
+    }
+  }
+}

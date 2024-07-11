@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_uv_locked_z",
+  "textures": {
+    "end": "condiments:block/polished_mangrove_log_top",
+    "side": "condiments:block/polished_mangrove_log"
+  }
+}

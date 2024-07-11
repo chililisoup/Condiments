@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "condiments",
+  "version": "${version}",
+
+  "name": "Condiments",
+  "description": "Some condiments for your vanilla meal",
+  "authors": [],
+  "contact": {},
+
+  "license": "All Rights Reserved",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.chililisoup.condiments.fabric.CondimentsFabric"
+    ],
+    "client": [
+      "dev.chililisoup.condiments.fabric.CondimentsClientFabric"
+    ],
+    "jei_mod_plugin": [
+      "dev.chililisoup.condiments.compat.JeiCompat"
+    ],
+    "rei_client": [
+      "dev.chililisoup.condiments.compat.ReiCompat"
+    ]
+  },
+  "mixins": [
+    "condiments.mixins.json",
+    "condiments-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": ">=1.20.1"
+  }
+}

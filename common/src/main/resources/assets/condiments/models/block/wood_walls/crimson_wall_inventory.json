@@ -1,0 +1,7 @@
+{
+  "parent": "condiments:block/bases/special_wall_inventory",
+  "textures": {
+    "wall": "minecraft:block/stripped_crimson_stem",
+    "post": "minecraft:block/crimson_stem"
+  }
+}

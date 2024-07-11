@@ -1,0 +1,6 @@
+{
+  "parent": "condiments:block/bases/inner_accent",
+  "textures": {
+    "texture": "condiments:block/mangrove_accent"
+  }
+}

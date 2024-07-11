@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "condiments:block/polished_logs/polished_spruce_wood_x"
+    },
+    "axis=y": {
+      "model": "condiments:block/polished_logs/polished_spruce_wood_y"
+    },
+    "axis=z": {
+      "model": "condiments:block/polished_logs/polished_spruce_wood_z"
+    }
+  }
+}

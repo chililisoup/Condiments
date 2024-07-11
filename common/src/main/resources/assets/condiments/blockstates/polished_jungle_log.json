@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "condiments:block/polished_logs/polished_jungle_log_x"
+    },
+    "axis=y": {
+      "model": "condiments:block/polished_logs/polished_jungle_log_y"
+    },
+    "axis=z": {
+      "model": "condiments:block/polished_logs/polished_jungle_log_z"
+    }
+  }
+}

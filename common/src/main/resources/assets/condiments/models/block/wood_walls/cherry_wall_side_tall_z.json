@@ -1,0 +1,6 @@
+{
+  "parent": "condiments:block/bases/template_wall_rotated_side_tall_z",
+  "textures": {
+    "wall": "minecraft:block/stripped_cherry_log"
+  }
+}

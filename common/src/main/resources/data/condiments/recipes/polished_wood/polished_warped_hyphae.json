@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "polished_hyphae",
+  "ingredients": [
+    {
+      "item": "minecraft:stripped_warped_hyphae"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "item": "condiments:polished_warped_hyphae"
+  }
+}

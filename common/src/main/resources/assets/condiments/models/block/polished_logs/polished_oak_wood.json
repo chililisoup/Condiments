@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "condiments:block/polished_oak_log",
+    "side": "condiments:block/polished_oak_log"
+  }
+}

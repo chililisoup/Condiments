@@ -1,0 +1,6 @@
+{
+  "parent": "condiments:block/bases/template_wall_rotated_side_tall_x",
+  "textures": {
+    "wall": "minecraft:block/stripped_acacia_log"
+  }
+}

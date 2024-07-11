@@ -1,0 +1,7 @@
+{
+  "parent": "condiments:block/crates/crate",
+	"textures": {
+		"0": "condiments:block/cyan_crate",
+		"particle": "condiments:block/cyan_crate"
+	}
+}

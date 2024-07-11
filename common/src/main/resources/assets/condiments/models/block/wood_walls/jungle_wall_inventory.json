@@ -1,0 +1,7 @@
+{
+  "parent": "condiments:block/bases/special_wall_inventory",
+  "textures": {
+    "wall": "minecraft:block/stripped_jungle_log",
+    "post": "minecraft:block/jungle_log"
+  }
+}

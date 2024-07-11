@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#condiments:wood_walls",
+    "#condiments:wood_accents",
+    "#condiments:crates"
+  ]
+}

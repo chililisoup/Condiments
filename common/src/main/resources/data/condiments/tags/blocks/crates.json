@@ -1,0 +1,21 @@
+{
+  "values": [
+    "condiments:crate",
+    "condiments:white_crate",
+    "condiments:light_gray_crate",
+    "condiments:gray_crate",
+    "condiments:black_crate",
+    "condiments:brown_crate",
+    "condiments:red_crate",
+    "condiments:orange_crate",
+    "condiments:yellow_crate",
+    "condiments:lime_crate",
+    "condiments:green_crate",
+    "condiments:cyan_crate",
+    "condiments:light_blue_crate",
+    "condiments:blue_crate",
+    "condiments:purple_crate",
+    "condiments:magenta_crate",
+    "condiments:pink_crate"
+  ]
+}

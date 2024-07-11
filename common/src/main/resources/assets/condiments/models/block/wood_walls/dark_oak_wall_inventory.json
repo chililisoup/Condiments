@@ -1,0 +1,7 @@
+{
+  "parent": "condiments:block/bases/special_wall_inventory",
+  "textures": {
+    "wall": "minecraft:block/stripped_dark_oak_log",
+    "post": "minecraft:block/dark_oak_log"
+  }
+}
