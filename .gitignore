@@ -37,3 +37,5 @@ fabric/.gradle
 fabric/build
 fabric/run
 
+# architectury
+.architectury-transformer/
