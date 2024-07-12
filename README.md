@@ -2,8 +2,6 @@
 
  # Condiments - Forge/Fabric
 
-A collection of features to add some extra flavor to your vanilla game!
-
 **Condiments** is a Forge/Fabric mod which includes a collection of functional and decorative features that expand on the game a bit beyond what you may expect from Vanilla.
 
 The Fabric version requires [Fabric API](https://modrinth.com/mod/fabric-api).
