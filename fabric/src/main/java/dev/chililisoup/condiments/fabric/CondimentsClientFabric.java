@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.fabric;
 
+import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.client.renderer.CrateRenderer;
 import dev.chililisoup.condiments.item.Tooltip.ClientCrateTooltip;
 import dev.chililisoup.condiments.item.Tooltip.CrateTooltip;
@@ -20,6 +21,8 @@ import static dev.chililisoup.condiments.reg.fabric.ModBlocksImpl.BlocksRegistry
 public class CondimentsClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        Condiments.initClient();
+
         BlocksRegistry.forEach(reg -> {
             if (Objects.equals(reg.renderType, "CUTOUT")) BlockRenderLayerMap.INSTANCE.putBlock(reg.block, RenderType.cutout());
         });

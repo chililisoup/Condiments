@@ -2,12 +2,15 @@ package dev.chililisoup.condiments.reg;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.chililisoup.condiments.block.AnalogRailBlock;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 
 import java.util.function.Supplier;
 
+@Environment(EnvType.CLIENT)
 public class ModColorProviders {
     public static void init() {
         addColorProvider(

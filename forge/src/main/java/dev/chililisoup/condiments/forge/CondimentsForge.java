@@ -43,6 +43,7 @@ public class CondimentsForge {
         eventBus.addListener(this::constructMod);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
+            Condiments.initClient();
             eventBus.addListener(this::registerEntityRenderers);
             eventBus.addListener(this::registerClientTooltips);
             eventBus.addListener(this::registerBlockColors);
