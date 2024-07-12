@@ -13,5 +13,5 @@ Information on each addition is available on the [Wiki](https://github.com/chili
 <hr>
 
  ### Downloads
-[CurseForge](https://legacy.curseforge.com/minecraft/mc-mods/condiments)
+[CurseForge](https://www.curseforge.com/minecraft/mc-mods/condiments)
 [Modrinth](https://modrinth.com/mod/condiments)
