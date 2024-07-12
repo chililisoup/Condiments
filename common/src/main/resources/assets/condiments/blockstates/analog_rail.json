@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "shape=ascending_north": {
+      "model": "condiments:block/analog_rail_raised"
+    },
+    "shape=ascending_east": {
+      "model": "condiments:block/analog_rail_raised",
+      "y": 90
+    },
+    "shape=ascending_south": {
+      "model": "condiments:block/analog_rail_raised",
+      "y": 180
+    },
+    "shape=ascending_west": {
+      "model": "condiments:block/analog_rail_raised",
+      "y": 270
+    },
+    "shape=east_west": {
+      "model": "condiments:block/analog_rail",
+      "y": 90
+    },
+    "shape=north_south": {
+      "model": "condiments:block/analog_rail"
+    }
+  }
+}

@@ -16,14 +16,14 @@ public class ModBlocksImpl {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Condiments.MOD_ID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Condiments.MOD_ID);
 
-    public static final ArrayList<BlockParams> BlocksRegistry = new ArrayList<>();
-    public static final ArrayList<Pair<RegistryObject<Item>, String[]>> ItemsRegistry = new ArrayList<>();
+    public static final ArrayList<BlockParams> BLOCKS_REGISTRY = new ArrayList<>();
+    public static final ArrayList<Pair<RegistryObject<Item>, String[]>> ITEMS_REGISTRY = new ArrayList<>();
 
 
     public static Supplier<Block> addBlock(ModBlocks.Params params) {
         RegistryObject<Block> block = BLOCKS.register(params.id, params.blockFactory);
-        ItemsRegistry.add(new Pair<>(ITEMS.register(params.id, () -> params.getItem(block.get())), params.creativeTabs));
-        BlocksRegistry.add(new BlockParams(block, params.flammable));
+        ITEMS_REGISTRY.add(new Pair<>(ITEMS.register(params.id, () -> params.getItem(block.get())), params.creativeTabs));
+        BLOCKS_REGISTRY.add(new BlockParams(block, params.flammable));
         return block;
     }
 

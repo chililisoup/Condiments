@@ -1,6 +1,7 @@
 package dev.chililisoup.condiments;
 
 import dev.chililisoup.condiments.reg.ModBlocks;
+import dev.chililisoup.condiments.reg.ModColorProviders;
 import dev.chililisoup.condiments.reg.ModRecipeSerializers;;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,5 +13,6 @@ public class Condiments {
 	public static void init() {
 		ModBlocks.init();
 		ModRecipeSerializers.init();
+		ModColorProviders.init();
 	}
 }

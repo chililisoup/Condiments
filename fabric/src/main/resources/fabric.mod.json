@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Condiments",
-  "description": "Some condiments for your vanilla meal",
+  "description": "A collection of features to add some extra flavor to your vanilla game!",
   "authors": [],
   "contact": {},
 
@@ -32,6 +32,6 @@
   ],
   "depends": {
     "fabricloader": ">=0.15.11",
-    "minecraft": ">=1.20.1"
+    "minecraft": "=1.20.1"
   }
 }

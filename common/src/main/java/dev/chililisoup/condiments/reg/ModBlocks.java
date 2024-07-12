@@ -1,9 +1,7 @@
 package dev.chililisoup.condiments.reg;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.chililisoup.condiments.block.AccentBlock;
-import dev.chililisoup.condiments.block.CrateBlock;
-import dev.chililisoup.condiments.block.RailIntersection;
+import dev.chililisoup.condiments.block.*;
 import dev.chililisoup.condiments.item.CrateItem;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
@@ -18,7 +16,9 @@ import net.minecraft.world.level.material.PushReaction;
 import java.util.function.Supplier;
 
 public class ModBlocks {
-    public static Supplier<Block> RAIL_INTERSECTION;
+    public static Supplier<Block> ANALOG_RAIL;
+    //public static Supplier<Block> WAXED_RAIL;
+
     public static Supplier<Block> CRATE;
     public static Supplier<Block> WHITE_CRATE;
     public static Supplier<Block> LIGHT_GRAY_CRATE;
@@ -80,7 +80,9 @@ public class ModBlocks {
         addAccent("crimson", Blocks.CRIMSON_FENCE);
         addAccent("warped", Blocks.WARPED_FENCE);
 
-        RAIL_INTERSECTION = addBlock(new Params("rail_intersection",  () -> new RailIntersection(BlockBehaviour.Properties.copy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
+        addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.copy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
+        ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.copy(Blocks.POWERED_RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
+        //WAXED_RAIL = addBlock(new Params("waxed_rail", () -> new WaxedRail(BlockBehaviour.Properties.copy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
 
         CRATE = addCrate("crate", null);
         WHITE_CRATE = addCrate("white_crate", DyeColor.WHITE);

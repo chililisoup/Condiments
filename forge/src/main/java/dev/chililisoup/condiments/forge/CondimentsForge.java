@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.FireBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -25,8 +26,9 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.Arrays;
 
-import static dev.chililisoup.condiments.reg.forge.ModBlocksImpl.BlocksRegistry;
-import static dev.chililisoup.condiments.reg.forge.ModBlocksImpl.ItemsRegistry;
+import static dev.chililisoup.condiments.reg.forge.ModBlocksImpl.BLOCKS_REGISTRY;
+import static dev.chililisoup.condiments.reg.forge.ModBlocksImpl.ITEMS_REGISTRY;
+import static dev.chililisoup.condiments.reg.forge.ModColorProvidersImpl.BLOCK_COLORS;
 
 @Mod(Condiments.MOD_ID)
 public class CondimentsForge {
@@ -43,11 +45,12 @@ public class CondimentsForge {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             eventBus.addListener(this::registerEntityRenderers);
             eventBus.addListener(this::registerClientTooltips);
+            eventBus.addListener(this::registerBlockColors);
         }
     }
 
     private void addContents(BuildCreativeModeTabContentsEvent event, String tab) {
-        ItemsRegistry.forEach(item -> {
+        ITEMS_REGISTRY.forEach(item -> {
             if (Arrays.asList(item.getSecond()).contains(tab)) event.accept(item.getFirst());
         });
     }
@@ -67,11 +70,12 @@ public class CondimentsForge {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        BlocksRegistry.forEach(reg -> {
+        BLOCKS_REGISTRY.forEach(reg -> {
             if (reg.flammable) ((FireBlock) Blocks.FIRE).setFlammable(reg.block.get(), 5, 5);
         });
 
         ModDispenserBehaviors.init();
+        //ModWaxingPairs.init();
     }
 
     public void constructMod(FMLConstructModEvent event) {
@@ -86,5 +90,11 @@ public class CondimentsForge {
 
     public void registerClientTooltips(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(CrateTooltip.class, ClientCrateTooltip::new);
+    }
+
+    public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+        BLOCK_COLORS.forEach(reg -> {
+            event.register(reg.getFirst(), reg.getSecond().get());
+        });
     }
 }

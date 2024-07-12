@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "condiments:rail_intersection"
+    "condiments:rail_intersection",
+    "condiments:analog_rail"
   ]
 }
