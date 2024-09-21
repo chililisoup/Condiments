@@ -1,5 +1,7 @@
 package dev.chililisoup.condiments.block;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
 import dev.chililisoup.condiments.reg.ModBlocks;
 import net.minecraft.core.BlockPos;
@@ -37,6 +39,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class CrateBlock extends BaseEntityBlock {
+    public static final MapCodec<CrateBlock> CODEC = RecordCodecBuilder.mapCodec(
+            (instance) -> instance.group(DyeColor.CODEC.optionalFieldOf("color").forGetter(
+                    (crateBlock) -> Optional.ofNullable(crateBlock.color)), propertiesCodec()).apply(instance,
+                    (optional, properties) -> new CrateBlock(optional.orElse(null), properties)));
     public static final DirectionProperty FACING;
     @Nullable
     private final DyeColor color;
@@ -126,7 +132,7 @@ public class CrateBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         super.playerWillDestroy(level, pos, state, player);
 
         if (!level.isClientSide && player.isCreative() && !((CrateBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos))).isEmpty()) {
@@ -137,6 +143,8 @@ public class CrateBlock extends BaseEntityBlock {
                 level.addFreshEntity(ent);
             });
         }
+
+        return state;
     }
 
     @Override
@@ -199,6 +207,11 @@ public class CrateBlock extends BaseEntityBlock {
         return new CrateBlockEntity(pos, state);
     }
 
+
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     @Override
     public @NotNull RenderShape getRenderShape(BlockState state) {

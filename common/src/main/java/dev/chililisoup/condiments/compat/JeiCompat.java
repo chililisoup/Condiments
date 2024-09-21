@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.compat;
 
+import com.mojang.datafixers.util.Pair;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.item.crafting.ModRecipeDisplays;
 import mezz.jei.api.IModPlugin;
@@ -7,7 +8,11 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @JeiPlugin
 public class JeiCompat implements IModPlugin {

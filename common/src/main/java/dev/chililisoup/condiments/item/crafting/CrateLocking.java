@@ -1,11 +1,9 @@
 package dev.chililisoup.condiments.item.crafting;
 
-import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.reg.ModRecipeSerializers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -16,8 +14,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class CrateLocking extends CustomRecipe {
-    public CrateLocking(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public CrateLocking(CraftingBookCategory category) {
+        super(category);
     }
 
     @Override

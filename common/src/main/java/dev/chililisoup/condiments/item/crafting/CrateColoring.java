@@ -4,7 +4,6 @@ import dev.chililisoup.condiments.block.CrateBlock;
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.reg.ModRecipeSerializers;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
@@ -17,8 +16,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class CrateColoring extends CustomRecipe {
-    public CrateColoring(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public CrateColoring(CraftingBookCategory category) {
+        super(category);
     }
 
     @Override

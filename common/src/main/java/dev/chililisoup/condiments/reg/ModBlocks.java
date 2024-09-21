@@ -86,9 +86,9 @@ public class ModBlocks {
         addAccent("crimson", Blocks.CRIMSON_FENCE);
         addAccent("warped", Blocks.WARPED_FENCE);
 
-        addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.copy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
-        ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.copy(Blocks.POWERED_RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
-        //WAXED_RAIL = addBlock(new Params("waxed_rail", () -> new WaxedRail(BlockBehaviour.Properties.copy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
+        addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
+        ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
+        //WAXED_RAIL = addBlock(new Params("waxed_rail", () -> new WaxedRail(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
 
         CRATE = addCrate("crate", null);
         WHITE_CRATE = addCrate("white_crate", DyeColor.WHITE);
@@ -108,13 +108,13 @@ public class ModBlocks {
         MAGENTA_CRATE = addCrate("magenta_crate", DyeColor.MAGENTA);
         PINK_CRATE = addCrate("pink_crate", DyeColor.PINK);
 
-        BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
-        addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
-        addBlock(new Params("blackened_iron_door", () -> new DoorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_DOOR), BlockSetType.IRON)).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
-        addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_TRAPDOOR), BlockSetType.IRON)).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
-        addBlock(new Params("blackened_iron_grate", () -> new WaterloggableBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
+        BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
+        addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
+        addBlock(new Params("blackened_iron_door", () -> new DoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR))).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
+        addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR))).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
+        addBlock(new Params("blackened_iron_grate", () -> new WaterloggableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
 
-        WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
+        WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
 
         REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS").cutout());
     }
@@ -150,23 +150,23 @@ public class ModBlocks {
     }
 
     private static void addFlammableWall(String type, Block parent) {
-        addBlock(new Params(type + "_wall", () -> new WallBlock(BlockBehaviour.Properties.copy(parent).forceSolidOn())).flammable().creativeTabs("BUILDING_BLOCKS"));
+        addBlock(new Params(type + "_wall", () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(parent).forceSolidOn())).flammable().creativeTabs("BUILDING_BLOCKS"));
     }
 
     private static void addWall(String type, Block parent) {
-        addBlock(new Params(type + "_wall", () -> new WallBlock(BlockBehaviour.Properties.copy(parent).forceSolidOn())).creativeTabs("BUILDING_BLOCKS"));
+        addBlock(new Params(type + "_wall", () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(parent).forceSolidOn())).creativeTabs("BUILDING_BLOCKS"));
     }
 
     private static void addFlammableAccent(String type, Block parent) {
-        addBlock(new Params(type + "_accent", () -> new AccentBlock(BlockBehaviour.Properties.copy(parent))).flammable().creativeTabs("BUILDING_BLOCKS"));
+        addBlock(new Params(type + "_accent", () -> new AccentBlock(BlockBehaviour.Properties.ofFullCopy(parent))).flammable().creativeTabs("BUILDING_BLOCKS"));
     }
 
     private static void addAccent(String type, Block parent) {
-        addBlock(new Params(type + "_accent", () -> new AccentBlock(BlockBehaviour.Properties.copy(parent))).creativeTabs("BUILDING_BLOCKS"));
+        addBlock(new Params(type + "_accent", () -> new AccentBlock(BlockBehaviour.Properties.ofFullCopy(parent))).creativeTabs("BUILDING_BLOCKS"));
     }
 
     private static Supplier<Block> addCrate(String id, DyeColor color) {
-        return addBlock(new CrateParams(id, () -> new CrateBlock(color, BlockBehaviour.Properties.copy(Blocks.BARREL).pushReaction(PushReaction.DESTROY))).creativeTabs("FUNCTIONAL_BLOCKS", "COLORED_BLOCKS"));
+        return addBlock(new CrateParams(id, () -> new CrateBlock(color, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).pushReaction(PushReaction.DESTROY))).creativeTabs("FUNCTIONAL_BLOCKS", "COLORED_BLOCKS"));
     }
 
 

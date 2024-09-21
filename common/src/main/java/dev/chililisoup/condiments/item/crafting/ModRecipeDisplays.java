@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.item.crafting;
 
+import com.mojang.datafixers.util.Pair;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.CrateBlock;
 import dev.chililisoup.condiments.reg.ModItemTags;
@@ -10,17 +11,14 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModRecipeDisplays {
-    public static List<CraftingRecipe> crateColoringRecipe() {
-        ArrayList<CraftingRecipe> recipeList = new ArrayList<>();
+    public static List<RecipeHolder<CraftingRecipe>> crateColoringRecipe() {
+        ArrayList<RecipeHolder<CraftingRecipe>> recipeList = new ArrayList<>();
         String group = "crate_coloring";
         Ingredient ingredients = Ingredient.of(ModItemTags.CRATES);
 
@@ -31,13 +29,13 @@ public class ModRecipeDisplays {
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, ingredients, Ingredient.of(dye));
 
             ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, "crate_coloring_" + color.getName());
-            recipeList.add(new ShapelessRecipe(loc, group, CraftingBookCategory.MISC, output, inputs));
+            recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
         return recipeList;
     }
 
-    public static List<CraftingRecipe> crateLockingRecipe() {
-        ArrayList<CraftingRecipe> recipeList = new ArrayList<>();
+    public static List<RecipeHolder<CraftingRecipe>> crateLockingRecipe() {
+        ArrayList<RecipeHolder<CraftingRecipe>> recipeList = new ArrayList<>();
         String group = "crate_locking";
         Ingredient ingredients = Ingredient.of(ModItemTags.CRATES);
 
@@ -51,14 +49,14 @@ public class ModRecipeDisplays {
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.REDSTONE_TORCH));
 
             ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, "crate_locking_" + input.getDescriptionId());
-            recipeList.add(new ShapelessRecipe(loc, group, CraftingBookCategory.MISC, output, inputs));
+            recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
 
         return recipeList;
     }
 
-    public static List<CraftingRecipe> crateUnlockingRecipe() {
-        ArrayList<CraftingRecipe> recipeList = new ArrayList<>();
+    public static List<RecipeHolder<CraftingRecipe>> crateUnlockingRecipe() {
+        ArrayList<RecipeHolder<CraftingRecipe>> recipeList = new ArrayList<>();
         String group = "crate_locking";
         Ingredient ingredients = Ingredient.of(ModItemTags.CRATES);
 
@@ -72,7 +70,7 @@ public class ModRecipeDisplays {
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.STICK));
 
             ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, "crate_unlocking_" + input.getDescriptionId());
-            recipeList.add(new ShapelessRecipe(loc, group, CraftingBookCategory.MISC, output, inputs));
+            recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
 
         return recipeList;
