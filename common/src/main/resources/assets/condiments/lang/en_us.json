@@ -64,5 +64,16 @@
   "block.condiments.purple_crate": "Purple Crate",
   "block.condiments.magenta_crate": "Magenta Crate",
   "block.condiments.pink_crate": "Pink Crate",
-  "container.condiments.crate": "Crate"
+  "container.condiments.crate": "Crate",
+
+  "item.condiments.blackened_iron_ingot": "Blackened Iron Ingot",
+  "block.condiments.blackened_iron_block": "Blackened Iron Block",
+  "block.condiments.blackened_iron_bars": "Blackened Iron Bars",
+  "block.condiments.blackened_iron_door": "Blackened Iron Door",
+  "block.condiments.blackened_iron_trapdoor": "Blackened Iron Trapdoor",
+  "block.condiments.blackened_iron_grate": "Blackened Iron Grate",
+
+  "block.condiments.waxed_iron_block": "Waxed Iron Block",
+
+  "block.condiments.redstone_led": "Redstone LED"
 }

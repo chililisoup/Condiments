@@ -1,0 +1,9 @@
+{
+    "parent": "minecraft:block/iron_bars_side_alt",
+    "render_type": "cutout",
+    "textures": {
+        "particle": "condiments:block/blackened_iron_bars",
+        "bars": "condiments:block/blackened_iron_bars",
+        "edge": "condiments:block/blackened_iron_bars"
+    }
+}

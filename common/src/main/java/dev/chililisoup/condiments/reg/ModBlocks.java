@@ -9,6 +9,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -37,8 +38,13 @@ public class ModBlocks {
     public static Supplier<Block> MAGENTA_CRATE;
     public static Supplier<Block> PINK_CRATE;
 
+    public static Supplier<Block> BLACKENED_IRON_BLOCK;
+    public static Supplier<Block> WAXED_IRON_BLOCK;
+
+    public static Supplier<Block> REDSTONE_LED;
+
     @ExpectPlatform
-    private static Supplier<Block> addBlock(Params Params) {
+    private static Supplier<Block> addBlock(Params params) {
         throw new AssertionError();
     }
 
@@ -101,6 +107,16 @@ public class ModBlocks {
         PURPLE_CRATE = addCrate("purple_crate", DyeColor.PURPLE);
         MAGENTA_CRATE = addCrate("magenta_crate", DyeColor.MAGENTA);
         PINK_CRATE = addCrate("pink_crate", DyeColor.PINK);
+
+        BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
+        addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
+        addBlock(new Params("blackened_iron_door", () -> new DoorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_DOOR), BlockSetType.IRON)).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
+        addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_TRAPDOOR), BlockSetType.IRON)).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
+        addBlock(new Params("blackened_iron_grate", () -> new WaterloggableBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
+
+        WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
+
+        REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS").cutout());
     }
 
 
@@ -164,9 +180,13 @@ public class ModBlocks {
         public String[] creativeTabs = new String[]{};
         public String renderType = null;
 
-        Params(String id, Supplier<? extends Block> blockFactory) {
+        public Params(String id, Supplier<? extends Block> blockFactory) {
             this.id = id;
             this.blockFactory = blockFactory;
+        }
+
+        public ModItems.Params getItemParams(Supplier<? extends Block>  block) {
+            return new ModItems.Params(id, () -> new BlockItem(block.get(), new Item.Properties())).creativeTabs(creativeTabs);
         }
 
         public BlockItem getItem(Block block) {

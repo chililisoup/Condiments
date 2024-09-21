@@ -1,0 +1,37 @@
+{
+  "parent": "condiments:recipes/root",
+  "criteria": {
+    "has_blackened_iron_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "condiments:blackened_iron_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "condiments:blackened_iron/blackened_iron_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_blackened_iron_ingot",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "condiments:blackened_iron/blackened_iron_block",
+      "condiments:blackened_iron/blackened_iron_bars",
+      "condiments:blackened_iron/blackened_iron_door",
+      "condiments:blackened_iron/blackened_iron_trapdoor"
+    ]
+  }
+}

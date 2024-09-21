@@ -16,6 +16,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class AccentBlock extends Block implements SimpleWaterloggedBlock {
     public static final DirectionProperty FACING;
@@ -123,7 +124,7 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
         builder.add(FACING, HALF, SHAPE, WATERLOGGED);
     }
 
-    public FluidState getFluidState(BlockState state) {
+    public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 

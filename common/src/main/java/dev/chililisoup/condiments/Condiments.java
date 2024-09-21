@@ -1,8 +1,6 @@
 package dev.chililisoup.condiments;
 
-import dev.chililisoup.condiments.reg.ModBlocks;
-import dev.chililisoup.condiments.reg.ModColorProviders;
-import dev.chililisoup.condiments.reg.ModRecipeSerializers;;
+import dev.chililisoup.condiments.reg.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +12,9 @@ public class Condiments {
 
 	public static void init() {
 		ModBlocks.init();
+		ModItems.init();
 		ModRecipeSerializers.init();
+		ModWaxingPairs.init();
 	}
 
 	@Environment(EnvType.CLIENT)

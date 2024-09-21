@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "condiments:blackened_iron_block",
+    "condiments:blackened_iron_bars",
+    "condiments:blackened_iron_door",
+    "condiments:blackened_iron_trapdoor",
+    "condiments:blackened_iron_grate",
+    "condiments:redstone_led"
+  ]
+}

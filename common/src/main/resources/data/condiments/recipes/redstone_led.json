@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "R": {
+      "item": "red_dye"
+    },
+    "G": {
+      "item": "green_dye"
+    },
+    "B": {
+      "item": "blue_dye"
+    },
+    "L": {
+      "item": "redstone_lamp"
+    },
+    "Q": {
+      "item": "quartz"
+    }
+  },
+  "pattern": [
+    " G ",
+    "RLB",
+    " Q "
+  ],
+  "result": {
+    "item": "condiments:redstone_led"
+  }
+}
