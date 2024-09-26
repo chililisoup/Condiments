@@ -1,6 +1,6 @@
 package dev.chililisoup.condiments.item;
 
-import dev.chililisoup.condiments.item.Tooltip.CrateTooltip;
+import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

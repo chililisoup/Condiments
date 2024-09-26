@@ -1,4 +1,4 @@
-package dev.chililisoup.condiments.reg.forge;
+package dev.chililisoup.condiments.reg.neoforge;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.color.block.BlockColor;

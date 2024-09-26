@@ -1,52 +1,53 @@
-package dev.chililisoup.condiments.forge;
+package dev.chililisoup.condiments.neoforge;
 
 import com.mojang.datafixers.util.Pair;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.client.renderer.CrateRenderer;
-import dev.chililisoup.condiments.item.Tooltip.ClientCrateTooltip;
-import dev.chililisoup.condiments.item.Tooltip.CrateTooltip;
+import dev.chililisoup.condiments.item.tooltip.ClientCrateTooltip;
+import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
 import dev.chililisoup.condiments.reg.ModBlocks;
 import dev.chililisoup.condiments.reg.ModDispenserBehaviors;
 import dev.chililisoup.condiments.reg.ModItems;
-import dev.chililisoup.condiments.reg.forge.ModBlockEntitiesImpl;
-import dev.chililisoup.condiments.reg.forge.ModRecipeSerializersImpl;
+import dev.chililisoup.condiments.reg.neoforge.ModBlockEntitiesImpl;
+import dev.chililisoup.condiments.reg.neoforge.ModRecipeSerializersImpl;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
-import static dev.chililisoup.condiments.reg.forge.ModColorProvidersImpl.BLOCK_COLORS;
+import static dev.chililisoup.condiments.reg.neoforge.ModColorProvidersImpl.BLOCK_COLORS;
 
 @Mod(Condiments.MOD_ID)
-public class CondimentsForge {
-    private final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+public class CondimentsNeoForge {
+    private final IEventBus eventBus;
 
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Condiments.MOD_ID);
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Condiments.MOD_ID);
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.createBlocks(Condiments.MOD_ID);
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.createItems(Condiments.MOD_ID);
 
-    public static final ArrayList<Pair<RegistryObject<Block>, ModBlocks.Params>> BLOCKS_REGISTRY = new ArrayList<>();
-    public static final ArrayList<Pair<RegistryObject<Item>, String[]>> ITEMS_REGISTRY = new ArrayList<>();
+    public static final ArrayList<Pair<DeferredHolder<Block, ? extends Block>, ModBlocks.Params>> BLOCKS_REGISTRY = new ArrayList<>();
+    public static final ArrayList<Pair<DeferredHolder<Item, ? extends Item>, String[]>> ITEMS_REGISTRY = new ArrayList<>();
 
-    public CondimentsForge() {
+    public CondimentsNeoForge(IEventBus eventBus) {
+        this.eventBus = eventBus;
+
         Condiments.init();
 
         BLOCKS.register(eventBus);
@@ -64,22 +65,22 @@ public class CondimentsForge {
         }
     }
 
-    public static RegistryObject<Item> registerItem(ModItems.Params params) {
-        RegistryObject<Item> item = ITEMS.register(params.id, params.itemFactory);
+    public static Supplier<Item> registerItem(ModItems.Params params) {
+        DeferredHolder<Item, ? extends Item> item = ITEMS.register(params.id, params.itemFactory);
         ITEMS_REGISTRY.add(new Pair<>(item, params.creativeTabs));
-        return item;
+        return item::get;
     }
 
-    public static RegistryObject<Block> registerBlock(ModBlocks.Params params) {
-        RegistryObject<Block> block = BLOCKS.register(params.id, params.blockFactory);
+    public static Supplier<Block> registerBlock(ModBlocks.Params params) {
+        DeferredHolder<Block, ? extends Block> block = BLOCKS.register(params.id, params.blockFactory);
         registerItem(params.getItemParams(block));
         BLOCKS_REGISTRY.add(new Pair<>(block, params));
-        return block;
+        return block::get;
     }
 
     private void addContents(BuildCreativeModeTabContentsEvent event, String tab) {
         ITEMS_REGISTRY.forEach(item -> {
-            if (Arrays.asList(item.getSecond()).contains(tab)) event.accept(item.getFirst());
+            if (Arrays.asList(item.getSecond()).contains(tab)) event.accept(item.getFirst().get());
         });
     }
 

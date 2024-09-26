@@ -2,8 +2,8 @@ package dev.chililisoup.condiments.fabric;
 
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.client.renderer.CrateRenderer;
-import dev.chililisoup.condiments.item.Tooltip.ClientCrateTooltip;
-import dev.chililisoup.condiments.item.Tooltip.CrateTooltip;
+import dev.chililisoup.condiments.item.tooltip.ClientCrateTooltip;
+import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;

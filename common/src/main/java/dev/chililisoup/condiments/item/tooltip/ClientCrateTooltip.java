@@ -1,4 +1,4 @@
-package dev.chililisoup.condiments.item.Tooltip;
+package dev.chililisoup.condiments.item.tooltip;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

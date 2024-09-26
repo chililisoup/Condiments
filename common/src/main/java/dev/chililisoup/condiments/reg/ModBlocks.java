@@ -112,7 +112,7 @@ public class ModBlocks {
         addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
         addBlock(new Params("blackened_iron_door", () -> new DoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR))).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
         addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR))).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
-        addBlock(new Params("blackened_iron_grate", () -> new WaterloggableBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
+        addBlock(new Params("blackened_iron_grate", () -> new WaterloggedTransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
 
         WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
 
@@ -212,6 +212,11 @@ public class ModBlocks {
     public static class CrateParams extends Params {
         CrateParams(String id, Supplier<? extends Block> blockFactory) {
             super(id, blockFactory);
+        }
+
+        @Override
+        public ModItems.Params getItemParams(Supplier<? extends Block>  block) {
+            return new ModItems.Params(id, () -> new CrateItem(block.get(), new Item.Properties())).creativeTabs(creativeTabs);
         }
 
         @Override

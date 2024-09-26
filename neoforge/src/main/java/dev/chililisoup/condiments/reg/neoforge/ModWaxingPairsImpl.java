@@ -1,4 +1,4 @@
-package dev.chililisoup.condiments.reg.forge;
+package dev.chililisoup.condiments.reg.neoforge;
 
 import dev.chililisoup.condiments.Condiments;
 import net.minecraft.world.level.block.Block;

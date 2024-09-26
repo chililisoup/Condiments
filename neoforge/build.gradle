@@ -1,16 +1,10 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
-loom {
-    forge {
-        mixinConfig "condiments-common.mixins.json"
-        mixinConfig "condiments.mixins.json"
-        convertAccessWideners = true
-    }
-}
+
 architectury {
     platformSetupLoomIde()
-    forge()
+    neoForge()
 }
 
 configurations {
@@ -18,17 +12,14 @@ configurations {
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    developmentNeoForge.extendsFrom common
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    neoForge "net.neoforged:neoforge:${rootProject.neo_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
-
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixinextras_version}"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:${rootProject.mixinextras_version}"))
+    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
     modCompileOnlyApi("mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}")
     modCompileOnlyApi("mezz.jei:jei-${rootProject.minecraft_version}-forge-api:${rootProject.jei_version}")
@@ -39,13 +30,24 @@ dependencies {
     //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
 }
 
-processResources {
-    inputs.property "version", project.version
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
+// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version      : rootProject.minecraft_version,
+            neo_version            : rootProject.neo_version,
+            mod_id                 : rootProject.mod_id,
+            mod_version            : rootProject.mod_version,
+    ]
+    inputs.properties replaceProperties
 
-    filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties
     }
 }
+
 
 shadowJar {
     exclude "fabric.mod.json"
@@ -58,6 +60,7 @@ remapJar {
     inputFile.set(shadowJar.archiveFile)
     dependsOn shadowJar
     archiveClassifier.set(null)
+    atAccessWideners.add("condiments.accesswidener")
 }
 
 jar {

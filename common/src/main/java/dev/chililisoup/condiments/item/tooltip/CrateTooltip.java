@@ -1,4 +1,4 @@
-package dev.chililisoup.condiments.item.Tooltip;
+package dev.chililisoup.condiments.item.tooltip;
 
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
