@@ -6,8 +6,8 @@
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory
 
-# A version range to match for said mod loader - for regular FML @Mod it will be the FML version. This is currently 2.
-loaderVersion="[2,)" #mandatory
+# idk why this is 1
+loaderVersion="[1,)" #mandatory
 
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
@@ -50,9 +50,9 @@ A collection of features to add some extra flavor to your vanilla game!
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
 [[mixins]]
-config = "condiments-common.mixins.json"
+config = "${mod_id}-common.mixins.json"
 [[mixins]]
-config = "condiments.mixins.json"
+config = "${mod_id}.mixins.json"
 
 # The [[accessTransformers]] block allows you to declare where your AT file is.
 # If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
@@ -69,10 +69,11 @@ modId="neoforge" #mandatory
 # 'required' requires the mod to exist, 'optional' does not
 # 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show a warning
 type="required" #mandatory
+mandatory = true
 # Optional field describing why the dependency is required or why it is incompatible
 # reason="..."
 # The version range of the dependency
-versionRange="[${neo_version},)" #mandatory
+versionRange="${neo_version_range}" #mandatory
 # An ordering relationship for the dependency.
 # BEFORE - This mod is loaded BEFORE the dependency
 # AFTER - This mod is loaded AFTER the dependency
@@ -84,6 +85,7 @@ side="BOTH"
 [[dependencies.${mod_id}]]
 modId="minecraft"
 type="required"
+mandatory = true
 # This version range declares 1 version only
 versionRange="[${minecraft_version}]"
 ordering="NONE"
