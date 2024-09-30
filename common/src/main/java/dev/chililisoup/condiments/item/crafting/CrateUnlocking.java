@@ -2,12 +2,14 @@ package dev.chililisoup.condiments.item.crafting;
 
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.reg.ModRecipeSerializers;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -19,12 +21,12 @@ public class CrateUnlocking extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, Level level) {
+    public boolean matches(CraftingInput input, Level level) {
         int i = 0;
         int j = 0;
 
-        for (int k = 0; k < inv.getContainerSize(); ++k) {
-            ItemStack itemStack = inv.getItem(k);
+        for (int k = 0; k < input.size(); ++k) {
+            ItemStack itemStack = input.getItem(k);
             if (!itemStack.isEmpty()) {
                 if (itemStack.getItem() instanceof CrateItem) ++i;
                 else {
@@ -39,20 +41,20 @@ public class CrateUnlocking extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+    public @NotNull ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         ItemStack itemStack = ItemStack.EMPTY;
 
-        for (int i = 0; i < container.getContainerSize(); ++i) {
-            ItemStack itemStack2 = container.getItem(i);
+        for (int i = 0; i < input.size(); ++i) {
+            ItemStack itemStack2 = input.getItem(i);
             if (!itemStack2.isEmpty()) {
                 if (itemStack2.getItem() instanceof CrateItem) itemStack = itemStack2.copy();
             }
         }
 
-        CompoundTag compoundTag = itemStack.getOrCreateTag().getCompound("BlockEntityTag");
+        CompoundTag compoundTag = itemStack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
         compoundTag.remove("CrateLocked");
         if (compoundTag.getCompound("CrateItems").getShort("Count") <= 0)
-            itemStack.removeTagKey("BlockEntityTag");
+            itemStack.remove(DataComponents.BLOCK_ENTITY_DATA);
 
         return itemStack;
     }

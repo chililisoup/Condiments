@@ -1,16 +1,17 @@
 package dev.chililisoup.condiments.item.crafting;
 
-import com.mojang.datafixers.util.Pair;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.CrateBlock;
 import dev.chililisoup.condiments.reg.ModItemTags;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.*;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class ModRecipeDisplays {
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, ingredients, Ingredient.of(dye));
 
-            ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, "crate_coloring_" + color.getName());
+            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "crate_coloring_" + color.getName());
             recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
         return recipeList;
@@ -42,13 +43,13 @@ public class ModRecipeDisplays {
         for (ItemStack input : ingredients.getItems()) {
             ItemStack output = input.copy();
 
-            CompoundTag compoundTag = output.getOrCreateTag().getCompound("BlockEntityTag");
+            CompoundTag compoundTag = output.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
             compoundTag.putBoolean("CrateLocked", true);
-            output.getOrCreateTag().put("BlockEntityTag", compoundTag);
+            output.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundTag));
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.REDSTONE_TORCH));
 
-            ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, "crate_locking_" + input.getDescriptionId());
+            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "crate_locking_" + input.getDescriptionId());
             recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
 
@@ -63,13 +64,13 @@ public class ModRecipeDisplays {
         for (ItemStack output : ingredients.getItems()) {
             ItemStack input = output.copy();
 
-            CompoundTag compoundTag = input.getOrCreateTag().getCompound("BlockEntityTag");
+            CompoundTag compoundTag = input.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
             compoundTag.putBoolean("CrateLocked", true);
-            input.getOrCreateTag().put("BlockEntityTag", compoundTag);
+            input.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundTag));
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.STICK));
 
-            ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, "crate_unlocking_" + input.getDescriptionId());
+            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "crate_unlocking_" + input.getDescriptionId());
             recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
 

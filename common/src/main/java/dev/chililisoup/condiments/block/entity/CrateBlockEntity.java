@@ -2,8 +2,10 @@ package dev.chililisoup.condiments.block.entity;
 
 import dev.chililisoup.condiments.reg.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -18,6 +20,7 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,8 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CrateBlockEntity extends BlockEntity implements Container, Nameable {
-    private static final ItemStack EMPTY;
-
     private ItemStack itemType;
     private NonNullList<ItemStack> items;
     private boolean locked = false;
@@ -41,7 +42,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
     public CrateBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.CRATE_BE_TYPE.get(), pos, blockState);
-        this.items = NonNullList.withSize(this.getContainerSize(), EMPTY);
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
     }
 
     public int getCount() {
@@ -50,14 +51,13 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return saveCount;
     }
 
-    private CompoundTag prepareUpdateTag(CompoundTag tag) {
-        CompoundTag storageTag = this.findFirst().save(new CompoundTag());
+    private void prepareUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+        CompoundTag storageTag = (CompoundTag) this.findFirst().saveOptional(registries);
+
         storageTag.putShort("Count", (short) getCount());
 
         tag.put("CrateItems", storageTag);
         tag.putBoolean("CrateLocked", this.locked);
-
-        return tag;
     }
 
     private void updateClient() {
@@ -67,42 +67,42 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        prepareUpdateTag(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        prepareUpdateTag(tag, registries);
         if (this.name != null) {
-            tag.putString("CustomName", Component.Serializer.toJson(this.name));
+            tag.putString("CustomName", Component.Serializer.toJson(this.name, registries));
         }
     }
 
-    private void loadStorage(CompoundTag tag) {
-        this.items = NonNullList.withSize(this.getContainerSize(), EMPTY);
+    private void loadStorage(CompoundTag tag, HolderLookup.Provider registries) {
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         this.locked = tag.getBoolean("CrateLocked");
 
         short count = tag.getCompound("CrateItems").getShort("Count");
         CompoundTag storageTag = tag.getCompound("CrateItems");
 
         storageTag.putByte("Count", (byte) 1);
-        this.itemType = ItemStack.of(storageTag);
+
+        this.itemType = ItemStack.parse(registries, storageTag).orElse(ItemStack.EMPTY);
         this.itemType.setCount(1);
-        int max = ItemStack.of(storageTag).getMaxStackSize();
+        int max = itemType.getMaxStackSize();
 
         for (int i = 0; i < this.items.size(); i++) {
             int rem = count - (i * max);
             int amt = Math.min(rem, max);
-            ItemStack stack = ItemStack.of(storageTag);
-            stack.setCount(amt);
+            ItemStack stack = this.itemType.copyWithCount(amt);
             this.items.set(i, stack);
             if (rem < max) break;
         }
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        loadStorage(tag);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        loadStorage(tag, registries);
         if (tag.contains("CustomName", 8)) {
-            this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
+            this.name = parseCustomNameSafe(tag.getString("CustomName"), registries);
         }
     }
 
@@ -113,22 +113,25 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
             if (item.isEmpty()) continue;
             return item;
         }
-        return EMPTY;
+        return ItemStack.EMPTY;
     }
 
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
-        CompoundTag tag = stack.getTagElement("BlockEntityTag");
-        if (tag != null) {
+        CustomData blockData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+
+        if (blockData != null) {
+            CompoundTag tag = blockData.copyTag();
             if (!tag.getList("Items", 10).isEmpty()) return false;
             if (tag.getCompound("CrateItems").getShort("Count") > 0) return false;
         }
-        return (this.isEmpty() || ItemStack.isSameItemSameTags(this.findFirst(), stack));
+
+        return (this.isEmpty() || ItemStack.isSameItemSameComponents(this.findFirst(), stack));
     }
 
     @Override
     public boolean isEmpty() {
-        return this.findFirst() == EMPTY;
+        return this.findFirst().isEmpty();
     }
 
     @Override
@@ -169,7 +172,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         int max = first.getMaxStackSize();
 
         int addCount = player.getInventory().clearOrCountMatchingItems(
-                item -> ItemStack.isSameItemSameTags(first, item),
+                item -> ItemStack.isSameItemSameComponents(first, item),
                 (max * 64) - getCount(),
                 player.getInventory()
         );
@@ -196,7 +199,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     public ItemStack tryAddStack(ItemStack stack, Player player) {
         if (stack.isEmpty()) {
             addAllInventory(player);
-            return EMPTY;
+            return ItemStack.EMPTY;
         }
 
         if (!canPlaceItem(0, stack)) return stack;
@@ -214,7 +217,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
             stack.setCount(stack.getCount() - take);
 
             if (stack.isEmpty()) {
-                stack = EMPTY;
+                stack = ItemStack.EMPTY;
                 break;
             }
         }
@@ -226,7 +229,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     }
 
     public ItemStack request(boolean fullStack) {
-        if (this.isEmpty()) return EMPTY;
+        if (this.isEmpty()) return ItemStack.EMPTY;
         ItemStack base = this.findFirst().copyWithCount(1);
 
         int fulfilled = 0;
@@ -243,7 +246,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
             if (amount <= 0) break;
         }
 
-        if (fulfilled <= 0) return EMPTY;
+        if (fulfilled <= 0) return ItemStack.EMPTY;
 
         base.setCount(fulfilled);
         this.setChanged();
@@ -271,11 +274,6 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return prepareUpdateTag(new CompoundTag());
     }
 
     void playSound(BlockState state, SoundEvent sound) {
@@ -309,14 +307,5 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     @Override
     public Component getCustomName() {
         return this.name;
-    }
-    
-    
-    
-    static {
-        CompoundTag emptyTag = new CompoundTag();
-        emptyTag.putString("id", "minecraft:air");
-        emptyTag.putByte("Count", (byte) 0);
-        EMPTY = ItemStack.of(emptyTag);
     }
 }

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "polished_wood",
+  "ingredients": [
+    {
+      "item": "minecraft:stripped_spruce_wood"
+    },
+    {
+      "item": "minecraft:honeycomb"
+    }
+  ],
+  "result": {
+    "id": "condiments:polished_spruce_wood"
+  }
+}

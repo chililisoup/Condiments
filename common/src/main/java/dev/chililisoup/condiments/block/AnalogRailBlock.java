@@ -7,7 +7,6 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
@@ -208,7 +207,7 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
         POWER = BlockStateProperties.POWER;
     }
 
-    @PlatformOnly("forge")
+    @PlatformOnly("neoforge")
     public float getRailMaxSpeed(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
         return (float) getMaxSpeed(cart);
     }

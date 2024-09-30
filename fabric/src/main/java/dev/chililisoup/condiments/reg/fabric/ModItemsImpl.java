@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class ModItemsImpl {
     public static Supplier<Item> addItem(ModItems.Params params) {
-        ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, params.id);
+        ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, params.id);
         Item item = params.itemFactory.get();
         Registry.register(BuiltInRegistries.ITEM, loc, item);
 

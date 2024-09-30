@@ -10,6 +10,6 @@ public class ModBlockTags {
     public static final TagKey<Block> WOOD_WALLS = create("wood_walls");
 
     private static TagKey<Block> create(String name) {
-        return TagKey.create(Registries.BLOCK, new ResourceLocation(Condiments.MOD_ID, name));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, name));
     }
 }

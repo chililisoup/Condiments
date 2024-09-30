@@ -16,7 +16,7 @@ import java.util.List;
 
 @JeiPlugin
 public class JeiCompat implements IModPlugin {
-    private static final ResourceLocation loc = new ResourceLocation(Condiments.MOD_ID, "jei_compat");
+    private static final ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "jei_compat");
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {

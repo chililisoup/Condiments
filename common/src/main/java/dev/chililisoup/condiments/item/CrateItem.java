@@ -2,6 +2,8 @@ package dev.chililisoup.condiments.item;
 
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -15,6 +17,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -51,56 +54,55 @@ public class CrateItem extends BlockItem {
     }
 
     private static float getFillPercent(ItemStack stack) {
-        CompoundTag compoundTag = stack.getTagElement("BlockEntityTag");
-        if (compoundTag == null) return -1;
+        CustomData customData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (customData == null) return -1;
 
+        CompoundTag compoundTag = customData.copyTag();
         CompoundTag storageTag = compoundTag.getCompound("CrateItems").copy();
 
         float count = compoundTag.getCompound("CrateItems").getShort("Count");
         if (count <= 0 && !compoundTag.getBoolean("CrateLocked")) return -1;
 
         storageTag.putByte("Count", (byte) 1);
-        return count / (ItemStack.of(storageTag).getMaxStackSize() * 64);
+        return count / (ItemStack.parseOptional(RegistryAccess.EMPTY, storageTag).getMaxStackSize() * 64);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
-        super.appendHoverText(stack, level, tooltip, flag);
-        CompoundTag compoundTag = stack.getTagElement("BlockEntityTag");
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        CustomData customData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
 
-        if (compoundTag == null) {
-            tooltip.add(Component.literal("Empty").withStyle(ChatFormatting.GRAY));
+        if (customData == null) {
+            tooltipComponents.add(Component.literal("Empty").withStyle(ChatFormatting.GRAY));
             return;
         }
 
+        CompoundTag compoundTag = customData.copyTag();
         boolean locked = compoundTag.getBoolean("CrateLocked");
         if (locked)
-            tooltip.add(Component.literal("Locked").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.literal("Locked").withStyle(ChatFormatting.GRAY));
 
         CompoundTag storageTag = compoundTag.getCompound("CrateItems").copy();
 
         short count = compoundTag.getCompound("CrateItems").getShort("Count");
         if (count <= 0 && !locked) {
-            tooltip.add(Component.literal("Empty").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.literal("Empty").withStyle(ChatFormatting.GRAY));
             return;
         }
 
         storageTag.putByte("Count", (byte) 1);
-        ItemStack itemStack = ItemStack.of(storageTag);
-        tooltip.add(Component.literal(String.format("%d/%d", count, itemStack.getMaxStackSize() * 64)).withStyle(ChatFormatting.GRAY));
+        ItemStack itemStack = ItemStack.parseOptional(RegistryAccess.EMPTY, storageTag);
+        tooltipComponents.add(Component.literal(String.format("%d/%d", count, itemStack.getMaxStackSize() * 64)).withStyle(ChatFormatting.GRAY));
     }
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        CompoundTag compoundTag = stack.getTagElement("BlockEntityTag");
+        CustomData customData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (customData == null) return Optional.empty();
 
-        if (compoundTag != null) {
-            CompoundTag storageTag = compoundTag.getCompound("CrateItems").copy();
-            storageTag.putByte("Count", (byte) 1);
-            return Optional.of(new CrateTooltip(ItemStack.of(storageTag)));
-        }
-
-        return Optional.empty();
+        CompoundTag storageTag = customData.copyTag().getCompound("CrateItems").copy();
+        storageTag.putByte("Count", (byte) 1);
+        return Optional.of(new CrateTooltip(ItemStack.parseOptional(RegistryAccess.EMPTY, storageTag)));
     }
 
     @Override
@@ -111,11 +113,11 @@ public class CrateItem extends BlockItem {
         ItemStack insertedStack = slot.getItem();
         if (insertedStack.isEmpty()) {
             this.playRemoveOneSound(player);
-            removeOne(crateStack).ifPresent(stack ->
-                add(crateStack, slot.safeInsert(stack))
+            removeOne(crateStack, player.level()).ifPresent(stack ->
+                add(crateStack, slot.safeInsert(stack), player.level())
             );
-        } else if (canAdd(crateStack, insertedStack)) {
-            int amt = add(crateStack, slot.safeTake(insertedStack.getCount(), getToAdd(crateStack, insertedStack), player));
+        } else if (canAdd(crateStack, insertedStack, player.level())) {
+            int amt = add(crateStack, slot.safeTake(insertedStack.getCount(), getToAdd(crateStack, insertedStack), player), player.level());
             if (amt > 0) this.playInsertSound(player);
         }
 
@@ -132,12 +134,12 @@ public class CrateItem extends BlockItem {
         if (action != ClickAction.SECONDARY || !slot.allowModification(player)) return false;
 
         if (insertedStack.isEmpty()) {
-            removeOne(crateStack).ifPresent((itemStack) -> {
+            removeOne(crateStack, player.level()).ifPresent((itemStack) -> {
                 this.playRemoveOneSound(player);
                 access.set(itemStack);
             });
         } else {
-            int i = add(crateStack, insertedStack);
+            int i = add(crateStack, insertedStack, player.level());
             if (i > 0) {
                 this.playInsertSound(player);
                 insertedStack.shrink(i);
@@ -152,8 +154,10 @@ public class CrateItem extends BlockItem {
     }
 
     private static int getToAdd(ItemStack crateStack, ItemStack insertedStack) {
-        CompoundTag compoundTag = crateStack.getTagElement("BlockEntityTag");
-        if (compoundTag == null) return insertedStack.getCount();
+        CustomData customData = crateStack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (customData == null) return insertedStack.getCount();
+
+        CompoundTag compoundTag = customData.copyTag();
         if (!compoundTag.contains("CrateItems")) return insertedStack.getCount();
 
         CompoundTag storageTag = compoundTag.getCompound("CrateItems");
@@ -163,52 +167,65 @@ public class CrateItem extends BlockItem {
         return Math.min(insertedStack.getCount(), (maxCount - count));
     }
 
-    private static boolean canAdd(ItemStack crateStack, ItemStack insertedStack) {
+    private static boolean canAdd(ItemStack crateStack, ItemStack insertedStack, Level level) {
         if (insertedStack.isEmpty()) return false;
 
-        CompoundTag insertTag = insertedStack.getTagElement("BlockEntityTag");
-        if (insertTag != null) {
+        CustomData insertData = insertedStack.get(DataComponents.BLOCK_ENTITY_DATA);
+
+        if (insertData != null) {
+            CompoundTag insertTag = insertData.copyTag();
+
             if (!insertTag.getList("Items", 10).isEmpty()) return false;
             if (insertTag.getCompound("CrateItems").getShort("Count") > 0) return false;
         }
 
-        CompoundTag compoundTag = crateStack.getTagElement("BlockEntityTag");
-        if (compoundTag == null) return true;
+        CustomData customData = crateStack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (customData == null) return true;
+
+        CompoundTag compoundTag = customData.copyTag();
         if (!compoundTag.contains("CrateItems")) return true;
 
         CompoundTag storageTag = compoundTag.getCompound("CrateItems").copy();
 
         storageTag.putByte("Count", (byte) 1);
-        ItemStack itemStack = ItemStack.of(storageTag);
+        ItemStack itemStack = ItemStack.parseOptional(level.registryAccess(), storageTag);
 
-        return itemStack.isEmpty() || ItemStack.isSameItemSameTags(itemStack, insertedStack);
+        return itemStack.isEmpty() || ItemStack.isSameItemSameComponents(itemStack, insertedStack);
     }
 
-    private static int add(ItemStack crateStack, ItemStack insertedStack) {
-        if (!canAdd(crateStack, insertedStack)) return 0;
+    private static int add(ItemStack crateStack, ItemStack insertedStack, Level level) {
+        if (!canAdd(crateStack, insertedStack, level)) return 0;
 
-        CompoundTag compoundTag = crateStack.getTagElement("BlockEntityTag");
+        CustomData customData = crateStack.get(DataComponents.BLOCK_ENTITY_DATA);
 
+        CompoundTag compoundTag;
         CompoundTag storageTag;
-        if (compoundTag == null) {
+
+        if (customData == null) {
+            compoundTag = new CompoundTag();
             storageTag = new CompoundTag();
-            crateStack.getOrCreateTag().put("BlockEntityTag", new CompoundTag());
-        } else storageTag = compoundTag.getCompound("CrateItems");
+        } else {
+            compoundTag = customData.copyTag();
+            storageTag = compoundTag.getCompound("CrateItems");
+        }
 
         int amt = getToAdd(crateStack, insertedStack);
         short count = (short) (storageTag.getShort("Count") + amt);
 
-        storageTag = insertedStack.save(new CompoundTag());
+        storageTag = (CompoundTag) insertedStack.saveOptional(level.registryAccess());
         storageTag.putShort("Count", count);
 
-        crateStack.getOrCreateTag().getCompound("BlockEntityTag").put("CrateItems", storageTag);
+        compoundTag.put("CrateItems", storageTag);
+        crateStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundTag));
 
         return amt;
     }
 
-    private static Optional<ItemStack> removeOne(ItemStack stack) {
-        CompoundTag compoundTag = stack.getTagElement("BlockEntityTag");
-        if (compoundTag == null) return Optional.empty();
+    private static Optional<ItemStack> removeOne(ItemStack stack, Level level) {
+        CustomData customData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (customData == null) return Optional.empty();
+
+        CompoundTag compoundTag = customData.copyTag();
         if (!compoundTag.contains("CrateItems")) return Optional.empty();
 
         CompoundTag storageTag = compoundTag.getCompound("CrateItems");
@@ -216,12 +233,12 @@ public class CrateItem extends BlockItem {
         if (count <= 0) return Optional.empty();
 
         storageTag.putByte("Count", (byte) 1);
-        ItemStack itemStack = ItemStack.of(storageTag);
+        ItemStack itemStack = ItemStack.parseOptional(level.registryAccess(), storageTag);
         itemStack.setCount(Math.min(count, itemStack.getMaxStackSize()));
 
         storageTag.putShort("Count", (short) (count - itemStack.getCount()));
         if (!compoundTag.getBoolean("CrateLocked") && storageTag.getShort("Count") <= 0)
-            stack.removeTagKey("BlockEntityTag");
+            stack.remove(DataComponents.BLOCK_ENTITY_DATA);
 
         return Optional.of(itemStack);
     }
