@@ -8,22 +8,11 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_name",
-              "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "CrateItems",
-                  "target": "BlockEntityTag.CrateItems"
-                },
-                {
-                  "op": "replace",
-                  "source": "CrateLocked",
-                  "target": "BlockEntityTag.CrateLocked"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "minecraft:custom_name",
+                "minecraft:max_stack_size",
+                "condiments:crate_contents"
               ],
               "source": "block_entity"
             }

@@ -3,6 +3,7 @@ package dev.chililisoup.condiments.reg;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.chililisoup.condiments.block.*;
 import dev.chililisoup.condiments.item.CrateItem;
+import dev.chililisoup.condiments.item.component.CrateContents;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -216,12 +217,12 @@ public class ModBlocks {
 
         @Override
         public ModItems.Params getItemParams(Supplier<? extends Block>  block) {
-            return new ModItems.Params(id, () -> new CrateItem(block.get(), new Item.Properties())).creativeTabs(creativeTabs);
+            return new ModItems.Params(id, () -> new CrateItem(block.get(), new Item.Properties().component(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY))).creativeTabs(creativeTabs);
         }
 
         @Override
         public BlockItem getItem(Block block) {
-            return new CrateItem(block, new Item.Properties());
+            return new CrateItem(block, new Item.Properties().component(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY));
         }
     }
 }

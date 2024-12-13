@@ -75,5 +75,7 @@
 
   "block.condiments.waxed_iron_block": "Waxed Iron Block",
 
-  "block.condiments.redstone_led": "Redstone LED"
+  "block.condiments.redstone_led": "Redstone LED",
+
+  "tag.item.condiments.crates": "Crates"
 }

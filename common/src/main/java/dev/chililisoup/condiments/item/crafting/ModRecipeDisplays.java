@@ -2,20 +2,20 @@ package dev.chililisoup.condiments.item.crafting;
 
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.CrateBlock;
+import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.reg.ModComponents;
 import dev.chililisoup.condiments.reg.ModItemTags;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ModRecipeDisplays {
     public static List<RecipeHolder<CraftingRecipe>> crateColoringRecipe() {
@@ -42,10 +42,7 @@ public class ModRecipeDisplays {
 
         for (ItemStack input : ingredients.getItems()) {
             ItemStack output = input.copy();
-
-            CompoundTag compoundTag = output.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-            compoundTag.putBoolean("CrateLocked", true);
-            output.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundTag));
+            output.set(ModComponents.CRATE_CONTENTS.get(), new CrateContents(Optional.empty(), 0, Optional.of(true)));
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.REDSTONE_TORCH));
 
@@ -63,10 +60,7 @@ public class ModRecipeDisplays {
 
         for (ItemStack output : ingredients.getItems()) {
             ItemStack input = output.copy();
-
-            CompoundTag compoundTag = input.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-            compoundTag.putBoolean("CrateLocked", true);
-            input.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundTag));
+            input.set(ModComponents.CRATE_CONTENTS.get(), new CrateContents(Optional.empty(), 0, Optional.of(true)));
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.STICK));
 

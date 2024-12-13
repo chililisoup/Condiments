@@ -1,13 +1,12 @@
 package dev.chililisoup.condiments.item.crafting;
 
 import dev.chililisoup.condiments.item.CrateItem;
+import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.reg.ModComponents;
 import dev.chililisoup.condiments.reg.ModRecipeSerializers;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -46,15 +45,16 @@ public class CrateUnlocking extends CustomRecipe {
 
         for (int i = 0; i < input.size(); ++i) {
             ItemStack itemStack2 = input.getItem(i);
-            if (!itemStack2.isEmpty()) {
-                if (itemStack2.getItem() instanceof CrateItem) itemStack = itemStack2.copy();
+            if (!itemStack2.isEmpty() && itemStack2.getItem() instanceof CrateItem) {
+                itemStack = itemStack2.copyWithCount(1);
+                break;
             }
         }
 
-        CompoundTag compoundTag = itemStack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-        compoundTag.remove("CrateLocked");
-        if (compoundTag.getCompound("CrateItems").getShort("Count") <= 0)
-            itemStack.remove(DataComponents.BLOCK_ENTITY_DATA);
+        CrateContents crateContents = itemStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents.Mutable mutable = new CrateContents.Mutable(crateContents);
+        mutable.setLocked(false);
+        itemStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
 
         return itemStack;
     }

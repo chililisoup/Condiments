@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -49,20 +50,20 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         double distanceSqr = player.getEyePosition(1).distanceToSqr(blockEntity.getBlockPos().getCenter());
         if (distanceSqr > 1024) return;
 
-        Direction dir = blockEntity.getBlockState().getValue(BlockStateProperties.FACING);
-        Vec3i norm = dir.getNormal();
-        int light = LevelRenderer.getLightColor(level, blockEntity.getBlockPos().relative(dir, 1));
+        FrontAndTop fat = blockEntity.getBlockState().getValue(BlockStateProperties.ORIENTATION);
+        Vec3i norm = fat.front().getNormal();
+        int light = LevelRenderer.getLightColor(level, blockEntity.getBlockPos().relative(fat.front(), 1));
 
-        if (distanceSqr < 25) renderText(level, player, item, blockEntity, poseStack, buffer, dir, norm, light);
-        renderItem(level, item, poseStack, buffer, packedOverlay, dir, norm, light);
+        if (distanceSqr < 25) renderText(level, player, item, blockEntity, poseStack, buffer, fat, norm, light);
+        renderItem(level, item, poseStack, buffer, packedOverlay, fat, norm, light);
     }
 
-    private void renderText(Level level, Entity player, ItemStack item, CrateBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, Direction dir, Vec3i norm, int light) {
+    private void renderText(Level level, Entity player, ItemStack item, CrateBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, FrontAndTop fat, Vec3i norm, int light) {
         BlockHitResult hitResult = CrateBlock.getHitResult(level, blockEntity.getBlockPos(), player);
         if (!hitResult.getBlockPos().equals(blockEntity.getBlockPos())) return;
-        if (hitResult.getDirection() != dir) return;
+        if (hitResult.getDirection() != fat.front()) return;
 
-        Optional<Vec2> hitPos = CrateBlock.getHitPosition(hitResult, dir);
+        Optional<Vec2> hitPos = CrateBlock.getHitPosition(hitResult, fat.front());
 
         if (hitPos.isEmpty()) return;
         if (CrateBlock.isNotInBounds(hitPos.get())) return;
@@ -75,8 +76,16 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
                 (((double) norm.getY()) / 2) + 0.5,
                 (((double) norm.getZ()) / 2) + 0.5
         );
-        poseStack.mulPose(dir.getRotation());
+
+        poseStack.mulPose(fat.front().getRotation());
         poseStack.mulPose(Direction.NORTH.getRotation());
+
+        if (fat.front().getAxis() == Direction.Axis.Y) {
+            int dir = fat.front().getAxisDirection().getStep();
+            int rot = (dir + 1) * 90;
+            poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0, 0, dir, fat.top().toYRot() + rot));
+        }
+
         poseStack.scale(-0.01F, -0.01F, -0.01F);
 
         this.font.drawInBatch(text, (float)(-this.font.width(text) / 2), -48.0F, 16777215, true, poseStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, light);
@@ -84,7 +93,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         poseStack.popPose();
     }
 
-    private void renderItem(Level level, ItemStack item, PoseStack poseStack, MultiBufferSource buffer, int packedOverlay, Direction dir, Vec3i norm, int light) {
+    private void renderItem(Level level, ItemStack item, PoseStack poseStack, MultiBufferSource buffer, int packedOverlay, FrontAndTop fat, Vec3i norm, int light) {
         boolean is3d = this.itemRenderer.getModel(item, level, null, 0).isGui3d();
         double offset = is3d ? 2.3 : 2.6;
 
@@ -95,10 +104,15 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
                 (((double) norm.getZ()) / offset) + 0.5
         );
 
-        poseStack.mulPose(dir.getOpposite().getRotation());
+        poseStack.mulPose(fat.front().getOpposite().getRotation());
         poseStack.mulPose(Direction.NORTH.getRotation());
 
-        if (dir.getAxis() == Direction.Axis.Y) poseStack.rotateAround(new Quaternionf(0, 0, 1, 0), 0, 0, 0);
+        if (fat.front().getAxis() == Direction.Axis.Y) {
+            int dir = fat.front().getAxisDirection().getStep();
+            int rot = (dir + 1) * 90;
+            poseStack.rotateAround(new Quaternionf(0, 0, 1, 0), 0, 0, 0);
+            poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0, 0, -dir, fat.top().toYRot() + rot));
+        }
 
         if (is3d) poseStack.last().pose().scale(0.7F, 0.7F, 0.005F);
         else poseStack.scale(0.6F, 0.6F, 0.6F);

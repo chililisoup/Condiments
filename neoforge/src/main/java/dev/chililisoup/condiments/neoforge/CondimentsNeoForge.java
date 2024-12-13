@@ -10,6 +10,7 @@ import dev.chililisoup.condiments.reg.ModBlocks;
 import dev.chililisoup.condiments.reg.ModDispenserBehaviors;
 import dev.chililisoup.condiments.reg.ModItems;
 import dev.chililisoup.condiments.reg.neoforge.ModBlockEntitiesImpl;
+import dev.chililisoup.condiments.reg.neoforge.ModComponentsImpl;
 import dev.chililisoup.condiments.reg.neoforge.ModRecipeSerializersImpl;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -50,6 +51,7 @@ public class CondimentsNeoForge {
 
         Condiments.init();
 
+        ModComponentsImpl.COMPONENT_TYPES.register(eventBus);
         BLOCKS.register(eventBus);
         ITEMS.register(eventBus);
 
