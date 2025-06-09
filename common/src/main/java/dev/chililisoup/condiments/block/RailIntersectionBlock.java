@@ -3,6 +3,7 @@ package dev.chililisoup.condiments.block;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
+import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -53,7 +54,7 @@ public class RailIntersectionBlock extends BaseRailBlock implements CondimentsRa
         return RailShape.EAST_WEST;
     }
 
-    // Override for neoforge: IBaseRailBlockExtension
+    @PlatformOnly("neoforge")
     RailShape getRailDirection(BlockState state, BlockGetter blockGetter, BlockPos pos, @Nullable AbstractMinecart minecart) {
         if (minecart == null) return RailShape.NORTH_SOUTH;
         return this.getRailShape(minecart.getDeltaMovement());

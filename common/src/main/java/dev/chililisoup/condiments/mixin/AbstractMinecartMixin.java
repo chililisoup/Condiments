@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractMinecart.class)
 public abstract class AbstractMinecartMixin {
-
     @Inject(method = "moveAlongTrack", at = @At("TAIL"))
     private void moveAlongTrackHook(BlockPos pos, BlockState state, CallbackInfo ci, @Local RailShape railShape) {
         if (state.getBlock() instanceof CondimentsRail rail)
