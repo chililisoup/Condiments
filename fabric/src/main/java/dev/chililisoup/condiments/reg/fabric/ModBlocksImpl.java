@@ -22,18 +22,19 @@ public class ModBlocksImpl {
     public static Supplier<Block> addBlock(ModBlocks.Params params) {
         ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, params.id);
         Block block = params.blockFactory.get();
-        BlockItem item = params.getItem(block);
-
         Registry.register(BuiltInRegistries.BLOCK, loc, block);
-        Registry.register(BuiltInRegistries.ITEM, loc, item);
-
         BlocksRegistry.add(new BlockParams(block, params.renderType));
 
         if (params.flammable) FlammableBlockRegistry.getDefaultInstance().add(block, 5, 5);
 
-        for (String tab : params.creativeTabs) {
-            ResourceKey<CreativeModeTab> itemGroup = CondimentsFabric.getCreativeTab(tab);
-            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.addAfter(Items.AIR, item));
+        if (params.createItem) {
+            BlockItem item = params.getItem(block);
+            Registry.register(BuiltInRegistries.ITEM, loc, item);
+
+            for (String tab : params.creativeTabs) {
+                ResourceKey<CreativeModeTab> itemGroup = CondimentsFabric.getCreativeTab(tab);
+                ItemGroupEvents.modifyEntriesEvent(itemGroup).register(content -> content.addAfter(Items.AIR, item));
+            }
         }
 
         return () -> block;

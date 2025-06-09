@@ -1,0 +1,90 @@
+{
+  "multipart": [
+    {
+      "apply": [
+        {
+          "model": "condiments:block/copper_fire/copper_fire_floor0"
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_floor1"
+        }
+      ]
+    },
+    {
+      "apply": [
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side0"
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side1"
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt0"
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt1"
+        }
+      ]
+    },
+    {
+      "apply": [
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side0",
+          "y": 90
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side1",
+          "y": 90
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt0",
+          "y": 90
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt1",
+          "y": 90
+        }
+      ]
+    },
+    {
+      "apply": [
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side0",
+          "y": 180
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side1",
+          "y": 180
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt0",
+          "y": 180
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt1",
+          "y": 180
+        }
+      ]
+    },
+    {
+      "apply": [
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side0",
+          "y": 270
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side1",
+          "y": 270
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt0",
+          "y": 270
+        },
+        {
+          "model": "condiments:block/copper_fire/copper_fire_side_alt1",
+          "y": 270
+        }
+      ]
+    }
+  ]
+}

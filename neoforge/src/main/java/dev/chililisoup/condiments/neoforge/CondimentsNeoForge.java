@@ -75,7 +75,7 @@ public class CondimentsNeoForge {
 
     public static Supplier<Block> registerBlock(ModBlocks.Params params) {
         DeferredHolder<Block, ? extends Block> block = BLOCKS.register(params.id, params.blockFactory);
-        registerItem(params.getItemParams(block));
+        if (params.createItem) registerItem(params.getItemParams(block));
         BLOCKS_REGISTRY.add(new Pair<>(block, params));
         return block::get;
     }

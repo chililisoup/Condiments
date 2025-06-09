@@ -44,6 +44,8 @@ public class ModBlocks {
 
     public static Supplier<Block> REDSTONE_LED;
 
+    public static Supplier<Block> COPPER_FIRE;
+
     @ExpectPlatform
     private static Supplier<Block> addBlock(Params params) {
         throw new AssertionError();
@@ -118,6 +120,8 @@ public class ModBlocks {
         WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
 
         REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS").cutout());
+
+        COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN))).noItem().cutout());
     }
 
 
@@ -178,6 +182,7 @@ public class ModBlocks {
         public final String id;
         public final Supplier<? extends Block> blockFactory;
         public boolean flammable = false;
+        public boolean createItem = true;
         public String[] creativeTabs = new String[]{};
         public String renderType = null;
 
@@ -196,6 +201,11 @@ public class ModBlocks {
 
         public Params flammable() {
             flammable = true;
+            return this;
+        }
+
+        public Params noItem() {
+            createItem = false;
             return this;
         }
 
