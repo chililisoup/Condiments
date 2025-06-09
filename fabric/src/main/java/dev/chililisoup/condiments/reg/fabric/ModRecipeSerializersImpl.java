@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class ModRecipeSerializersImpl {
     public static <S extends RecipeSerializer<T>, T extends Recipe<?>> Supplier<S> register(String name, S recipeSerializer) {
-        S serializer = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, new ResourceLocation(Condiments.MOD_ID, name), recipeSerializer);
+        S serializer = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, name), recipeSerializer);
         return () -> serializer;
     }
 }

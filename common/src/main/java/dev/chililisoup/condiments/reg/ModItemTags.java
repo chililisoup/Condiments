@@ -10,6 +10,6 @@ public class ModItemTags {
     public static final TagKey<Item> CRATES = create("crates");
 
     private static TagKey<Item> create(String name) {
-        return TagKey.create(Registries.ITEM, new ResourceLocation(Condiments.MOD_ID, name));
+        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, name));
     }
 }

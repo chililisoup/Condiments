@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -13,6 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
+    public static final MapCodec<AnalogRailBlock> CODEC = simpleCodec(AnalogRailBlock::new);
     public static final EnumProperty<RailShape> SHAPE;
     public static final IntegerProperty POWER;
 
@@ -99,6 +101,11 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
         }
 
         return 0;
+    }
+
+    @Override
+    protected @NotNull MapCodec<? extends BaseRailBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -200,7 +207,7 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
         POWER = BlockStateProperties.POWER;
     }
 
-    @PlatformOnly("forge")
+    @PlatformOnly("neoforge")
     public float getRailMaxSpeed(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
         return (float) getMaxSpeed(cart);
     }

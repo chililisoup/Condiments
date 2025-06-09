@@ -11,6 +11,7 @@ public class Condiments {
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	public static void init() {
+		ModComponents.init();
 		ModBlocks.init();
 		ModItems.init();
 		ModRecipeSerializers.init();

@@ -32,7 +32,7 @@ public class ModBlockEntitiesImpl {
                 ModBlocks.MAGENTA_CRATE.get(),
                 ModBlocks.PINK_CRATE.get()
         ).build(null);
-        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new ResourceLocation(Condiments.MOD_ID, "crate"), blockEntityType);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "crate"), blockEntityType);
         return () -> blockEntityType;
     }
 }

@@ -2,7 +2,7 @@ package dev.chililisoup.condiments.extra;
 
 import dev.chililisoup.condiments.Condiments;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.world.item.BlockItem;
@@ -20,11 +20,11 @@ public class CrateDispenserBehavior extends OptionalDispenseItemBehavior {
         this.setSuccess(false);
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
-            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-            BlockPos blockPos = source.getPos().relative(direction);
+            Direction direction = source.state().getValue(DispenserBlock.FACING);
+            BlockPos blockPos = source.pos().relative(direction);
 
             try {
-                this.setSuccess(((BlockItem)item).place(new DirectedPlaceContext(source.getLevel(), blockPos, direction, stack)).consumesAction());
+                this.setSuccess(((BlockItem)item).place(new DirectedPlaceContext(source.level(), blockPos, direction, stack)).consumesAction());
             } catch (Exception exception) {
                 Condiments.LOGGER.error("Error trying to place crate at {}", blockPos, exception);
             }

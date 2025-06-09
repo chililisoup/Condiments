@@ -1,14 +1,20 @@
 {
   "schemaVersion": 1,
-  "id": "condiments",
-  "version": "${version}",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
 
-  "name": "Condiments",
-  "description": "A collection of features to add some extra flavor to your vanilla game!",
-  "authors": [],
-  "contact": {},
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_authors}"
+  ],
+  "contact": {
+    "homepage": "${mod_site}",
+    "sources": "${mod_source}",
+    "issues": "${mod_issues}"
+  },
 
-  "license": "All Rights Reserved",
+  "license": "${mod_license}",
   "icon": "icon.png",
 
   "environment": "*",
@@ -31,7 +37,7 @@
     "condiments-common.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "minecraft": "=1.20.1"
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "=${minecraft_version}"
   }
 }
