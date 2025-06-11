@@ -1,4 +1,5 @@
 {
+  "replace": false,
   "values": [
     "condiments:oak_accent",
     "condiments:spruce_accent",

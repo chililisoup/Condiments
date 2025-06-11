@@ -11,6 +11,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         return (float) this.count / this.capacity();
     }
 
-    public String toString() {
+    public @NotNull String toString() {
         return String.format("%s x %d, %s", this.item(), this.count, this.isLocked() ? "LOCKED" : "UNLOCKED");
     }
 
@@ -144,6 +145,16 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
             int amt = Math.min(maxToAdd, stack.getCount());
             stack.shrink(amt);
             this.count += amt;
+        }
+
+        public Optional<ItemStack> removeOne() {
+            if (this.item.isEmpty() || this.count <= 0) return Optional.empty();
+
+            this.count--;
+
+            Optional<ItemStack> returnStack = Optional.of(this.item.get().copyWithCount(1));
+            if (this.count <= 0 && !this.isLocked()) this.item = Optional.empty();
+            return returnStack;
         }
 
         public Optional<ItemStack> removeOneStack() {

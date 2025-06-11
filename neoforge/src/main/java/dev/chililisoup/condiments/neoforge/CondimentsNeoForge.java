@@ -106,7 +106,6 @@ public class CondimentsNeoForge {
         });
 
         ModDispenserBehaviors.init();
-        //ModWaxingPairs.init();
     }
 
     public void constructMod(FMLConstructModEvent event) {

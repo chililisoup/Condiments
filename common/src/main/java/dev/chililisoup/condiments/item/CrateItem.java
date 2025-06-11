@@ -4,10 +4,15 @@ import dev.chililisoup.condiments.item.component.CrateContents;
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +22,12 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -152,5 +162,75 @@ public class CrateItem extends BlockItem {
 
     private void playInsertSound(Entity entity) {
         entity.playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.8F, 0.8F + entity.level().getRandom().nextFloat() * 0.4F);
+    }
+
+    private InteractionResult placeContents(BlockPlaceContext context, BlockItem blockItem, ItemStack itemStack) {
+        if (!blockItem.getBlock().isEnabled(context.getLevel().enabledFeatures()) || !context.canPlace())
+            return InteractionResult.FAIL;
+
+        BlockPlaceContext blockPlaceContext = blockItem.updatePlacementContext(context);
+        if (blockPlaceContext == null)
+            return InteractionResult.FAIL;
+
+        BlockState blockState = blockItem.getPlacementState(blockPlaceContext);
+        if (blockState == null || !this.placeBlock(blockPlaceContext, blockState))
+            return InteractionResult.FAIL;
+
+        BlockPos blockPos = blockPlaceContext.getClickedPos();
+        Level level = blockPlaceContext.getLevel();
+        Player player = blockPlaceContext.getPlayer();
+        BlockState clickedState = level.getBlockState(blockPos);
+
+        if (clickedState.is(blockState.getBlock())) {
+            clickedState = blockItem.updateBlockStateFromTag(blockPos, level, itemStack, clickedState);
+
+            blockItem.updateCustomBlockEntityTag(blockPos, level, player, itemStack, clickedState);
+            updateBlockEntityComponents(level, blockPos, itemStack);
+            clickedState.getBlock().setPlacedBy(level, blockPos, clickedState, player, itemStack);
+
+            if (player instanceof ServerPlayer) {
+                CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, blockPos, itemStack);
+            }
+        }
+
+        SoundType soundType = clickedState.getSoundType();
+        level.playSound(player, blockPos, blockItem.getPlaceSound(clickedState), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
+        level.gameEvent(GameEvent.BLOCK_PLACE, blockPos, GameEvent.Context.of(player, clickedState));
+
+        itemStack.consume(1, player);
+        return InteractionResult.sidedSuccess(level.isClientSide);
+
+    }
+
+    @Override
+    public @NotNull InteractionResult place(BlockPlaceContext context) {
+        Player player = context.getPlayer();
+        ItemStack crateStack = context.getItemInHand();
+        if (player == null || player.isCrouching() || !(crateStack.getItem() instanceof CrateItem))
+            return super.place(context);
+
+        CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
+        if (itemRecord.isEmpty())
+            return super.place(context);
+
+        ItemStack contentsStack = itemRecord.get().asItemStack();
+        if (contentsStack.getItem() instanceof BlockItem blockItem) {
+            InteractionResult result = this.placeContents(context, blockItem, contentsStack);
+
+            if (result.indicateItemUse()) {
+                CrateContents.Mutable mutable = new CrateContents.Mutable(crateContents);
+
+                this.playRemoveOneSound(player);
+                mutable.removeOne();
+
+                crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
+                crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : 64);
+            }
+
+            return result;
+        }
+
+        return super.place(context);
     }
 }
