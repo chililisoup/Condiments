@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.neoforge;
 
 import com.mojang.datafixers.util.Pair;
 import dev.chililisoup.condiments.Condiments;
+import dev.chililisoup.condiments.client.renderer.CrateItemRenderer;
 import dev.chililisoup.condiments.client.renderer.CrateRenderer;
 import dev.chililisoup.condiments.item.tooltip.ClientCrateTooltip;
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
@@ -12,6 +13,7 @@ import dev.chililisoup.condiments.reg.ModItems;
 import dev.chililisoup.condiments.reg.neoforge.ModBlockEntitiesImpl;
 import dev.chililisoup.condiments.reg.neoforge.ModComponentsImpl;
 import dev.chililisoup.condiments.reg.neoforge.ModRecipeSerializersImpl;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -26,9 +28,12 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +69,7 @@ public class CondimentsNeoForge {
             eventBus.addListener(this::registerEntityRenderers);
             eventBus.addListener(this::registerClientTooltips);
             eventBus.addListener(this::registerBlockColors);
+            eventBus.addListener(this::registerClientExtensions);
         }
     }
 
@@ -124,5 +130,19 @@ public class CondimentsNeoForge {
 
     public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
         BLOCK_COLORS.forEach(reg -> event.register(reg.getFirst(), reg.getSecond().get()));
+    }
+
+    public void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(
+                new ItemBlockEntityRenderExtension(new CrateItemRenderer()),
+                Arrays.stream(ModBlocks.getCrates()).map(Block::asItem).toArray(Item[]::new)
+        );
+    }
+
+    private record ItemBlockEntityRenderExtension(BlockEntityWithoutLevelRenderer renderer) implements IClientItemExtensions {
+        @Override
+        public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            return renderer;
+        }
     }
 }

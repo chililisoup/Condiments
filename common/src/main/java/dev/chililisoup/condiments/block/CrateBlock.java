@@ -16,6 +16,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ClipContext;
@@ -171,6 +172,16 @@ public class CrateBlock extends BaseEntityBlock {
 
             super.onRemove(state, level, pos, newState, movedByPiston);
         }
+    }
+
+    @Nullable
+    public static DyeColor getColorFromItem(Item item) {
+        return getColorFromBlock(Block.byItem(item));
+    }
+
+    @Nullable
+    public static DyeColor getColorFromBlock(Block block) {
+        return block instanceof CrateBlock ? ((CrateBlock)block).getColor() : null;
     }
 
     public static Block getBlockByColor(@Nullable DyeColor color) {

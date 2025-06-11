@@ -124,8 +124,6 @@ public class ModBlocks {
         COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN))).noItem().cutout());
     }
 
-
-
     private static BlockBehaviour.Properties polishedLog(MapColor topMapColor, MapColor sideMapColor, SoundType soundType) {
         return BlockBehaviour.Properties.of().mapColor((blockState) ->
                 blockState.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? topMapColor : sideMapColor
@@ -234,5 +232,27 @@ public class ModBlocks {
         public BlockItem getItem(Block block) {
             return new CrateItem(block, new Item.Properties().component(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY));
         }
+    }
+
+    public static Block[] getCrates() {
+        return new Block[]{
+                CRATE.get(),
+                WHITE_CRATE.get(),
+                LIGHT_GRAY_CRATE.get(),
+                GRAY_CRATE.get(),
+                BLACK_CRATE.get(),
+                BROWN_CRATE.get(),
+                RED_CRATE.get(),
+                ORANGE_CRATE.get(),
+                YELLOW_CRATE.get(),
+                LIME_CRATE.get(),
+                GREEN_CRATE.get(),
+                CYAN_CRATE.get(),
+                LIGHT_BLUE_CRATE.get(),
+                BLUE_CRATE.get(),
+                PURPLE_CRATE.get(),
+                MAGENTA_CRATE.get(),
+                PINK_CRATE.get()
+        };
     }
 }

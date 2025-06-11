@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.util.Optional;
@@ -55,7 +56,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         int light = LevelRenderer.getLightColor(level, blockEntity.getBlockPos().relative(fat.front(), 1));
 
         if (distanceSqr < 25) renderText(level, player, item, blockEntity, poseStack, buffer, fat, norm, light);
-        renderItem(level, item, poseStack, buffer, packedOverlay, fat, norm, light);
+        renderItem(level, item, poseStack, buffer, light, packedOverlay, fat, norm, this.itemRenderer);
     }
 
     private void renderText(Level level, Entity player, ItemStack item, CrateBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, FrontAndTop fat, Vec3i norm, int light) {
@@ -93,8 +94,8 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         poseStack.popPose();
     }
 
-    private void renderItem(Level level, ItemStack item, PoseStack poseStack, MultiBufferSource buffer, int packedOverlay, FrontAndTop fat, Vec3i norm, int light) {
-        boolean is3d = this.itemRenderer.getModel(item, level, null, 0).isGui3d();
+    public static void renderItem(@Nullable Level level, ItemStack item, PoseStack poseStack, MultiBufferSource buffer, int light, int packedOverlay, FrontAndTop fat, Vec3i norm, ItemRenderer itemRenderer) {
+        boolean is3d = itemRenderer.getModel(item, level, null, 0).isGui3d();
         double offset = is3d ? 2.3 : 2.6;
 
         poseStack.pushPose();
@@ -117,7 +118,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         if (is3d) poseStack.last().pose().scale(0.7F, 0.7F, 0.005F);
         else poseStack.scale(0.6F, 0.6F, 0.6F);
 
-        this.itemRenderer.renderStatic(item, ItemDisplayContext.GUI, light, packedOverlay, poseStack, buffer, level, 0);
+        itemRenderer.renderStatic(item, ItemDisplayContext.GUI, light, packedOverlay, poseStack, buffer, level, 0);
 
         poseStack.popPose();
     }
