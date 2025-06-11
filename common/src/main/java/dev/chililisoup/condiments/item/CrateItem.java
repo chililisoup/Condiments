@@ -206,7 +206,7 @@ public class CrateItem extends BlockItem {
     public @NotNull InteractionResult place(BlockPlaceContext context) {
         Player player = context.getPlayer();
         ItemStack crateStack = context.getItemInHand();
-        if (player == null || player.isCrouching() || !(crateStack.getItem() instanceof CrateItem))
+        if (player == null || player.isShiftKeyDown() || !(crateStack.getItem() instanceof CrateItem))
             return super.place(context);
 
         CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
@@ -221,10 +221,8 @@ public class CrateItem extends BlockItem {
         if (contentsStack.getItem() instanceof BlockItem blockItem) {
             InteractionResult result = this.placeContents(context, blockItem, contentsStack);
 
-            if (result.indicateItemUse()) {
+            if (!player.getAbilities().instabuild && result.indicateItemUse()) {
                 CrateContents.Mutable mutable = new CrateContents.Mutable(crateContents);
-
-                this.playRemoveOneSound(player);
                 mutable.removeOne();
 
                 crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());

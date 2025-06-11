@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.fabric;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.chililisoup.condiments.Condiments;
+import dev.chililisoup.condiments.client.renderer.CondimentsHud;
 import dev.chililisoup.condiments.client.renderer.CrateItemRenderer;
 import dev.chililisoup.condiments.client.renderer.CrateRenderer;
 import dev.chililisoup.condiments.item.tooltip.ClientCrateTooltip;
@@ -13,6 +14,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -47,6 +49,8 @@ public class CondimentsClientFabric implements ClientModInitializer {
             if (data instanceof CrateTooltip) return new ClientCrateTooltip((CrateTooltip) data);
             return null;
         });
+
+        HudRenderCallback.EVENT.register(CondimentsHud::render);
     }
 
     private record ItemBlockEntityRenderExtension(BlockEntityWithoutLevelRenderer renderer) implements BuiltinItemRendererRegistry.DynamicItemRenderer {

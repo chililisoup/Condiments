@@ -3,6 +3,8 @@ package dev.chililisoup.condiments.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.chililisoup.condiments.item.component.CrateContents;
 import dev.chililisoup.condiments.reg.ModComponents;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,6 +17,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.Optional;
 
+@Environment(EnvType.CLIENT)
 public class CrateItemRenderer extends BlockEntityWithoutLevelRenderer {
     public CrateItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());

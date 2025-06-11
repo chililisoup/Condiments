@@ -134,7 +134,7 @@ public class CrateBlock extends BaseEntityBlock {
         if (hitPos.isEmpty()) return;
         if (isNotInBounds(hitPos.get())) return;
 
-        ItemStack itemStack = ((CrateBlockEntity) blockEntity).request(player.isCrouching());
+        ItemStack itemStack = ((CrateBlockEntity) blockEntity).request(player.isShiftKeyDown());
         player.addItem(itemStack);
 
         if (itemStack.getCount() > 0) {

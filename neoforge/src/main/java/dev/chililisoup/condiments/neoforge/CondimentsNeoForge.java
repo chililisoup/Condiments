@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.neoforge;
 
 import com.mojang.datafixers.util.Pair;
 import dev.chililisoup.condiments.Condiments;
+import dev.chililisoup.condiments.client.renderer.CondimentsHud;
 import dev.chililisoup.condiments.client.renderer.CrateItemRenderer;
 import dev.chililisoup.condiments.client.renderer.CrateRenderer;
 import dev.chililisoup.condiments.item.tooltip.ClientCrateTooltip;
@@ -28,8 +29,10 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -70,6 +73,7 @@ public class CondimentsNeoForge {
             eventBus.addListener(this::registerClientTooltips);
             eventBus.addListener(this::registerBlockColors);
             eventBus.addListener(this::registerClientExtensions);
+            NeoForge.EVENT_BUS.addListener(this::renderHud);
         }
     }
 
@@ -144,5 +148,9 @@ public class CondimentsNeoForge {
         public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
             return renderer;
         }
+    }
+
+    public void renderHud(RenderGuiEvent.Post event) {
+        CondimentsHud.render(event.getGuiGraphics(), event.getPartialTick());
     }
 }
