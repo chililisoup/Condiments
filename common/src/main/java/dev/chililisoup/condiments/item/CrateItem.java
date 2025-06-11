@@ -210,6 +210,9 @@ public class CrateItem extends BlockItem {
             return super.place(context);
 
         CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        if (crateContents.count() <= 0)
+            return super.place(context);
+
         Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
         if (itemRecord.isEmpty())
             return super.place(context);
