@@ -4,14 +4,12 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.chililisoup.condiments.block.*;
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.item.component.CrateContents;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
@@ -52,43 +50,6 @@ public class ModBlocks {
     }
 
     public static void init() {
-        addPolishedLogs("oak", MapColor.WOOD, MapColor.WOOD);
-        addPolishedLogs("spruce", MapColor.PODZOL, MapColor.PODZOL);
-        addPolishedLogs("birch", MapColor.SAND, MapColor.SAND);
-        addPolishedLogs("jungle", MapColor.DIRT, MapColor.DIRT);
-        addPolishedLogs("acacia", MapColor.COLOR_ORANGE, MapColor.COLOR_ORANGE);
-        addPolishedLogs("dark_oak", MapColor.COLOR_BROWN, MapColor.COLOR_BROWN);
-        addPolishedLogs("mangrove", MapColor.COLOR_RED, MapColor.COLOR_RED);
-        addPolishedLogs("cherry", MapColor.TERRACOTTA_WHITE, MapColor.TERRACOTTA_PINK, SoundType.CHERRY_WOOD);
-
-        addPolishedNetherLogs("crimson", MapColor.CRIMSON_STEM);
-        addPolishedNetherLogs("warped", MapColor.WARPED_STEM);
-
-        addFlammableWall("oak", Blocks.OAK_FENCE);
-        addFlammableWall("spruce", Blocks.SPRUCE_FENCE);
-        addFlammableWall("birch", Blocks.BIRCH_FENCE);
-        addFlammableWall("jungle", Blocks.JUNGLE_FENCE);
-        addFlammableWall("acacia", Blocks.ACACIA_FENCE);
-        addFlammableWall("dark_oak", Blocks.DARK_OAK_FENCE);
-        addFlammableWall("mangrove", Blocks.MANGROVE_FENCE);
-        addFlammableWall("cherry", Blocks.CHERRY_FENCE);
-        addFlammableWall("bamboo", Blocks.BAMBOO_FENCE);
-
-        addWall("crimson", Blocks.CRIMSON_FENCE);
-        addWall("warped", Blocks.WARPED_FENCE);
-
-        addFlammableAccent("oak", Blocks.OAK_FENCE);
-        addFlammableAccent("spruce", Blocks.SPRUCE_FENCE);
-        addFlammableAccent("birch", Blocks.BIRCH_FENCE);
-        addFlammableAccent("jungle", Blocks.JUNGLE_FENCE);
-        addFlammableAccent("acacia", Blocks.ACACIA_FENCE);
-        addFlammableAccent("dark_oak", Blocks.DARK_OAK_FENCE);
-        addFlammableAccent("mangrove", Blocks.MANGROVE_FENCE);
-        addFlammableAccent("cherry", Blocks.CHERRY_FENCE);
-
-        addAccent("crimson", Blocks.CRIMSON_FENCE);
-        addAccent("warped", Blocks.WARPED_FENCE);
-
         addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
         ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
         //WAXED_RAIL = addBlock(new Params("waxed_rail", () -> new WaxedRail(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
@@ -122,50 +83,6 @@ public class ModBlocks {
         REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS").cutout());
 
         COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN))).noItem().cutout());
-    }
-
-    private static BlockBehaviour.Properties polishedLog(MapColor topMapColor, MapColor sideMapColor, SoundType soundType) {
-        return BlockBehaviour.Properties.of().mapColor((blockState) ->
-                blockState.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? topMapColor : sideMapColor
-        ).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(soundType).ignitedByLava().pushReaction(PushReaction.PUSH_ONLY);
-    }
-
-    private static BlockBehaviour.Properties polishedWood(MapColor mapColor, SoundType soundType) {
-        return BlockBehaviour.Properties.of().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(soundType).ignitedByLava().pushReaction(PushReaction.PUSH_ONLY);
-    }
-
-    private static BlockBehaviour.Properties polishedNetherLog(MapColor mapColor) {
-        return BlockBehaviour.Properties.of().mapColor(mapColor).instrument(NoteBlockInstrument.BASS).strength(2.0F).sound(SoundType.STEM).pushReaction(PushReaction.PUSH_ONLY);
-    }
-
-    private static void addPolishedLogs(String type, MapColor topMapColor, MapColor sideMapColor) {
-        addPolishedLogs(type, topMapColor, sideMapColor, SoundType.WOOD);
-    }
-
-    private static void addPolishedLogs(String type, MapColor topMapColor, MapColor sideMapColor, SoundType soundType) {
-        addBlock(new Params("polished_" + type + "_log",  () -> new RotatedPillarBlock(polishedLog(topMapColor, sideMapColor, soundType))).flammable().creativeTabs("BUILDING_BLOCKS"));
-        addBlock(new Params("polished_" + type + "_wood",  () -> new RotatedPillarBlock(polishedWood(sideMapColor, soundType))).flammable().creativeTabs("BUILDING_BLOCKS"));
-    }
-
-    private static void addPolishedNetherLogs(String type, MapColor mapColor) {
-        addBlock(new Params("polished_" + type + "_stem",  () -> new RotatedPillarBlock(polishedNetherLog(mapColor))).creativeTabs("BUILDING_BLOCKS"));
-        addBlock(new Params("polished_" + type + "_hyphae",  () -> new RotatedPillarBlock(polishedNetherLog(mapColor))).creativeTabs("BUILDING_BLOCKS"));
-    }
-
-    private static void addFlammableWall(String type, Block parent) {
-        addBlock(new Params(type + "_wall", () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(parent).forceSolidOn())).flammable().creativeTabs("BUILDING_BLOCKS"));
-    }
-
-    private static void addWall(String type, Block parent) {
-        addBlock(new Params(type + "_wall", () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(parent).forceSolidOn())).creativeTabs("BUILDING_BLOCKS"));
-    }
-
-    private static void addFlammableAccent(String type, Block parent) {
-        addBlock(new Params(type + "_accent", () -> new AccentBlock(BlockBehaviour.Properties.ofFullCopy(parent))).flammable().creativeTabs("BUILDING_BLOCKS"));
-    }
-
-    private static void addAccent(String type, Block parent) {
-        addBlock(new Params(type + "_accent", () -> new AccentBlock(BlockBehaviour.Properties.ofFullCopy(parent))).creativeTabs("BUILDING_BLOCKS"));
     }
 
     private static Supplier<Block> addCrate(String id, DyeColor color) {

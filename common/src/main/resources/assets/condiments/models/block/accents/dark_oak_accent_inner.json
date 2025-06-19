@@ -1,6 +1,0 @@
-{
-  "parent": "condiments:block/bases/inner_accent",
-  "textures": {
-    "texture": "condiments:block/dark_oak_accent"
-  }
-}

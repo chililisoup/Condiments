@@ -20,7 +20,7 @@ public class ModBlocksImpl {
 
 
     public static Supplier<Block> addBlock(ModBlocks.Params params) {
-        ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, params.id);
+        ResourceLocation loc = Condiments.loc(params.id);
         Block block = params.blockFactory.get();
         Registry.register(BuiltInRegistries.BLOCK, loc, block);
         BlocksRegistry.add(new BlockParams(block, params.renderType));

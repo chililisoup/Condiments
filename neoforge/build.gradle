@@ -48,6 +48,8 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rootProject.rei_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rootProject.rei_version}"
     //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rootProject.rei_version}"
+
+    modRuntimeOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-neoforge"
 }
 
 processResources {
@@ -56,6 +58,7 @@ processResources {
             neo_version            : rootProject.neoforge_version,
             neo_version_range      : rootProject.neoforge_version_range,
             loader_version_range   : rootProject.neoforge_loader_version_range,
+            moonlight_version      : rootProject.moonlight_version,
             mod_id                 : rootProject.mod_id,
             mod_version            : rootProject.mod_version,
             mod_name               : rootProject.archives_name,

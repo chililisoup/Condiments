@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "condiments:polished_wood/polished_oak_wood"
+      "condiments:polished_wood/polished_oak_wood",
+      "condiments:polished_wood/polished_oak_logs_to_wood"
     ]
   }
 }

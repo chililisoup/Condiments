@@ -44,12 +44,15 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${rootProject.rei_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rootProject.rei_version}"
     //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${rootProject.rei_version}"
+
+    modRuntimeOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-fabric"
 }
 
 processResources {
     var replaceProperties = [
             minecraft_version      : rootProject.minecraft_version,
             fabric_loader_version  : rootProject.fabric_loader_version,
+            moonlight_version      : rootProject.moonlight_version,
             mod_id                 : rootProject.mod_id,
             mod_version            : rootProject.mod_version,
             mod_name               : rootProject.archives_name,

@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "condiments:polished_oak_log",
+    "condiments:polished_oak_wood",
+    "condiments:polished_spruce_log",
+    "condiments:polished_spruce_wood",
+    "condiments:polished_birch_log",
+    "condiments:polished_birch_wood",
+    "condiments:polished_jungle_log",
+    "condiments:polished_jungle_wood",
+    "condiments:polished_acacia_log",
+    "condiments:polished_acacia_wood",
+    "condiments:polished_dark_oak_log",
+    "condiments:polished_dark_oak_wood",
+    "condiments:polished_mangrove_log",
+    "condiments:polished_mangrove_wood",
+    "condiments:polished_cherry_log",
+    "condiments:polished_cherry_wood",
+    "condiments:polished_crimson_stem",
+    "condiments:polished_crimson_hyphae",
+    "condiments:polished_warped_stem",
+    "condiments:polished_warped_hyphae"
+  ]
+}

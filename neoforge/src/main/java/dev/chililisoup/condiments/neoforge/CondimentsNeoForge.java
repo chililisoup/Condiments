@@ -54,6 +54,8 @@ public class CondimentsNeoForge {
     public static final ArrayList<Pair<DeferredHolder<Block, ? extends Block>, ModBlocks.Params>> BLOCKS_REGISTRY = new ArrayList<>();
     public static final ArrayList<Pair<DeferredHolder<Item, ? extends Item>, String[]>> ITEMS_REGISTRY = new ArrayList<>();
 
+    public static final ArrayList<Supplier<Block>> FLAMMABLE_BLOCKS = new ArrayList<>();
+
     public CondimentsNeoForge(IEventBus eventBus) {
         this.eventBus = eventBus;
 
@@ -87,6 +89,7 @@ public class CondimentsNeoForge {
         DeferredHolder<Block, ? extends Block> block = BLOCKS.register(params.id, params.blockFactory);
         if (params.createItem) registerItem(params.getItemParams(block));
         BLOCKS_REGISTRY.add(new Pair<>(block, params));
+        if (params.flammable) FLAMMABLE_BLOCKS.add(block::get);
         return block::get;
     }
 
@@ -111,9 +114,7 @@ public class CondimentsNeoForge {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        BLOCKS_REGISTRY.forEach(reg -> {
-            if (reg.getSecond().flammable) ((FireBlock) Blocks.FIRE).setFlammable(reg.getFirst().get(), 5, 5);
-        });
+        FLAMMABLE_BLOCKS.forEach(block -> ((FireBlock) Blocks.FIRE).setFlammable(block.get(), 5, 5));
 
         ModDispenserBehaviors.init();
     }

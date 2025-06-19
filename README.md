@@ -1,6 +1,6 @@
 <p align="center"><img width="128" alt="Condiments Logo" src="https://github.com/user-attachments/assets/82599a86-0633-4ebe-b703-1060209a405b"></p>
 
-<h1 align="center">Condiments - Forge/Fabric</h1>
+<h1 align="center">Condiments - NeoForge/Fabric</h1>
 
 <b>Condiments</b> is a Minecraft mod for Forge/Fabric which includes a collection of functional and decorative features that expand on the game a bit beyond what you may expect from Vanilla.
 

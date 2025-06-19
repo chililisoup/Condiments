@@ -39,6 +39,11 @@ subprojects {
             name = "Jared's maven"
             url = "https://maven.blamejared.com/"
         }
+
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
+        }
     }
 
     loom {
@@ -52,6 +57,8 @@ subprojects {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-${rootProject.parchmentmc_version}@zip")
         }
+
+        modCompileOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-fabric"
     }
 
     java {

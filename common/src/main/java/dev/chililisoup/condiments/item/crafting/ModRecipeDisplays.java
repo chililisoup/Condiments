@@ -29,7 +29,7 @@ public class ModRecipeDisplays {
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, ingredients, Ingredient.of(dye));
 
-            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "crate_coloring_" + color.getName());
+            ResourceLocation loc = Condiments.loc("crate_coloring_" + color.getName());
             recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
         return recipeList;
@@ -46,7 +46,7 @@ public class ModRecipeDisplays {
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.REDSTONE_TORCH));
 
-            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "crate_locking_" + input.getDescriptionId());
+            ResourceLocation loc = Condiments.loc("crate_coloring_" +"crate_locking_" + input.getDescriptionId());
             recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
 
@@ -64,7 +64,7 @@ public class ModRecipeDisplays {
 
             NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.STICK));
 
-            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(Condiments.MOD_ID, "crate_unlocking_" + input.getDescriptionId());
+            ResourceLocation loc = Condiments.loc("crate_unlocking_" + input.getDescriptionId());
             recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
 

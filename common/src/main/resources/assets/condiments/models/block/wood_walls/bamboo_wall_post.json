@@ -1,6 +1,0 @@
-{
-  "parent": "condiments:block/bases/template_wall_post_inflate",
-  "textures": {
-    "wall": "minecraft:block/bamboo_block"
-  }
-}
