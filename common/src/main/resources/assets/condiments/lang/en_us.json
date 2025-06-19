@@ -77,5 +77,7 @@
 
   "block.condiments.redstone_led": "Redstone LED",
 
+  "block.condiments.copper_fire": "Copper Fire",
+
   "tag.item.condiments.crates": "Crates"
 }
