@@ -2,9 +2,9 @@
 
 <h1 align="center">Condiments - NeoForge/Fabric</h1>
 
-<b>Condiments</b> is a Minecraft mod for Forge/Fabric which includes a collection of functional and decorative features that expand on the game a bit beyond what you may expect from Vanilla.
+<b>Condiments</b> is a (Neo)Forge/Fabric mod which includes a collection of functional and decorative features that expand on the game a bit beyond what you may expect from Vanilla.
 
-The Fabric version requires <a href="https://modrinth.com/mod/fabric-api">Fabric API</a>.
+As of 1.2.0, the mod requires <a href="https://modrinth.com/mod/moonlight">Moonlight Lib</a> to dynamically create blocks to support all modded wood types.
 
 <br>
 
