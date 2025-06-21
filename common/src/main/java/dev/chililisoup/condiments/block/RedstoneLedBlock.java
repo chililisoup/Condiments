@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -11,11 +12,18 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RedstoneLedBlock extends Block {
+    public static final MapCodec<RedstoneLedBlock> CODEC = simpleCodec(RedstoneLedBlock::new);
     public static final IntegerProperty POWER;
     private static final Vec3[] COLORS;
+
+    @Override
+    protected @NotNull MapCodec<RedstoneLedBlock> codec() {
+        return CODEC;
+    }
 
     public RedstoneLedBlock(Properties properties) {
         super(properties);

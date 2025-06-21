@@ -18,6 +18,11 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
     public static final EnumProperty<RailShape> SHAPE;
     public static final IntegerProperty POWER;
 
+    @Override
+    protected @NotNull MapCodec<AnalogRailBlock> codec() {
+        return CODEC;
+    }
+
     public AnalogRailBlock(Properties properties) {
         super(true, properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(SHAPE, RailShape.NORTH_SOUTH).setValue(POWER, 0).setValue(WATERLOGGED, false));
@@ -101,11 +106,6 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
         }
 
         return 0;
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends BaseRailBlock> codec() {
-        return CODEC;
     }
 
     @Override

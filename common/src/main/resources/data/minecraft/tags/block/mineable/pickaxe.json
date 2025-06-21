@@ -6,6 +6,7 @@
     "condiments:blackened_iron_door",
     "condiments:blackened_iron_trapdoor",
     "condiments:blackened_iron_grate",
-    "condiments:redstone_led"
+    "condiments:redstone_led",
+    "condiments:saucer_light"
   ]
 }

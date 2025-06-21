@@ -1,0 +1,108 @@
+{
+  "variants": {
+    "facing=down,powered=false,lit=false": {
+      "model": "condiments:block/saucer_light",
+      "x": 180
+    },
+    "facing=east,powered=false,lit=false": {
+      "model": "condiments:block/saucer_light",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,powered=false,lit=false": {
+      "model": "condiments:block/saucer_light",
+      "x": 90
+    },
+    "facing=south,powered=false,lit=false": {
+      "model": "condiments:block/saucer_light",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,powered=false,lit=false": {
+      "model": "condiments:block/saucer_light"
+    },
+    "facing=west,powered=false,lit=false": {
+      "model": "condiments:block/saucer_light",
+      "x": 90,
+      "y": 270
+    },
+    "facing=down,powered=false,lit=true": {
+      "model": "condiments:block/saucer_light_lit",
+      "x": 180
+    },
+    "facing=east,powered=false,lit=true": {
+      "model": "condiments:block/saucer_light_lit",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,powered=false,lit=true": {
+      "model": "condiments:block/saucer_light_lit",
+      "x": 90
+    },
+    "facing=south,powered=false,lit=true": {
+      "model": "condiments:block/saucer_light_lit",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,powered=false,lit=true": {
+      "model": "condiments:block/saucer_light_lit"
+    },
+    "facing=west,powered=false,lit=true": {
+      "model": "condiments:block/saucer_light_lit",
+      "x": 90,
+      "y": 270
+    },
+    "facing=down,powered=true,lit=false": {
+      "model": "condiments:block/saucer_light_powered",
+      "x": 180
+    },
+    "facing=east,powered=true,lit=false": {
+      "model": "condiments:block/saucer_light_powered",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,powered=true,lit=false": {
+      "model": "condiments:block/saucer_light_powered",
+      "x": 90
+    },
+    "facing=south,powered=true,lit=false": {
+      "model": "condiments:block/saucer_light_powered",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,powered=true,lit=false": {
+      "model": "condiments:block/saucer_light_powered"
+    },
+    "facing=west,powered=true,lit=false": {
+      "model": "condiments:block/saucer_light_powered",
+      "x": 90,
+      "y": 270
+    },
+    "facing=down,powered=true,lit=true": {
+      "model": "condiments:block/saucer_light_powered_lit",
+      "x": 180
+    },
+    "facing=east,powered=true,lit=true": {
+      "model": "condiments:block/saucer_light_powered_lit",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,powered=true,lit=true": {
+      "model": "condiments:block/saucer_light_powered_lit",
+      "x": 90
+    },
+    "facing=south,powered=true,lit=true": {
+      "model": "condiments:block/saucer_light_powered_lit",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,powered=true,lit=true": {
+      "model": "condiments:block/saucer_light_powered_lit"
+    },
+    "facing=west,powered=true,lit=true": {
+      "model": "condiments:block/saucer_light_powered_lit",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

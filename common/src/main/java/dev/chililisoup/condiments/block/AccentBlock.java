@@ -32,11 +32,13 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HALF, Half.BOTTOM).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, false));
     }
 
+    @Override
     public boolean useShapeForLightOcclusion(BlockState state) {
         return false;
     }
 
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    @Override
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return (state.getValue(HALF) == Half.TOP ? TOP_SHAPES : BOTTOM_SHAPES)[SHAPE_BY_STATE[this.getShapeIndex(state)]];
     }
 
@@ -44,6 +46,7 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
         return (state.getValue(SHAPE)).ordinal() * 4 + (state.getValue(FACING)).get2DDataValue();
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction direction = context.getClickedFace();
         BlockPos blockPos = context.getClickedPos();
@@ -52,7 +55,8 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
         return blockState.setValue(SHAPE, getStairsShape(blockState, context.getLevel(), blockPos));
     }
 
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    @Override
+    public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(WATERLOGGED)) level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         return direction.getAxis().isHorizontal() ? state.setValue(SHAPE, getStairsShape(state, level, pos)) : super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
@@ -87,11 +91,13 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
         return state.getBlock() instanceof AccentBlock;
     }
 
-    public BlockState rotate(BlockState state, Rotation rotation) {
+    @Override
+    public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
-    public BlockState mirror(BlockState state, Mirror mirror) {
+    @Override
+    public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
         Direction direction = state.getValue(FACING);
         StairsShape stairsShape = state.getValue(SHAPE);
         switch (mirror) {
@@ -120,15 +126,18 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
         return super.mirror(state, mirror);
     }
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, HALF, SHAPE, WATERLOGGED);
     }
 
+    @Override
     public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+    @Override
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         return false;
     }
 

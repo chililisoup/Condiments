@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
@@ -83,6 +84,11 @@ public class ModBlocks {
         REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS").cutout());
 
         COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN))).noItem().cutout());
+
+        addBlock(new Params("saucer_light", () -> new SaucerLightBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+                .lightLevel(state -> (Boolean)state.getValue(BlockStateProperties.LIT) ? 15 : 0)
+                .pushReaction(PushReaction.NORMAL)
+        )).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS"));
     }
 
     private static Supplier<Block> addCrate(String id, DyeColor color) {

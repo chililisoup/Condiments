@@ -44,6 +44,11 @@ public class CrateBlock extends BaseEntityBlock {
                     (optional, properties) -> new CrateBlock(optional.orElse(null), properties)));
     private static final EnumProperty<FrontAndTop> ORIENTATION;
     @Nullable private final DyeColor color;
+
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
     
     public CrateBlock(@Nullable DyeColor color, BlockBehaviour.Properties properties) {
         super(properties);
@@ -218,12 +223,6 @@ public class CrateBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CrateBlockEntity(pos, state);
-    }
-
-
-    @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

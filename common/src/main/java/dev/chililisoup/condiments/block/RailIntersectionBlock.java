@@ -24,13 +24,13 @@ public class RailIntersectionBlock extends BaseRailBlock implements CondimentsRa
     public static final MapCodec<RailIntersectionBlock> CODEC = simpleCodec(RailIntersectionBlock::new);
     public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
 
-    public RailIntersectionBlock(Properties properties) {
-        super(true, properties);
+    @Override
+    protected @NotNull MapCodec<RailIntersectionBlock> codec() {
+        return CODEC;
     }
 
-    @Override
-    protected @NotNull MapCodec<? extends BaseRailBlock> codec() {
-        return CODEC;
+    public RailIntersectionBlock(Properties properties) {
+        super(true, properties);
     }
 
     @Override
