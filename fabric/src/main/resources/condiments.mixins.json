@@ -4,9 +4,11 @@
   "package": "dev.chililisoup.condiments.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractMinecartMixinFabric"
+    "AbstractMinecartMixinFabric",
+    "ServerPlayerGameModeMixin"
   ],
   "client": [
+    "MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -20,6 +20,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -55,6 +56,8 @@ public class CondimentsNeoForge {
 
         if (FMLEnvironment.dist == Dist.CLIENT)
             CondimentsClientNeoForge.init(eventBus);
+
+        NeoForge.EVENT_BUS.register(new ModNeoForgeEventHandlers());
     }
 
     public static Supplier<Item> registerItem(ModItems.Params params) {

@@ -19,6 +19,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -37,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CrateBlock extends BaseEntityBlock {
+public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     public static final MapCodec<CrateBlock> CODEC = RecordCodecBuilder.mapCodec(
             (instance) -> instance.group(DyeColor.CODEC.optionalFieldOf("color").forGetter(
                     (crateBlock) -> Optional.ofNullable(crateBlock.color)), propertiesCodec()).apply(instance,
@@ -149,6 +150,51 @@ public class CrateBlock extends BaseEntityBlock {
                 itemEntity.setTarget(player.getUUID());
             }
         }
+    }
+
+    private boolean shouldPreventDamage(BlockState state, Player player, BlockPos pos) {
+        BlockEntity blockEntity = player.level().getBlockEntity(pos);
+        if (!(blockEntity instanceof CrateBlockEntity)) return false;
+
+        BlockHitResult hitResult = getHitResult(player.level(), pos, player);
+        if (hitResult.getDirection() != state.getValue(ORIENTATION).front()) return false;
+
+        Optional<Vec2> hitPos = getHitPosition(hitResult, state.getValue(ORIENTATION).front());
+        return hitPos.filter(vec2 -> !isNotInBounds(vec2)).isPresent();
+    }
+
+    @Override
+    protected float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos) {
+        return this.shouldPreventDamage(state, player, pos) ? 0 : super.getDestroyProgress(state, player, level, pos);
+    }
+
+    @Override
+    public boolean shouldCancelDestroy(BlockState state, Level level, BlockPos pos, Player player, Direction direction) {
+        if (!player.isCreative()) return false;
+        if (direction != state.getValue(ORIENTATION).front()) return false;
+
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (!(blockEntity instanceof CrateBlockEntity)) return false;
+
+        Optional<Vec2> hitPos = getHitPosition(getHitResult(level, pos, player), state.getValue(ORIENTATION).front());
+
+        if (hitPos.isEmpty()) return false;
+        if (isNotInBounds(hitPos.get())) return false;
+
+        if (level.isClientSide) return true;
+
+        ItemStack itemStack = ((CrateBlockEntity) blockEntity).request(player.isShiftKeyDown());
+        player.addItem(itemStack);
+
+        if (itemStack.getCount() > 0) {
+            ItemEntity itemEntity = player.drop(itemStack, false);
+            if (itemEntity != null) {
+                itemEntity.setNoPickUpDelay();
+                itemEntity.setTarget(player.getUUID());
+            }
+        }
+
+        return true;
     }
 
     @Override
