@@ -4,14 +4,14 @@
   "group": "wood_accents",
   "key": {
     "#": {
-      "item": "minecraft:oak_slab"
+      "item": "minecraft:stripped_oak_log"
     }
   },
   "pattern": [
-    "###"
+    "##"
   ],
   "result": {
-    "count": 6,
+    "count": 8,
     "id": "condiments:oak_accent"
   }
 }

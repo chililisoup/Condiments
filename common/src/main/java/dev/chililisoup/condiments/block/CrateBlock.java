@@ -47,7 +47,7 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     @Nullable private final DyeColor color;
 
     @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NotNull MapCodec<CrateBlock> codec() {
         return CODEC;
     }
     

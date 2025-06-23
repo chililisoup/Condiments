@@ -539,11 +539,11 @@ public class MoonlightCompat {
             StaticResource advancement = StaticResource.getOrLog(manager, ResType.ADVANCEMENTS.getPath(Condiments.loc("recipes/accents/oak_accent")));
 
             WOOD_ACCENTS.items.forEach((wood, accent) -> {
-                String slab = Utils.getID(wood.getBlockOfThis("slab")).toString();
+                String log = Utils.getID(wood.getBlockOfThis("stripped_log")).toString();
                 String id = Utils.getID(accent).getPath();
 
                 Function<String, String> textTransform = s -> s
-                        .replace("minecraft:oak_slab", slab)
+                        .replace("minecraft:stripped_oak_log", log)
                         .replace("oak_accent", id);
 
                 sink.addSimilarJsonResource(manager, lootTable, textTransform);

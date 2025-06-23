@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 public class AccentBlock extends Block implements SimpleWaterloggedBlock {
+    public static final MapCodec<AccentBlock> CODEC = simpleCodec(AccentBlock::new);
     public static final DirectionProperty FACING;
     public static final EnumProperty<Half> HALF;
     public static final EnumProperty<StairsShape> SHAPE;
@@ -26,6 +28,11 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
     protected static final VoxelShape[] TOP_SHAPES;
     protected static final VoxelShape[] BOTTOM_SHAPES;
     private static final int[] SHAPE_BY_STATE;
+
+    @Override
+    protected @NotNull MapCodec<AccentBlock> codec() {
+        return CODEC;
+    }
 
     public AccentBlock(BlockBehaviour.Properties properties) {
         super(properties);

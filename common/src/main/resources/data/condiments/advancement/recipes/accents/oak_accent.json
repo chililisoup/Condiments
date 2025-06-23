@@ -1,12 +1,12 @@
 {
   "parent": "condiments:recipes/root",
   "criteria": {
-    "has_slab": {
+    "has_log": {
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:oak_slab"
+              "minecraft:stripped_oak_log"
             ]
           }
         ]
@@ -22,7 +22,7 @@
   },
   "requirements": [
     [
-      "has_slab",
+      "has_log",
       "has_the_recipe"
     ]
   ],
