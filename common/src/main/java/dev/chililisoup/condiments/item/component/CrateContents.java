@@ -5,12 +5,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -50,6 +52,22 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
 
     public @NotNull String toString() {
         return String.format("%s x %d, %s", this.item(), this.count, this.isLocked() ? "LOCKED" : "UNLOCKED");
+    }
+
+    public static boolean isItemUnsafe(ItemStack stack) {
+        if (stack.isEmpty()) return true;
+
+        if (stack.has(DataComponents.CONTAINER)) {
+            ItemContainerContents containerContents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+            if (containerContents.nonEmptyStream().findAny().isPresent()) return true;
+        }
+
+        if (stack.has(ModComponents.CRATE_CONTENTS.get())) {
+            CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+            return crateContents.count > 0;
+        }
+
+        return false;
     }
 
     static {
@@ -118,12 +136,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         }
 
         public boolean canAdd(ItemStack stack) {
-            if (stack.isEmpty()) return false;
-
-            if (stack.has(ModComponents.CRATE_CONTENTS.get())) {
-                CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
-                if (crateContents.count > 0) return false;
-            }
+            if (isItemUnsafe(stack)) return false;
 
             return this.item.map(
                     itemStack -> ItemStack.isSameItemSameComponents(itemStack, stack)

@@ -23,7 +23,6 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -118,13 +117,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
-        CustomData blockData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
-
-        if (blockData != null) {
-            CompoundTag tag = blockData.copyTag();
-            if (!tag.getList("Items", 10).isEmpty()) return false;
-            if (tag.getCompound("CrateItems").getShort("count") > 0) return false;
-        }
+        if (CrateContents.isItemUnsafe(stack)) return false;
 
         return (this.isEmpty() || ItemStack.isSameItemSameComponents(this.findFirst(), stack));
     }
