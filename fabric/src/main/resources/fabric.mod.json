@@ -30,6 +30,9 @@
     ],
     "rei_client": [
       "dev.chililisoup.condiments.compat.ReiCompat"
+    ],
+    "emi": [
+      "dev.chililisoup.condiments.compat.EmiCompat"
     ]
   },
   "mixins": [
