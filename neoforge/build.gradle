@@ -48,7 +48,7 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rootProject.rei_version}"
     //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rootProject.rei_version}"
 
-    modRuntimeOnly "dev.emi:emi-neoforge:${rootProject.emi_version}+${rootProject.minecraft_version}"
+    //modRuntimeOnly "dev.emi:emi-neoforge:${rootProject.emi_version}+${rootProject.minecraft_version}"
 
     modRuntimeOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-neoforge"
 }

@@ -46,7 +46,8 @@ dependencies {
 
     //modRuntimeOnly "dev.emi:emi-fabric:${rootProject.emi_version}+${rootProject.minecraft_version}"
 
-    modRuntimeOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-fabric"
+    // This crashes for some reason, just download the mod and put it into the run's mod folder
+    //modRuntimeOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-fabric"
 }
 
 processResources {
