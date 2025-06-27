@@ -471,8 +471,6 @@ public class MoonlightCompat {
         }
     }
 
-    // Doing it the non-deprecated way is buggy at the moment
-    @SuppressWarnings("removal")
     private static class ServerDynamicResourcesGenerator extends DynServerResourcesGenerator {
         public static final ServerDynamicResourcesGenerator INSTANCE = new ServerDynamicResourcesGenerator();
 
@@ -507,9 +505,13 @@ public class MoonlightCompat {
         }
 
         private void addWoodWallData(ResourceManager manager, ResourceSink sink) {
-            SimpleTagBuilder builder = SimpleTagBuilder.of(ModBlockTags.WOOD_WALLS);
-            builder.addEntries(WOOD_WALLS.items.values().stream().map(BlockItem::getBlock).collect(Collectors.toSet()));
-            dynamicPack.addTag(builder, Registries.BLOCK);
+            SimpleTagBuilder blockTagBuilder = SimpleTagBuilder.of(ModBlockTags.WOOD_WALLS);
+            blockTagBuilder.addEntries(WOOD_WALLS.items.values().stream().map(BlockItem::getBlock).collect(Collectors.toSet()));
+            sink.addTag(blockTagBuilder, Registries.BLOCK);
+
+            SimpleTagBuilder itemTagBuilder = SimpleTagBuilder.of(ModBlockTags.WOOD_WALLS);
+            itemTagBuilder.addEntries(WOOD_WALLS.items.values());
+            sink.addTag(itemTagBuilder, Registries.ITEM);
 
             StaticResource lootTable = StaticResource.getOrLog(manager, ResType.LOOT_TABLES.getPath(Condiments.loc("blocks/oak_wall")));
             StaticResource recipe = StaticResource.getOrLog(manager, ResType.RECIPES.getPath(Condiments.loc("wood_walls/oak_wall")));
@@ -530,9 +532,13 @@ public class MoonlightCompat {
         }
 
         private void addWoodAccentData(ResourceManager manager, ResourceSink sink) {
-            SimpleTagBuilder builder = SimpleTagBuilder.of(Condiments.loc("wood_accents"));
-            builder.addEntries(WOOD_ACCENTS.items.values().stream().map(BlockItem::getBlock).collect(Collectors.toSet()));
-            dynamicPack.addTag(builder, Registries.BLOCK);
+            SimpleTagBuilder blockTagBuilder = SimpleTagBuilder.of(Condiments.loc("wood_accents"));
+            blockTagBuilder.addEntries(WOOD_ACCENTS.items.values().stream().map(BlockItem::getBlock).collect(Collectors.toSet()));
+            sink.addTag(blockTagBuilder, Registries.BLOCK);
+
+            SimpleTagBuilder itemTagBuilder = SimpleTagBuilder.of(Condiments.loc("wood_accents"));
+            itemTagBuilder.addEntries(WOOD_ACCENTS.items.values());
+            sink.addTag(itemTagBuilder, Registries.ITEM);
 
             StaticResource lootTable = StaticResource.getOrLog(manager, ResType.LOOT_TABLES.getPath(Condiments.loc("blocks/oak_accent")));
             StaticResource recipe = StaticResource.getOrLog(manager, ResType.RECIPES.getPath(Condiments.loc("accents/oak_accent")));
@@ -553,7 +559,8 @@ public class MoonlightCompat {
         }
 
         private void addPolishedWoodData(ResourceManager manager, ResourceSink sink) {
-            SimpleTagBuilder polishedTagBuilder = SimpleTagBuilder.of(Condiments.loc("polished_logs"));
+            SimpleTagBuilder polishedBlockTagBuilder = SimpleTagBuilder.of(Condiments.loc("polished_logs"));
+            SimpleTagBuilder polishedItemTagBuilder = SimpleTagBuilder.of(Condiments.loc("polished_logs"));
 
             StaticResource logLootTable = StaticResource.getOrLog(manager, ResType.LOOT_TABLES.getPath(Condiments.loc("blocks/polished_oak_log")));
             StaticResource woodLootTable = StaticResource.getOrLog(manager, ResType.LOOT_TABLES.getPath(Condiments.loc("blocks/polished_oak_wood")));
@@ -568,8 +575,11 @@ public class MoonlightCompat {
             POLISHED_LOGS.items.forEach((wood, logItem) -> {
                 WoodBasedBlockItem woodItem = POLISHED_WOOD.items.get(wood);
 
-                polishedTagBuilder.addEntry(logItem.getBlock());
-                polishedTagBuilder.addEntry(woodItem.getBlock());
+                polishedBlockTagBuilder.addEntry(logItem.getBlock());
+                polishedBlockTagBuilder.addEntry(woodItem.getBlock());
+
+                polishedItemTagBuilder.addEntry(logItem);
+                polishedItemTagBuilder.addEntry(woodItem);
 
                 ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(
                         wood.getNamespace(),
@@ -579,12 +589,12 @@ public class MoonlightCompat {
                 SimpleTagBuilder blockTagBuilder = SimpleTagBuilder.of(loc);
                 blockTagBuilder.addEntry(logItem.getBlock());
                 blockTagBuilder.addEntry(woodItem.getBlock());
-                dynamicPack.addTag(blockTagBuilder, Registries.BLOCK);
+                sink.addTag(blockTagBuilder, Registries.BLOCK);
 
                 SimpleTagBuilder itemTagBuilder = SimpleTagBuilder.of(loc);
                 itemTagBuilder.addEntry(logItem);
                 itemTagBuilder.addEntry(woodItem);
-                dynamicPack.addTag(itemTagBuilder, Registries.ITEM);
+                sink.addTag(itemTagBuilder, Registries.ITEM);
 
 
                 String strippedLog = Utils.getID(wood.getBlockOfThis("stripped_log")).toString();
@@ -609,7 +619,8 @@ public class MoonlightCompat {
                 sink.addSimilarJsonResource(manager, woodAdvancement, textTransform);
             });
 
-            dynamicPack.addTag(polishedTagBuilder, Registries.BLOCK);
+            sink.addTag(polishedBlockTagBuilder, Registries.BLOCK);
+            sink.addTag(polishedItemTagBuilder, Registries.ITEM);
         }
     }
 }
