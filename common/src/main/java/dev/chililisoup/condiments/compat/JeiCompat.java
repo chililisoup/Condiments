@@ -20,8 +20,8 @@ public class JeiCompat implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(RecipeTypes.CRAFTING, ModRecipeDisplays.crateColoringRecipe());
-        registry.addRecipes(RecipeTypes.CRAFTING, ModRecipeDisplays.crateLockingRecipe());
-        registry.addRecipes(RecipeTypes.CRAFTING, ModRecipeDisplays.crateUnlockingRecipe());
+        registry.addRecipes(RecipeTypes.CRAFTING, ModRecipeDisplays.getAll());
+
+        ModRecipeDisplays.ingredientInfos().forEach(registry::addIngredientInfo);
     }
 }

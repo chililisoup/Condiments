@@ -3,21 +3,35 @@ package dev.chililisoup.condiments.item.crafting;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.CrateBlock;
 import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.reg.ModBlocks;
 import dev.chililisoup.condiments.reg.ModComponents;
 import dev.chililisoup.condiments.reg.ModItemTags;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ModRecipeDisplays {
+    public static List<RecipeHolder<CraftingRecipe>> getAll() {
+        ArrayList<RecipeHolder<CraftingRecipe>> combined = new ArrayList<>();
+
+        combined.addAll(crateColoringRecipe());
+        combined.addAll(crateLockingRecipe());
+        combined.addAll(crateUnlockingRecipe());
+
+        return combined;
+    }
+
     public static List<RecipeHolder<CraftingRecipe>> crateColoringRecipe() {
         ArrayList<RecipeHolder<CraftingRecipe>> recipeList = new ArrayList<>();
         String group = "crate_coloring";
@@ -69,5 +83,11 @@ public class ModRecipeDisplays {
         }
 
         return recipeList;
+    }
+
+    public static Map<ItemLike, Component> ingredientInfos() {
+        return Map.of(
+                ModBlocks.BLACKENED_IRON_BLOCK.get(), Component.translatable("condiments.ingredient_info.blackened_iron_block")
+        );
     }
 }

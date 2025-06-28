@@ -65,6 +65,9 @@ subprojects {
 
         modCompileOnly "mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}"
 
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rootProject.rei_version}"
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rootProject.rei_version}"
+
         modCompileOnly "dev.emi:emi-xplat-intermediary:${rootProject.emi_version}+${rootProject.minecraft_version}:api"
 
         modCompileOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-fabric"

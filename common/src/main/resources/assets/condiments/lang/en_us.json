@@ -94,5 +94,7 @@
   "condiments.configuration.crate_hud_x_alignment": "Crate HUD X Alignment",
   "condiments.configuration.crate_hud_x_offset": "Crate HUD X Offset",
   "condiments.configuration.crate_hud_y_alignment": "Crate HUD Y Alignment",
-  "condiments.configuration.crate_hud_y_offset": "Crate HUD Y Offset"
+  "condiments.configuration.crate_hud_y_offset": "Crate HUD Y Offset",
+
+  "condiments.ingredient_info.blackened_iron_block": "§9Waxed iron blocks §rwith fire directly on top of or below them will eventually turn into §9blackened iron blocks§r."
 }

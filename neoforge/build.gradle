@@ -42,13 +42,6 @@ dependencies {
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
     modCompileOnly "mezz.jei:jei-${rootProject.minecraft_version}-neoforge-api:${rootProject.jei_version}"
-    //modRuntimeOnly "mezz.jei:jei-${rootProject.minecraft_version}-neoforge:${rootProject.jei_version}"
-
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rootProject.rei_version}"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rootProject.rei_version}"
-    //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rootProject.rei_version}"
-
-    //modRuntimeOnly "dev.emi:emi-neoforge:${rootProject.emi_version}+${rootProject.minecraft_version}"
 
     modRuntimeOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-neoforge"
 }
