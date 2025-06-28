@@ -12,8 +12,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class CrateDispenserBehavior extends OptionalDispenseItemBehavior {
-    public CrateDispenserBehavior() {
-    }
+    public CrateDispenserBehavior() {}
 
     @Override
     protected @NotNull ItemStack execute(BlockSource source, ItemStack stack) {
