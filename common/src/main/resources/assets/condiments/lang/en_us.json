@@ -81,5 +81,8 @@
 
   "block.condiments.saucer_light": "Saucer Light",
 
-  "tag.item.condiments.crates": "Crates"
+  "tag.item.condiments.crates": "Crates",
+  "tag.item.condiments.wood_accents": "Wood Accents",
+  "tag.item.condiments.wood_walls": "Wood Walls",
+  "tag.item.condiments.polished_logs": "Polished Logs"
 }

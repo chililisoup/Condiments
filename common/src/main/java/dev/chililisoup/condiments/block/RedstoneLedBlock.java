@@ -72,7 +72,7 @@ public class RedstoneLedBlock extends Block {
     static {
         POWER = BlockStateProperties.POWER;
         COLORS = new Vec3[]{
-                new Vec3(1.0 / 8,  1.0 / 8,  1.0 / 8), // black
+                new Vec3(1.0 / 8,   1.0 / 8,   1.0 / 8 ), // black
                 new Vec3(0,         0,         2.0 / 3 ), // dark_blue
                 new Vec3(0,         2.0 / 3,   0       ), // dark_green
                 new Vec3(0,         2.0 / 3,   2.0 / 3 ), // dark_aqua

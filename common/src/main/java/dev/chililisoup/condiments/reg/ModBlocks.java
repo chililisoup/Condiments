@@ -1,12 +1,13 @@
 package dev.chililisoup.condiments.reg;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.*;
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.item.component.CrateContents;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
+import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
+import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -14,11 +15,14 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 public class ModBlocks {
+    public static final HashMap<Supplier<Block>, String> ALT_RENDERED_BLOCKS = new HashMap<>();
+
+    public static Supplier<Block> RAIL_INTERSECTION;
     public static Supplier<Block> ANALOG_RAIL;
-    //public static Supplier<Block> WAXED_RAIL;
 
     public static Supplier<Block> CRATE;
     public static Supplier<Block> WHITE_CRATE;
@@ -38,22 +42,38 @@ public class ModBlocks {
     public static Supplier<Block> MAGENTA_CRATE;
     public static Supplier<Block> PINK_CRATE;
 
-    public static Supplier<Block> BLACKENED_IRON_BLOCK;
     public static Supplier<Block> WAXED_IRON_BLOCK;
+    public static Supplier<Block> BLACKENED_IRON_BLOCK;
+    public static Supplier<Block> BLACKENED_IRON_GRATE;
+    public static Supplier<Block> BLACKENED_IRON_BARS;
+    public static Supplier<Block> BLACKENED_IRON_DOOR;
+    public static Supplier<Block> BLACKENED_IRON_TRAPDOOR;
 
     public static Supplier<Block> REDSTONE_LED;
+    public static Supplier<Block> SAUCER_LIGHT;
 
     public static Supplier<Block> COPPER_FIRE;
 
-    @ExpectPlatform
     private static Supplier<Block> addBlock(Params params) {
-        throw new AssertionError();
+        RegSupplier<? extends Block> regSupplier = RegHelper.registerBlock(
+                Condiments.loc(params.id),
+                params.blockFactory
+        );
+
+        Supplier<Block> blockSupplier = regSupplier::get;
+
+        if (params.createItem)
+            ModItems.addItem(params.getItemParams(blockSupplier));
+
+        if (params.renderType != null && PlatHelper.getPhysicalSide().isClient())
+            ALT_RENDERED_BLOCKS.put(blockSupplier, params.renderType);
+
+        return blockSupplier;
     }
 
     public static void init() {
-        addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
-        ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
-        //WAXED_RAIL = addBlock(new Params("waxed_rail", () -> new WaxedRail(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).creativeTabs("REDSTONE_BLOCKS").cutout());
+        RAIL_INTERSECTION = addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).cutout());
+        ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL))).cutout());
 
         CRATE = addCrate("crate", null);
         WHITE_CRATE = addCrate("white_crate", DyeColor.WHITE);
@@ -73,38 +93,26 @@ public class ModBlocks {
         MAGENTA_CRATE = addCrate("magenta_crate", DyeColor.MAGENTA);
         PINK_CRATE = addCrate("pink_crate", DyeColor.PINK);
 
-        BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
-        addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
-        addBlock(new Params("blackened_iron_door", () -> new DoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR))).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
-        addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR))).creativeTabs("BUILDING_BLOCKS", "REDSTONE_BLOCKS").cutout());
-        addBlock(new Params("blackened_iron_grate", () -> new WaterloggedTransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).creativeTabs("BUILDING_BLOCKS").cutout());
+        WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))));
+        BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))));
+        BLACKENED_IRON_GRATE = addBlock(new Params("blackened_iron_grate", () -> new WaterloggedTransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).cutout());
+        BLACKENED_IRON_BARS = addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS))).cutout());
+        BLACKENED_IRON_DOOR = addBlock(new Params("blackened_iron_door", () -> new DoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR))).cutout());
+        BLACKENED_IRON_TRAPDOOR = addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR))).cutout());
 
-        WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))).creativeTabs("BUILDING_BLOCKS"));
-
-        REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS").cutout());
-
-        COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN))).noItem().cutout());
-
-        addBlock(new Params("saucer_light", () -> new SaucerLightBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
+        REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).cutout());
+        SAUCER_LIGHT = addBlock(new Params("saucer_light", () -> new SaucerLightBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
                 .lightLevel(state -> (Boolean)state.getValue(BlockStateProperties.LIT) ? 15 : 0)
                 .pushReaction(PushReaction.NORMAL)
-        )).creativeTabs("FUNCTIONAL_BLOCKS", "REDSTONE_BLOCKS"));
+        )));
+
+        COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN))).noItem().cutout());
     }
-
-    private static Supplier<Block> addCrate(String id, DyeColor color) {
-        return addBlock(new CrateParams(id, () -> new CrateBlock(color, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).pushReaction(PushReaction.DESTROY))).creativeTabs("FUNCTIONAL_BLOCKS", "COLORED_BLOCKS"));
-    }
-
-
-
-
 
     public static class Params {
         public final String id;
         public final Supplier<? extends Block> blockFactory;
-        public boolean flammable = false;
         public boolean createItem = true;
-        public String[] creativeTabs = new String[]{};
         public String renderType = null;
 
         public Params(String id, Supplier<? extends Block> blockFactory) {
@@ -113,25 +121,15 @@ public class ModBlocks {
         }
 
         public ModItems.Params getItemParams(Supplier<? extends Block>  block) {
-            return new ModItems.Params(id, () -> new BlockItem(block.get(), new Item.Properties())).creativeTabs(creativeTabs);
+            return new ModItems.Params(id, () -> this.getItem(block));
         }
 
-        public BlockItem getItem(Block block) {
-            return new BlockItem(block, new Item.Properties());
-        }
-
-        public Params flammable() {
-            flammable = true;
-            return this;
+        public BlockItem getItem(Supplier<? extends Block>  block) {
+            return new BlockItem(block.get(), new Item.Properties());
         }
 
         public Params noItem() {
             createItem = false;
-            return this;
-        }
-
-        public Params creativeTabs(String... tabs) {
-            creativeTabs = tabs;
             return this;
         }
 
@@ -147,14 +145,13 @@ public class ModBlocks {
         }
 
         @Override
-        public ModItems.Params getItemParams(Supplier<? extends Block>  block) {
-            return new ModItems.Params(id, () -> new CrateItem(block.get(), new Item.Properties().component(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY))).creativeTabs(creativeTabs);
+        public BlockItem getItem(Supplier<? extends Block>  block) {
+            return new CrateItem(block.get(), new Item.Properties().component(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY));
         }
+    }
 
-        @Override
-        public BlockItem getItem(Block block) {
-            return new CrateItem(block, new Item.Properties().component(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY));
-        }
+    private static Supplier<Block> addCrate(String id, DyeColor color) {
+        return addBlock(new CrateParams(id, () -> new CrateBlock(color, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).pushReaction(PushReaction.DESTROY))));
     }
 
     public static Block[] getCrates() {

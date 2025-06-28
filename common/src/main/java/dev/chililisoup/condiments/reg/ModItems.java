@@ -1,33 +1,26 @@
 package dev.chililisoup.condiments.reg;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.chililisoup.condiments.Condiments;
+import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.world.item.Item;
-
 import java.util.function.Supplier;
 
 public class ModItems {
-    @ExpectPlatform
-    private static Supplier<Item> addItem(ModItems.Params params) {
-        throw new AssertionError();
+    public static Supplier<Item> BLACKENED_IRON_INGOT;
+
+    public static Supplier<Item> addItem(Params params) {
+        RegSupplier<? extends Item> regSupplier = RegHelper.registerItem(
+                Condiments.loc(params.id),
+                params.itemFactory
+        );
+
+        return regSupplier::get;
     }
 
     public static void init() {
-        addItem(new Params("blackened_iron_ingot", () -> new Item(new Item.Properties())).creativeTabs("INGREDIENTS"));
+        BLACKENED_IRON_INGOT = addItem(new Params("blackened_iron_ingot", () -> new Item(new Item.Properties())));
     }
 
-    public static class Params {
-        public final String id;
-        public final Supplier<? extends Item> itemFactory;
-        public String[] creativeTabs = new String[]{};
-
-        public Params(String id, Supplier<? extends Item> itemFactory) {
-            this.id = id;
-            this.itemFactory = itemFactory;
-        }
-
-        public ModItems.Params creativeTabs(String... tabs) {
-            creativeTabs = tabs;
-            return this;
-        }
-    }
+    public record Params(String id, Supplier<? extends Item> itemFactory) {}
 }

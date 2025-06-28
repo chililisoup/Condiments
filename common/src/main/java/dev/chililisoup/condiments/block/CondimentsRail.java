@@ -23,8 +23,4 @@ public interface CondimentsRail {
     default Pair<Vec3i, Vec3i> getExits(RailShape shape, BlockState state, Vec3 deltaMovement, Operation<Pair<Vec3i, Vec3i>> original) {
         return original.call(shape);
     }
-
-//    default double slowdownMultiplier(AbstractMinecart cart, BlockState state) {
-//        return 1.0;
-//    }
 }
