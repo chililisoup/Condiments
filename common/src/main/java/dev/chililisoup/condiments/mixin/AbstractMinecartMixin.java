@@ -18,25 +18,4 @@ public abstract class AbstractMinecartMixin {
         if (state.getBlock() instanceof CondimentsRail rail)
             rail.moveAlongTrack(pos, state, railShape, (AbstractMinecart) (Object) this);
     }
-
-//    @WrapOperation(method = "moveAlongTrack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;applyNaturalSlowdown()V"))
-//    private void applyNaturalSlowdownHook(AbstractMinecart cart, Operation<Void> original, @Local(argsOnly = true) BlockState state) {
-//        if (state.getBlock() instanceof CondimentsRail rail) {
-//            double multiplier = rail.slowdownMultiplier(cart, state);
-//
-//            if (multiplier == 0.0) return;
-//            if (multiplier == 1.0) {
-//                original.call(cart);
-//                return;
-//            }
-//
-//            cart.setDeltaMovement(cart.getDeltaMovement().scale(
-//            (1 - (cart.isVehicle() ? 0.003 : 0.04) * multiplier)
-//                * (cart.isInWater() ? 1 - (0.05 * multiplier) : 1)
-//            ));
-//            return;
-//        }
-//
-//        original.call(cart);
-//    }
 }

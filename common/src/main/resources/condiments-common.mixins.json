@@ -6,12 +6,14 @@
   "mixins": [
     "AbstractMinecartMixin",
     "BaseFireBlockMixin",
+    "BeaconBlockEntityMixin",
     "FenceGateBlockMixin",
     "IronBarsBlockMixin",
     "ShulkerBoxBlockEntityMixin",
     "WallBlockMixin"
   ],
   "client": [
+    "BeaconRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,0 +1,5 @@
+{
+  "injected_interfaces": {
+    "net/minecraft/world/level/block/entity/BeaconBlockEntity": ["dev/chililisoup/condiments/inject/BeaconBlockEntityInject"]
+  }
+}

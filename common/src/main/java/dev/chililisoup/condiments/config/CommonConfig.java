@@ -12,6 +12,8 @@ public class CommonConfig {
     public static final Supplier<Integer> EMPTY_CRATE_STACK_SIZE;
     public static final Supplier<Boolean> CRATES_CONTAIN_EMPTY_CRATES;
 
+    public static final Supplier<Boolean> TINTED_GLASS_TERMINATES_BEACONS;
+
     public static final ModConfigHolder CONFIG_SPEC;
 
     public static void init() {}
@@ -27,6 +29,11 @@ public class CommonConfig {
                 .define("empty_crate_stack_size", 64, 1, 64);
         CRATES_CONTAIN_EMPTY_CRATES = builder.comment("If crates are allowed to contain empty crates")
                 .define("crates_contain_empty_crates", true);
+        builder.pop();
+
+        builder.push("misc");
+        TINTED_GLASS_TERMINATES_BEACONS = builder.comment("If beacon beams stop at tinted glass (and exist up to that point)")
+                .define("tinted_glass_terminates_beacons", true);
         builder.pop();
 
         CONFIG_SPEC = builder.build();
