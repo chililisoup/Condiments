@@ -13,10 +13,8 @@
     "sources": "${mod_source}",
     "issues": "${mod_issues}"
   },
-
   "license": "${mod_license}",
   "icon": "icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -24,6 +22,9 @@
     ],
     "client": [
       "dev.chililisoup.condiments.fabric.CondimentsClientFabric"
+    ],
+    "modmenu": [
+      "dev.chililisoup.condiments.compat.fabric.ModMenuCompat"
     ],
     "jei_mod_plugin": [
       "dev.chililisoup.condiments.compat.JeiCompat"

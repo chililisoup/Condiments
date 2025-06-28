@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.item.component;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
@@ -39,8 +40,10 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
     }
 
     public int capacity() {
+        int stackCount = CommonConfig.CRATE_MAX_CONTAINED_STACKS.get();
+
         return this.item().map(
-                stack -> stack.getMaxStackSize() * 64
+                stack -> stack.getMaxStackSize() * stackCount
         ).orElse(0);
     }
 
@@ -63,6 +66,8 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         }
 
         if (stack.has(ModComponents.CRATE_CONTENTS.get())) {
+            if (!CommonConfig.CRATES_CONTAIN_EMPTY_CRATES.get()) return true;
+
             CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
             return crateContents.count > 0;
         }
@@ -130,9 +135,11 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         }
 
         private int getMaxAmountToAdd(ItemStack stack) {
+            int stackCount = CommonConfig.CRATE_MAX_CONTAINED_STACKS.get();
+
             return this.item.map(
-                    itemStack -> Math.max(itemStack.getMaxStackSize() * 64 - this.count, 0)
-            ).orElseGet(() -> stack.getMaxStackSize() * 64);
+                    itemStack -> Math.max(itemStack.getMaxStackSize() * stackCount - this.count, 0)
+            ).orElseGet(() -> stack.getMaxStackSize() * stackCount);
         }
 
         public boolean canAdd(ItemStack stack) {

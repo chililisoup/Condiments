@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.item;
 
+import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.item.component.CrateContents;
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.reg.ModComponents;
@@ -37,7 +38,7 @@ public class CrateItem extends BlockItem {
     private static final int BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
 
     public CrateItem(Block block, Properties properties) {
-        super(block, properties);
+        super(block, properties.stacksTo(CommonConfig.EMPTY_CRATE_STACK_SIZE.get()));
     }
 
     @Override
@@ -116,7 +117,7 @@ public class CrateItem extends BlockItem {
         }
 
         crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : 64);
+        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
 
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
@@ -147,7 +148,7 @@ public class CrateItem extends BlockItem {
         }
 
         crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : 64);
+        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
 
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
@@ -226,7 +227,7 @@ public class CrateItem extends BlockItem {
                 mutable.removeOne();
 
                 crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-                crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : 64);
+                crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
             }
 
             return result;

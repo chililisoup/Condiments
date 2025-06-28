@@ -21,38 +21,38 @@ import java.util.function.Supplier;
 public class ModBlocks {
     public static final HashMap<Supplier<Block>, String> ALT_RENDERED_BLOCKS = new HashMap<>();
 
-    public static Supplier<Block> RAIL_INTERSECTION;
-    public static Supplier<Block> ANALOG_RAIL;
+    public static final Supplier<Block> RAIL_INTERSECTION;
+    public static final Supplier<Block> ANALOG_RAIL;
 
-    public static Supplier<Block> CRATE;
-    public static Supplier<Block> WHITE_CRATE;
-    public static Supplier<Block> LIGHT_GRAY_CRATE;
-    public static Supplier<Block> GRAY_CRATE;
-    public static Supplier<Block> BLACK_CRATE;
-    public static Supplier<Block> BROWN_CRATE;
-    public static Supplier<Block> RED_CRATE;
-    public static Supplier<Block> ORANGE_CRATE;
-    public static Supplier<Block> YELLOW_CRATE;
-    public static Supplier<Block> LIME_CRATE;
-    public static Supplier<Block> GREEN_CRATE;
-    public static Supplier<Block> CYAN_CRATE;
-    public static Supplier<Block> LIGHT_BLUE_CRATE;
-    public static Supplier<Block> BLUE_CRATE;
-    public static Supplier<Block> PURPLE_CRATE;
-    public static Supplier<Block> MAGENTA_CRATE;
-    public static Supplier<Block> PINK_CRATE;
+    public static final Supplier<Block> CRATE;
+    public static final Supplier<Block> WHITE_CRATE;
+    public static final Supplier<Block> LIGHT_GRAY_CRATE;
+    public static final Supplier<Block> GRAY_CRATE;
+    public static final Supplier<Block> BLACK_CRATE;
+    public static final Supplier<Block> BROWN_CRATE;
+    public static final Supplier<Block> RED_CRATE;
+    public static final Supplier<Block> ORANGE_CRATE;
+    public static final Supplier<Block> YELLOW_CRATE;
+    public static final Supplier<Block> LIME_CRATE;
+    public static final Supplier<Block> GREEN_CRATE;
+    public static final Supplier<Block> CYAN_CRATE;
+    public static final Supplier<Block> LIGHT_BLUE_CRATE;
+    public static final Supplier<Block> BLUE_CRATE;
+    public static final Supplier<Block> PURPLE_CRATE;
+    public static final Supplier<Block> MAGENTA_CRATE;
+    public static final Supplier<Block> PINK_CRATE;
 
-    public static Supplier<Block> WAXED_IRON_BLOCK;
-    public static Supplier<Block> BLACKENED_IRON_BLOCK;
-    public static Supplier<Block> BLACKENED_IRON_GRATE;
-    public static Supplier<Block> BLACKENED_IRON_BARS;
-    public static Supplier<Block> BLACKENED_IRON_DOOR;
-    public static Supplier<Block> BLACKENED_IRON_TRAPDOOR;
+    public static final Supplier<Block> WAXED_IRON_BLOCK;
+    public static final Supplier<Block> BLACKENED_IRON_BLOCK;
+    public static final Supplier<Block> BLACKENED_IRON_GRATE;
+    public static final Supplier<Block> BLACKENED_IRON_BARS;
+    public static final Supplier<Block> BLACKENED_IRON_DOOR;
+    public static final Supplier<Block> BLACKENED_IRON_TRAPDOOR;
 
-    public static Supplier<Block> REDSTONE_LED;
-    public static Supplier<Block> SAUCER_LIGHT;
+    public static final Supplier<Block> REDSTONE_LED;
+    public static final Supplier<Block> SAUCER_LIGHT;
 
-    public static Supplier<Block> COPPER_FIRE;
+    public static final Supplier<Block> COPPER_FIRE;
 
     private static Supplier<Block> addBlock(Params params) {
         RegSupplier<? extends Block> regSupplier = RegHelper.registerBlock(
@@ -71,7 +71,9 @@ public class ModBlocks {
         return blockSupplier;
     }
 
-    public static void init() {
+    public static void init() {}
+
+    static {
         RAIL_INTERSECTION = addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).cutout());
         ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL))).cutout());
 

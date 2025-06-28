@@ -9,9 +9,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import java.util.function.Supplier;
 
 public class ModBlockEntities {
-    public static Supplier<BlockEntityType<CrateBlockEntity>> CRATE_BE_TYPE;
+    public static final Supplier<BlockEntityType<CrateBlockEntity>> CRATE_BE_TYPE;
 
-    public static void init() {
+    public static void init() {}
+
+    static {
         CRATE_BE_TYPE = RegHelper.registerBlockEntityType(
                 Condiments.loc("crate"),
                 () -> PlatHelper.newBlockEntityType(

@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import java.util.function.Supplier;
 
 public class ModItems {
-    public static Supplier<Item> BLACKENED_IRON_INGOT;
+    public static final Supplier<Item> BLACKENED_IRON_INGOT;
 
     public static Supplier<Item> addItem(Params params) {
         RegSupplier<? extends Item> regSupplier = RegHelper.registerItem(
@@ -18,7 +18,9 @@ public class ModItems {
         return regSupplier::get;
     }
 
-    public static void init() {
+    public static void init() {}
+
+    static {
         BLACKENED_IRON_INGOT = addItem(new Params("blackened_iron_ingot", () -> new Item(new Item.Properties())));
     }
 

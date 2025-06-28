@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.block.entity;
 
+import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.item.component.CrateContents;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
 import dev.chililisoup.condiments.reg.ModComponents;
@@ -41,7 +42,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
     @Override
     public int getContainerSize() {
-        return 64;
+        return CommonConfig.CRATE_MAX_CONTAINED_STACKS.get();
     }
 
     public CrateBlockEntity(BlockPos pos, BlockState blockState) {
@@ -180,7 +181,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
         int addCount = player.getInventory().clearOrCountMatchingItems(
                 item -> ItemStack.isSameItemSameComponents(first, item),
-                (max * 64) - getCount(),
+                (max * CommonConfig.CRATE_MAX_CONTAINED_STACKS.get()) - getCount(),
                 player.getInventory()
         );
 
@@ -344,6 +345,6 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
                 this.locked ? Optional.of(true) : Optional.empty()
         ));
 
-        components.set(DataComponents.MAX_STACK_SIZE, count > 0 ? 1 : 64);
+        components.set(DataComponents.MAX_STACK_SIZE, count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
     }
 }

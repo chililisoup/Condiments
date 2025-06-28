@@ -3,6 +3,7 @@ package dev.chililisoup.condiments.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.chililisoup.condiments.block.CrateBlock;
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
+import dev.chililisoup.condiments.config.CommonConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -69,7 +70,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         if (hitPos.isEmpty()) return;
         if (CrateBlock.isNotInBounds(hitPos.get())) return;
 
-        String text = String.format("%d / %d", blockEntity.getCount(), item.getMaxStackSize() * 64);
+        String text = String.format("%d / %d", blockEntity.getCount(), item.getMaxStackSize() * CommonConfig.CRATE_MAX_CONTAINED_STACKS.get());
 
         poseStack.pushPose();
         poseStack.translate(

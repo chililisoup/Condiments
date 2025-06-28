@@ -84,5 +84,15 @@
   "tag.item.condiments.crates": "Crates",
   "tag.item.condiments.wood_accents": "Wood Accents",
   "tag.item.condiments.wood_walls": "Wood Walls",
-  "tag.item.condiments.polished_logs": "Polished Logs"
+  "tag.item.condiments.polished_logs": "Polished Logs",
+
+  "condiments.configuration.crates": "Crates",
+  "condiments.configuration.crate_max_contained_stacks": "Max Contained Stacks",
+  "condiments.configuration.empty_crate_stack_size": "Empty Crate Stack Size",
+  "condiments.configuration.crates_contain_empty_crates": "Crates Contain Empty Crates",
+  "condiments.configuration.show_crate_hud": "Show Crate HUD",
+  "condiments.configuration.crate_hud_x_alignment": "Crate HUD X Alignment",
+  "condiments.configuration.crate_hud_x_offset": "Crate HUD X Offset",
+  "condiments.configuration.crate_hud_y_alignment": "Crate HUD Y Alignment",
+  "condiments.configuration.crate_hud_y_offset": "Crate HUD Y Offset"
 }
