@@ -7,9 +7,12 @@ import dev.chililisoup.condiments.item.component.CrateContents;
 import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
@@ -102,7 +105,9 @@ public class ModBlocks {
         BLACKENED_IRON_DOOR = addBlock(new Params("blackened_iron_door", () -> new DoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR))).cutout());
         BLACKENED_IRON_TRAPDOOR = addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR))).cutout());
 
-        REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of().strength(0.3F).sound(SoundType.GLASS))).cutout());
+        REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of()
+                .strength(0.3F).sound(SoundType.GLASS).lightLevel(state -> 1).emissiveRendering(ModBlocks::always)
+        )).cutout());
         SAUCER_LIGHT = addBlock(new Params("saucer_light", () -> new SaucerLightBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
                 .lightLevel(state -> (Boolean)state.getValue(BlockStateProperties.LIT) ? 15 : 0)
                 .pushReaction(PushReaction.NORMAL)
@@ -176,5 +181,9 @@ public class ModBlocks {
                 MAGENTA_CRATE.get(),
                 PINK_CRATE.get()
         };
+    }
+
+    public static boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        return true;
     }
 }
