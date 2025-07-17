@@ -73,16 +73,22 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
         StaticResource sideZ = StaticResource.getOrLog(manager, ResType.BLOCK_MODELS.getPath(Condiments.loc("wood_walls/oak_wall_side_z")));
 
         WOOD_WALLS.items.forEach((wood, wall) -> {
-            String id = Utils.getID(wall).getPath();
-            String log = Utils.getID(wood.log).getPath();
-            String namespace = wood.getNamespace();
-
-            Function<String, String> textTransform = s -> s
-                    .replace("oak_wall", id)
-                    .replace("oak_log", log)
-                    .replace("minecraft", namespace);
-
             try {
+                String id = Utils.getID(wall).getPath();
+
+                ResourceLocation log = RPUtils.findFirstBlockTextureLocation(
+                        manager, wood.getBlockOfThis("log"), t -> !t.contains("top")
+                );
+
+                ResourceLocation strippedLog = RPUtils.findFirstBlockTextureLocation(
+                        manager, wood.getBlockOfThis("stripped_log"), t -> !t.contains("top")
+                );
+
+                Function<String, String> textTransform = s -> s
+                        .replace("oak_wall", id)
+                        .replace("minecraft:block/oak_log", log.toString())
+                        .replace("minecraft:block/stripped_oak_log", strippedLog.toString());
+
                 sink.addSimilarJsonResource(manager, itemModel, textTransform);
 
                 sink.addSimilarJsonResource(manager, blockState, "oak_wall", id);
@@ -98,7 +104,7 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
                         wood.getReadableName() + " Wall"
                 );
             } catch (Exception e) {
-                getLogger().error("Failed to generate wood wall assets for {} : {}", wall, e);
+                getLogger().error("Failed to create log model for {}", wall, e);
             }
         });
     }

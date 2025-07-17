@@ -79,28 +79,28 @@ public class ModCreativeTabs {
                 ModItems.BLACKENED_IRON_INGOT.get()
         );
 
-        WOOD_WALLS.items.forEach((wood, wall) -> event.addAfter(
+        WOOD_WALLS.items.forEach((wood, item) -> event.addAfter(
                 CreativeModeTabs.BUILDING_BLOCKS,
                 itemStack -> itemStack.is(wood.getItemOfThis("slab")),
-                wall
+                item
         ));
 
-        WOOD_ACCENTS.items.forEach((wood, accent) -> event.addAfter(
+        WOOD_ACCENTS.items.forEach((wood, item) -> event.addAfter(
                 CreativeModeTabs.BUILDING_BLOCKS,
                 itemStack -> itemStack.is(wood.getItemOfThis("slab")),
-                accent
+                item
         ));
 
-        POLISHED_WOOD.items.forEach((wood, accent) -> event.addAfter(
+        POLISHED_WOOD.items.forEach((wood, item) -> event.addAfter(
                 CreativeModeTabs.BUILDING_BLOCKS,
                 itemStack -> itemStack.is(wood.getItemOfThis("stripped_wood")),
-                accent
+                item
         ));
 
-        POLISHED_LOGS.items.forEach((wood, accent) -> event.addAfter(
+        POLISHED_LOGS.items.forEach((wood, item) -> event.addAfter(
                 CreativeModeTabs.BUILDING_BLOCKS,
                 itemStack -> itemStack.is(wood.getItemOfThis("stripped_wood")),
-                accent
+                item
         ));
     }
 }

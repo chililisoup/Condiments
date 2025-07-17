@@ -24,19 +24,22 @@ public class ModBlockSetVariants {
     public static final WoodVariant WOOD_WALLS = new WoodVariant(
             "wall",
             "fence",
-            properties -> new WallBlock(properties.forceSolidOn())
+            properties -> new WallBlock(properties.forceSolidOn()),
+            "log"
     ).setRequiresSolid("stripped_log");
 
     public static final WoodVariant WOOD_ACCENTS = new WoodVariant(
             "accent",
             "fence",
-            AccentBlock::new
+            AccentBlock::new,
+            "stripped_log"
     );
 
     public static final WoodVariant POLISHED_WOOD = new WoodVariant(
             "polished_wood",
             "stripped_wood",
-            RotatedPillarBlock::new
+            RotatedPillarBlock::new,
+            "stripped_log"
     ).setIdGetter(wood -> {
         Block block = wood.getBlockOfThis("stripped_wood");
         return block == null ? wood.getVariantId("polished_%s_wood") :
@@ -48,7 +51,7 @@ public class ModBlockSetVariants {
             "polished_log",
             "stripped_log",
             RotatedPillarBlock::new,
-            new String[]{"stripped_wood"}
+            "stripped_wood"
     ).setIdGetter(wood -> {
         Block block = wood.getBlockOfThis("stripped_log");
         return block == null ? wood.getVariantId("polished_%s_log") :
@@ -120,7 +123,7 @@ public class ModBlockSetVariants {
         public IdGetter idGetter;
         @Nullable public String requiresSolid;
 
-        WoodVariant(String name, String parent, Function<BlockBehaviour.Properties, ? extends Block> blockFactory, String[] typeRequirements) {
+        WoodVariant(String name, String parent, Function<BlockBehaviour.Properties, ? extends Block> blockFactory, String... typeRequirements) {
             this.name = name;
             this.parent = parent;
             this.blockFactory = blockFactory;
