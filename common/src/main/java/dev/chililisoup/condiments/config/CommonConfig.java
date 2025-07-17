@@ -13,6 +13,7 @@ public class CommonConfig {
     public static final Supplier<Boolean> CRATES_CONTAIN_EMPTY_CRATES;
 
     public static final Supplier<Boolean> TINTED_GLASS_TERMINATES_BEACONS;
+    public static final Supplier<Double> ANALOG_RAIL_MAX_SPEED;
 
     public static final ModConfigHolder CONFIG_SPEC;
 
@@ -34,6 +35,8 @@ public class CommonConfig {
         builder.push("misc");
         TINTED_GLASS_TERMINATES_BEACONS = builder.comment("If beacon beams stop at tinted glass (and exist up to that point)")
                 .define("tinted_glass_terminates_beacons", true);
+        ANALOG_RAIL_MAX_SPEED = builder.comment("Analog rail max speed (blocks per tick, before natural slowdown)")
+                .define("analog_rail_max_speed", 0.6, 0.1, 16.0);
         builder.pop();
 
         CONFIG_SPEC = builder.build();

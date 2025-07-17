@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.architectury.injectables.annotations.PlatformOnly;
+import dev.chililisoup.condiments.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
@@ -152,7 +153,7 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
 
     @Override
     public double getMaxSpeed(AbstractMinecart cart) {
-        return (cart.isInWater() ? 0.3 : 0.6);
+        return (cart.isInWater() ? 0.5 : 1.0) * CommonConfig.ANALOG_RAIL_MAX_SPEED.get();
     }
 
     @Override
