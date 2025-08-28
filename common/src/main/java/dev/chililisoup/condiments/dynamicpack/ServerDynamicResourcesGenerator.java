@@ -38,11 +38,6 @@ public class ServerDynamicResourcesGenerator extends DynServerResourcesGenerator
     }
 
     @Override
-    public boolean dependsOnLoadedPacks() {
-        return true;
-    }
-
-    @Override
     public Collection<String> additionalNamespaces() {
         return PlatHelper.getInstalledMods();
     }

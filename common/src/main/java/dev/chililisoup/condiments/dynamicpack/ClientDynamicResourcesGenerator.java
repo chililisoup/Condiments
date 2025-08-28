@@ -42,11 +42,6 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
     }
 
     @Override
-    public boolean dependsOnLoadedPacks() {
-        return true;
-    }
-
-    @Override
     public void regenerateDynamicAssets(Consumer<ResourceGenTask> executor) {
         executor.accept(this::buildAssets);
     }
@@ -144,7 +139,7 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
 
                 ResourceLocation textureLoc = Condiments.loc("block/" + wood.getTexturePath() + "_accent");
                 if (!sink.alreadyHasTextureAtLocation(manager, textureLoc)) {
-                    sink.addAndCloseTexture(
+                    sink.addTexture(
                             textureLoc,
                             TextureImage.of(buildAccentTexture(top.getImage(), side.getImage()))
                     );
@@ -234,15 +229,19 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
 
                     ResourceLocation textureLoc = Condiments.loc("block/" + logId);
                     if (!sink.alreadyHasTextureAtLocation(manager, textureLoc)) {
-                        sink.addAndCloseTexture(
-                                textureLoc.withSuffix("_top"),
-                                topRespriter.recolor(palette)
-                        );
+                        try (TextureImage newImage = topRespriter.recolor(palette)) {
+                            sink.addTexture(
+                                    textureLoc.withSuffix("_top"),
+                                    newImage
+                            );
+                        }
 
-                        sink.addAndCloseTexture(
-                                textureLoc,
-                                sideRespriter.recolor(palette)
-                        );
+                        try (TextureImage newImage = sideRespriter.recolor(palette)) {
+                            sink.addTexture(
+                                    textureLoc,
+                                    newImage
+                            );
+                        }
                     }
 
                     langBuilder.addEntry(
