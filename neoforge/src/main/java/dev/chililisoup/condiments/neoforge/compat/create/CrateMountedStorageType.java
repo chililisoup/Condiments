@@ -3,7 +3,7 @@ package dev.chililisoup.condiments.neoforge.compat.create;
 import com.mojang.serialization.MapCodec;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,7 +28,7 @@ public class CrateMountedStorageType<T extends CrateMountedStorage> extends Moun
 
     protected CrateContents getContents(BlockEntity blockEntity) {
         return blockEntity instanceof CrateBlockEntity crateBlockEntity ?
-                CrateContents.of(crateBlockEntity) :
+                crateBlockEntity.getContents() :
                 null;
     }
 

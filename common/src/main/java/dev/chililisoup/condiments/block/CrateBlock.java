@@ -130,7 +130,7 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
         if (level.isClientSide) return;
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity)) return;
+        if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity)) return;
 
         BlockHitResult hitResult = getHitResult(level, pos, player);
         if (hitResult.getDirection() != state.getValue(ORIENTATION).front()) return;
@@ -140,7 +140,9 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
         if (hitPos.isEmpty()) return;
         if (isNotInBounds(hitPos.get())) return;
 
-        ItemStack itemStack = ((CrateBlockEntity) blockEntity).request(player.isShiftKeyDown());
+        ItemStack itemStack = player.isShiftKeyDown() ?
+                crateBlockEntity.requestOneStack() :
+                crateBlockEntity.requestOne();
         player.addItem(itemStack);
 
         if (itemStack.getCount() > 0) {
@@ -174,7 +176,7 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
         if (direction != state.getValue(ORIENTATION).front()) return false;
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity)) return false;
+        if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity)) return false;
 
         Optional<Vec2> hitPos = getHitPosition(getHitResult(level, pos, player), state.getValue(ORIENTATION).front());
 
@@ -183,7 +185,9 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
 
         if (level.isClientSide) return true;
 
-        ItemStack itemStack = ((CrateBlockEntity) blockEntity).request(player.isShiftKeyDown());
+        ItemStack itemStack = player.isShiftKeyDown() ?
+                crateBlockEntity.requestOneStack() :
+                crateBlockEntity.requestOne();
         player.addItem(itemStack);
 
         if (itemStack.getCount() > 0) {

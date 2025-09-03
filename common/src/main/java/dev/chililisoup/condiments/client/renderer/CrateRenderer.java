@@ -52,7 +52,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         Entity player = Minecraft.getInstance().getCameraEntity();
         if (player == null) return;
 
-        ItemStack item = blockEntity.findFirst();
+        ItemStack item = blockEntity.getItemType();
         if (item.isEmpty()) return;
 
         FrontAndTop fat = blockEntity.getBlockState().getValue(BlockStateProperties.ORIENTATION);

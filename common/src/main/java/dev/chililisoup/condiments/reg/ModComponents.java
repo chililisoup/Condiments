@@ -1,7 +1,7 @@
 package dev.chililisoup.condiments.reg;
 
 import dev.chililisoup.condiments.Condiments;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.component.DataComponentType;
 

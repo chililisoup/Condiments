@@ -1,7 +1,7 @@
 package dev.chililisoup.condiments.item.crafting;
 
 import dev.chililisoup.condiments.item.CrateItem;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.reg.ModComponents;
 import dev.chililisoup.condiments.reg.ModRecipeSerializers;
 import net.minecraft.core.HolderLookup;
@@ -52,7 +52,7 @@ public class CrateUnlocking extends CustomRecipe {
         }
 
         CrateContents crateContents = itemStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
-        CrateContents.Mutable mutable = new CrateContents.Mutable(crateContents);
+        CrateContents.Mutable mutable = crateContents.toMutable();
         mutable.setLocked(false);
         itemStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
 

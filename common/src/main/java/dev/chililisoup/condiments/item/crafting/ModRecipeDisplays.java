@@ -2,7 +2,7 @@ package dev.chililisoup.condiments.item.crafting;
 
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.CrateBlock;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.reg.ModBlocks;
 import dev.chililisoup.condiments.reg.ModComponents;
 import dev.chililisoup.condiments.reg.ModItemTags;

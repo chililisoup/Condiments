@@ -1,7 +1,7 @@
 package dev.chililisoup.condiments.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.reg.ModComponents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

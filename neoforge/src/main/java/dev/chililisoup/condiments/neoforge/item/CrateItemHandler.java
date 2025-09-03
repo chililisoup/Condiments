@@ -34,19 +34,12 @@ public class CrateItemHandler extends ItemStackHandler {
 
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-        ItemStack existing = this.crateBlockEntity.getItem(slot).copy();
-        return this.crateBlockEntity.tryAddStack(existing, simulate);
+        return this.crateBlockEntity.insertIntoSlot(slot, stack, simulate);
     }
 
     @Override
     public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (this.crateBlockEntity.isEmpty()) return ItemStack.EMPTY;
-        if (simulate) {
-            ItemStack base = this.crateBlockEntity.findFirst().copyWithCount(1);
-            return base.copyWithCount(Math.min(Math.min(amount, this.crateBlockEntity.getCount()), base.getMaxStackSize()));
-        }
-
-        return this.crateBlockEntity.request(amount);
+        return this.crateBlockEntity.extractFromSlot(slot, amount, simulate);
     }
 
     @Override

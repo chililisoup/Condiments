@@ -6,7 +6,7 @@ import com.simibubi.create.api.contraption.storage.item.MountedItemStorage;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import com.simibubi.create.content.contraptions.Contraption;
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -22,12 +22,12 @@ import java.util.function.Function;
 public class CrateMountedStorage extends MountedItemStorage implements SyncedMountedStorage {
     public static final MapCodec<CrateMountedStorage> CODEC = codec(CrateMountedStorage::new);
 
-    private final CrateContents.Mutable contents;
+    private final CrateContents.SlottedMutable contents;
     private boolean dirty;
 
     public CrateMountedStorage(MountedItemStorageType<?> type, CrateContents contents) {
         super(type);
-        this.contents = new CrateContents.Mutable(contents);
+        this.contents = contents.toSlottedMutable();
     }
 
     public CrateMountedStorage(CrateContents contents) {
@@ -54,8 +54,8 @@ public class CrateMountedStorage extends MountedItemStorage implements SyncedMou
 
     @Override
     public void afterSync(Contraption contraption, BlockPos localPos) {
-        if (contraption.presentBlockEntities.get(localPos) instanceof CrateBlockEntity blockEntity)
-            blockEntity.loadCrateContents(this.getContents());
+        if (contraption.presentBlockEntities.get(localPos) instanceof CrateBlockEntity crateBlockEntity)
+            crateBlockEntity.loadCrateContents(this.getContents());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CrateMountedStorage extends MountedItemStorage implements SyncedMou
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         this.markDirty();
-        this.contents.setStackInHypotheticalSlot(slot, stack);
+        this.contents.setStackInSlot(slot, stack);
     }
 
     @Override
@@ -77,23 +77,23 @@ public class CrateMountedStorage extends MountedItemStorage implements SyncedMou
 
     @Override
     public @NotNull ItemStack getStackInSlot(int slot) {
-        return this.contents.getHypotheticalSlot(slot);
+        return this.contents.getSlot(slot);
     }
 
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         this.markDirty();
-        return this.contents.insertIntoHypotheticalSlot(slot, stack, simulate);
+        return this.contents.insertIntoSlot(slot, stack, simulate);
     }
 
     @Override
     public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
         this.markDirty();
-        return this.contents.extractFromHypotheticalSlot(slot, amount, simulate);
+        return this.contents.extractFromSlot(slot, amount, simulate);
     }
 
     @Override
-    public int getSlotLimit(int i) {
+    public int getSlotLimit(int slot) {
         return this.contents.getMaxStackSize();
     }
 

@@ -1,7 +1,7 @@
 package dev.chililisoup.condiments.item;
 
 import dev.chililisoup.condiments.config.CommonConfig;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.ChatFormatting;
@@ -102,12 +102,12 @@ public class CrateItem extends BlockItem {
         if (action != ClickAction.SECONDARY) return false;
 
         CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
-        CrateContents.Mutable mutable = new CrateContents.Mutable(crateContents);
+        CrateContents.Mutable mutable = crateContents.toMutable();
 
         ItemStack insertedStack = slot.getItem();
         if (insertedStack.isEmpty()) {
             this.playRemoveOneSound(player);
-            mutable.removeOneStack().ifPresent(slot::safeInsert);
+            slot.safeInsert(mutable.requestOneStack());
         } else {
             int amt = mutable.getToAdd(insertedStack);
             if (amt > 0) {
@@ -117,7 +117,7 @@ public class CrateItem extends BlockItem {
         }
 
         crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
+        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.getCount() > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
 
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
@@ -132,13 +132,14 @@ public class CrateItem extends BlockItem {
         if (action != ClickAction.SECONDARY || !slot.allowModification(player)) return false;
 
         CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
-        CrateContents.Mutable mutable = new CrateContents.Mutable(crateContents);
+        CrateContents.Mutable mutable = crateContents.toMutable();
 
         if (insertedStack.isEmpty()) {
-            mutable.removeOneStack().ifPresent(itemStack -> {
+            ItemStack itemStack = mutable.requestOneStack();
+            if (!itemStack.isEmpty()) {
                 this.playRemoveOneSound(player);
                 access.set(itemStack);
-            });
+            }
         } else {
             int amt = mutable.getToAdd(insertedStack);
             if (amt > 0) {
@@ -148,7 +149,7 @@ public class CrateItem extends BlockItem {
         }
 
         crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
+        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.getCount() > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
 
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
@@ -223,11 +224,11 @@ public class CrateItem extends BlockItem {
             InteractionResult result = this.placeContents(context, blockItem, contentsStack);
 
             if (!player.getAbilities().instabuild && result.indicateItemUse()) {
-                CrateContents.Mutable mutable = new CrateContents.Mutable(crateContents);
-                mutable.removeOne();
+                CrateContents.Mutable mutable = crateContents.toMutable();
+                mutable.requestOne();
 
                 crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-                crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
+                crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.getCount() > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
             }
 
             return result;

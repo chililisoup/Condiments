@@ -3,7 +3,7 @@ package dev.chililisoup.condiments.reg;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.*;
 import dev.chililisoup.condiments.item.CrateItem;
-import dev.chililisoup.condiments.item.component.CrateContents;
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
