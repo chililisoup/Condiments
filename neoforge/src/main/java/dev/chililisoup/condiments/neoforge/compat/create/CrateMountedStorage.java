@@ -1,6 +1,7 @@
 package dev.chililisoup.condiments.neoforge.compat.create;
 
 import com.mojang.serialization.MapCodec;
+import com.simibubi.create.api.contraption.storage.SyncedMountedStorage;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorage;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import com.simibubi.create.content.contraptions.Contraption;
@@ -18,10 +19,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class CrateMountedStorage extends MountedItemStorage {
+public class CrateMountedStorage extends MountedItemStorage implements SyncedMountedStorage {
     public static final MapCodec<CrateMountedStorage> CODEC = codec(CrateMountedStorage::new);
 
     private final CrateContents.Mutable contents;
+    private boolean dirty;
 
     public CrateMountedStorage(MountedItemStorageType<?> type, CrateContents contents) {
         super(type);
@@ -37,6 +39,26 @@ public class CrateMountedStorage extends MountedItemStorage {
     }
 
     @Override
+    public boolean isDirty() {
+        return this.dirty;
+    }
+
+    public void markDirty() {
+        this.dirty = true;
+    }
+
+    @Override
+    public void markClean() {
+        this.dirty = false;
+    }
+
+    @Override
+    public void afterSync(Contraption contraption, BlockPos localPos) {
+        if (contraption.presentBlockEntities.get(localPos) instanceof CrateBlockEntity blockEntity)
+            blockEntity.loadCrateContents(this.getContents());
+    }
+
+    @Override
     public void unmount(Level level, BlockState state, BlockPos pos, @Nullable BlockEntity blockEntity) {
         if (blockEntity instanceof CrateBlockEntity crateBlockEntity)
             crateBlockEntity.loadCrateContents(this.getContents());
@@ -44,6 +66,7 @@ public class CrateMountedStorage extends MountedItemStorage {
 
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+        this.markDirty();
         this.contents.setStackInHypotheticalSlot(slot, stack);
     }
 
@@ -59,11 +82,13 @@ public class CrateMountedStorage extends MountedItemStorage {
 
     @Override
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        this.markDirty();
         return this.contents.insertIntoHypotheticalSlot(slot, stack, simulate);
     }
 
     @Override
     public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        this.markDirty();
         return this.contents.extractFromHypotheticalSlot(slot, amount, simulate);
     }
 
