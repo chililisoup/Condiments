@@ -4,15 +4,13 @@ import com.mojang.blaze3d.platform.NativeImage;
 import dev.chililisoup.condiments.Condiments;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.mehvahdjukaar.moonlight.api.events.AfterLanguageLoadEvent;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
 import net.mehvahdjukaar.moonlight.api.resources.RPUtils;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
 import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
 import net.mehvahdjukaar.moonlight.api.resources.assets.LangBuilder;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynClientResourcesGenerator;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicTexturePack;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
+import net.mehvahdjukaar.moonlight.api.resources.pack.*;
 import net.mehvahdjukaar.moonlight.api.resources.textures.Palette;
 import net.mehvahdjukaar.moonlight.api.resources.textures.PaletteColor;
 import net.mehvahdjukaar.moonlight.api.resources.textures.Respriter;
@@ -20,25 +18,34 @@ import net.mehvahdjukaar.moonlight.api.resources.textures.TextureImage;
 import net.mehvahdjukaar.moonlight.api.util.Utils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static dev.chililisoup.condiments.reg.ModBlockSetVariants.*;
 
 @Environment(EnvType.CLIENT)
-public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator {
-    public static final ClientDynamicResourcesGenerator INSTANCE = new ClientDynamicResourcesGenerator();
+public class ClientDynamicResourcesGenerator extends DynamicClientResourceProvider {
+    private static ClientDynamicResourcesGenerator INSTANCE;
+
+    public static ClientDynamicResourcesGenerator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ClientDynamicResourcesGenerator();
+        }
+        return INSTANCE;
+    }
 
     public ClientDynamicResourcesGenerator() {
-        super(new DynamicTexturePack(Condiments.loc("generated_pack")));
+        super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED);
     }
 
     @Override
-    public Logger getLogger() {
-        return Condiments.LOGGER;
+    protected Collection<String> gatherSupportedNamespaces() {
+        return List.of("minecraft");
     }
 
     @Override
@@ -47,16 +54,12 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
     }
 
     private void buildAssets(ResourceManager manager, ResourceSink sink) {
-        LangBuilder langBuilder = new LangBuilder();
-
-        addWoodWallAssets(manager, sink, langBuilder);
-        addWoodAccentAssets(manager, sink, langBuilder);
-        addPolishedWoodAssets(manager, sink, langBuilder);
-
-        sink.addLang(Condiments.loc("en_us"), langBuilder);
+        addWoodWallAssets(manager, sink);
+        addWoodAccentAssets(manager, sink);
+        addPolishedWoodAssets(manager, sink);
     }
 
-    private void addWoodWallAssets(ResourceManager manager, ResourceSink sink, LangBuilder langBuilder) {
+    private void addWoodWallAssets(ResourceManager manager, ResourceSink sink) {
         StaticResource itemModel = StaticResource.getOrLog(manager, ResType.ITEM_MODELS.getPath(Condiments.loc("oak_wall")));
 
         StaticResource blockState = StaticResource.getOrLog(manager, ResType.BLOCKSTATES.getPath(Condiments.loc("oak_wall")));
@@ -93,18 +96,13 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
                 sink.addSimilarJsonResource(manager, sideTallZ, textTransform);
                 sink.addSimilarJsonResource(manager, sideX, textTransform);
                 sink.addSimilarJsonResource(manager, sideZ, textTransform);
-
-                langBuilder.addEntry(
-                        wall.getBlock(),
-                        wood.getReadableName() + " Wall"
-                );
             } catch (Exception e) {
-                getLogger().error("Failed to create log model for {}", wall, e);
+                Condiments.LOGGER.error("Failed to create log model for {}", wall, e);
             }
         });
     }
 
-    private void addWoodAccentAssets(ResourceManager manager, ResourceSink sink, LangBuilder langBuilder) {
+    private void addWoodAccentAssets(ResourceManager manager, ResourceSink sink) {
         StaticResource itemModel = StaticResource.getOrLog(manager, ResType.ITEM_MODELS.getPath(Condiments.loc("oak_accent")));
 
         StaticResource blockState = StaticResource.getOrLog(manager, ResType.BLOCKSTATES.getPath(Condiments.loc("oak_accent")));
@@ -144,18 +142,13 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
                             TextureImage.of(buildAccentTexture(top.getImage(), side.getImage()))
                     );
                 }
-
-                langBuilder.addEntry(
-                        accent.getBlock(),
-                        wood.getReadableName() + " Accent"
-                );
             } catch (Exception e) {
-                getLogger().error("Failed to generate wood accent assets for {} : {}", accent, e);
+                Condiments.LOGGER.error("Failed to generate wood accent assets for {} : {}", accent, e);
             }
         });
     }
 
-    private void addPolishedWoodAssets(ResourceManager manager, ResourceSink sink, LangBuilder langBuilder) {
+    private void addPolishedWoodAssets(ResourceManager manager, ResourceSink sink) {
         StaticResource logModel = StaticResource.getOrLog(manager, ResType.ITEM_MODELS.getPath(Condiments.loc("polished_oak_log")));
         StaticResource woodModel = StaticResource.getOrLog(manager, ResType.ITEM_MODELS.getPath(Condiments.loc("polished_oak_wood")));
 
@@ -243,26 +236,12 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
                             );
                         }
                     }
-
-                    langBuilder.addEntry(
-                            logItem.getBlock(),
-                            LangBuilder.getReadableName(
-                                    Utils.getID(wood.getBlockOfThis("stripped_log")).getPath().replace("stripped", "polished")
-                            )
-                    );
-
-                    langBuilder.addEntry(
-                            woodItem.getBlock(),
-                            LangBuilder.getReadableName(
-                                    Utils.getID(wood.getBlockOfThis("stripped_wood")).getPath().replace("stripped", "polished")
-                            )
-                    );
                 } catch (Exception e) {
-                    getLogger().error("Failed to generate polished wood assets for {} : {}", logItem, e);
+                    Condiments.LOGGER.error("Failed to generate polished wood assets for {} : {}", logItem, e);
                 }
             });
         } catch (Exception e) {
-            getLogger().error("Failed to get base polished wood textures", e);
+            Condiments.LOGGER.error("Failed to get base polished wood textures", e);
         }
     }
 
@@ -288,5 +267,58 @@ public class ClientDynamicResourcesGenerator extends DynClientResourcesGenerator
             int scale, NativeImage from, NativeImage to, int xFrom, int yFrom, int xTo, int yTo, int width, int height, boolean mirrorX, boolean mirrorY
     ) {
         from.copyRect(to, xFrom, yFrom * scale, xTo * scale, yTo * scale, width * scale, height * scale, mirrorX, mirrorY);
+    }
+
+    @Override
+    protected void addDynamicTranslations(AfterLanguageLoadEvent event) {
+        LangBuilder langBuilder = new LangBuilder();
+
+        addWoodWallLang(langBuilder, event::getEntry);
+        addWoodAccentLang(langBuilder, event::getEntry);
+        addPolishedWoodLang(langBuilder, event::getEntry);
+
+        event.addEntries(langBuilder);
+    }
+
+    private void addWoodWallLang(LangBuilder langBuilder, Function<String, String> entryProvider) {
+        String template = entryProvider.apply("condiments.translation_template.wood_wall");
+
+        WOOD_WALLS.items.forEach((wood, wall) ->
+            langBuilder.addEntry(
+                    wall.getBlock(),
+                    String.format(template, entryProvider.apply(wood.getTranslationKey()))
+            )
+        );
+    }
+
+    private void addWoodAccentLang(LangBuilder langBuilder, Function<String, String> entryProvider) {
+        String template = entryProvider.apply("condiments.translation_template.wood_accent");
+
+        WOOD_ACCENTS.items.forEach((wood, accent) ->
+            langBuilder.addEntry(
+                    accent.getBlock(),
+                    String.format(template, entryProvider.apply(wood.getTranslationKey()))
+            )
+        );
+    }
+
+    private void addPolishedWoodLang(LangBuilder langBuilder, Function<String, String> entryProvider) {
+        String template = entryProvider.apply("condiments.translation_template.polished_wood");
+
+        POLISHED_LOGS.items.forEach((wood, logItem) -> {
+            WoodBasedBlockItem woodItem = POLISHED_WOOD.items.get(wood);
+
+            langBuilder.addEntry(
+                    logItem.getBlock(),
+                    String.format(template, entryProvider.apply(Utils.getID(wood.log).toLanguageKey("block")))
+            );
+
+            Optional.ofNullable(wood.getBlockOfThis("wood")).ifPresent(block ->
+                langBuilder.addEntry(
+                        woodItem.getBlock(),
+                        String.format(template, entryProvider.apply(Utils.getID(block).toLanguageKey("block")))
+                )
+            );
+        });
     }
 }

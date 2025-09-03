@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -31,15 +30,14 @@ public class ModBlockSetVariants {
     public static final WoodVariant WOOD_ACCENTS = new WoodVariant(
             "accent",
             "fence",
-            AccentBlock::new,
-            "stripped_log"
-    );
+            AccentBlock::new
+    ).setRequiresSolid("stripped_log");
 
     public static final WoodVariant POLISHED_WOOD = new WoodVariant(
             "polished_wood",
             "stripped_wood",
             RotatedPillarBlock::new,
-            "stripped_log"
+            "stripped_log", "wood"
     ).setIdGetter(wood -> {
         Block block = wood.getBlockOfThis("stripped_wood");
         return block == null ? wood.getVariantId("polished_%s_wood") :
@@ -77,17 +75,19 @@ public class ModBlockSetVariants {
                 Block parent = wood.getBlockOfThis(woodVariant.parent);
                 if (parent == null) continue;
 
-                if (woodVariant.requiresSolid != null) {
-                    Block solid = wood.getBlockOfThis(woodVariant.requiresSolid);
-                    if (solid == null) continue;
+                if (woodVariant.requiresSolid.stream().anyMatch(variant -> {
+                    Block solid = wood.getBlockOfThis(variant);
+                    if (solid == null) return true;
 
                     try {
                         if (!Block.isShapeFullBlock(solid.defaultBlockState().getShape(null, null)))
-                            continue;
+                            return true;
                     } catch (Exception e) {
-                        continue;
+                        return true;
                     }
-                }
+
+                    return false;
+                })) continue;
 
                 Block block = woodVariant.blockFactory.apply(BlockBehaviour.Properties.ofFullCopy(parent));
                 String name = woodVariant.idGetter.get(wood);
@@ -121,7 +121,7 @@ public class ModBlockSetVariants {
         public final Function<BlockBehaviour.Properties, ? extends Block> blockFactory;
         public final String[] typeRequirements;
         public IdGetter idGetter;
-        @Nullable public String requiresSolid;
+        public final Set<String> requiresSolid = new HashSet<>();
 
         WoodVariant(String name, String parent, Function<BlockBehaviour.Properties, ? extends Block> blockFactory, String... typeRequirements) {
             this.name = name;
@@ -143,8 +143,8 @@ public class ModBlockSetVariants {
             return this;
         }
 
-        public WoodVariant setRequiresSolid(@Nullable String variant) {
-            this.requiresSolid = variant;
+        public WoodVariant setRequiresSolid(String... variants) {
+            this.requiresSolid.addAll(List.of(variants));
             return this;
         }
 

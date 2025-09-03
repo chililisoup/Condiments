@@ -7,16 +7,12 @@ import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
 import net.mehvahdjukaar.moonlight.api.resources.SimpleTagBuilder;
 import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynServerResourcesGenerator;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicDataPack;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
+import net.mehvahdjukaar.moonlight.api.resources.pack.*;
 import net.mehvahdjukaar.moonlight.api.util.Utils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BlockItem;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -25,20 +21,22 @@ import java.util.stream.Collectors;
 
 import static dev.chililisoup.condiments.reg.ModBlockSetVariants.*;
 
-public class ServerDynamicResourcesGenerator extends DynServerResourcesGenerator {
-    public static final ServerDynamicResourcesGenerator INSTANCE = new ServerDynamicResourcesGenerator();
+public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvider {
+    private static ServerDynamicResourcesGenerator INSTANCE;
+
+    public static ServerDynamicResourcesGenerator getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ServerDynamicResourcesGenerator();
+        }
+        return INSTANCE;
+    }
 
     public ServerDynamicResourcesGenerator() {
-        super(new DynamicDataPack(Condiments.loc("generated_pack")));
+        super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED);
     }
 
     @Override
-    public Logger getLogger() {
-        return Condiments.LOGGER;
-    }
-
-    @Override
-    public Collection<String> additionalNamespaces() {
+    protected Collection<String> gatherSupportedNamespaces() {
         return PlatHelper.getInstalledMods();
     }
 

@@ -7,6 +7,7 @@ import dev.chililisoup.condiments.reg.ModBlockSetVariants;
 import dev.chililisoup.condiments.dynamicpack.ServerDynamicResourcesGenerator;
 import dev.chililisoup.condiments.reg.*;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,12 +32,12 @@ public class Condiments {
 		ModRecipeSerializers.init();
 		ModDispenserBehaviors.init();
 
-		ServerDynamicResourcesGenerator.INSTANCE.register();
+        RegHelper.registerDynamicResourceProvider(ServerDynamicResourcesGenerator.getInstance());
 
 		if (PlatHelper.getPhysicalSide().isClient()) {
 			ClientConfig.init();
 			ClientRegistry.init();
-			ClientDynamicResourcesGenerator.INSTANCE.register();
+            RegHelper.registerDynamicResourceProvider(ClientDynamicResourcesGenerator.getInstance());
 		}
 
 		PlatHelper.addCommonSetup(Condiments::setup);
