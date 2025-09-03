@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.item.component;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
 import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.core.Holder;
@@ -11,6 +12,7 @@ import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -31,6 +33,18 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         this(Optional.empty(), 0);
     }
 
+    public static CrateContents of(CrateBlockEntity blockEntity) {
+        Optional<ItemRecord> itemRecord = blockEntity.shouldSaveItemType() ?
+                Optional.of(ItemRecord.of(blockEntity.getItemType())) :
+                Optional.empty();
+
+        Optional<Boolean> locked = blockEntity.isLocked() ?
+                Optional.of(true) :
+                Optional.empty();
+
+        return new CrateContents(itemRecord, blockEntity.getCount(), locked);
+    }
+
     public Optional<ItemStack> item() {
         return this.itemRecord.flatMap(itemRecord -> Optional.of(itemRecord.asItemStack()));
     }
@@ -39,8 +53,12 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         return this.locked.orElse(false);
     }
 
+    public static int maxStacks() {
+        return CommonConfig.CRATE_MAX_CONTAINED_STACKS.get();
+    }
+
     public int capacity() {
-        int stackCount = CommonConfig.CRATE_MAX_CONTAINED_STACKS.get();
+        int stackCount = maxStacks();
 
         return this.item().map(
                 stack -> stack.getMaxStackSize() * stackCount
@@ -114,6 +132,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         }
     }
 
+    // I think the optionals scattered around are from circumventing a bug in some other mod IIRC
     public static class Mutable {
         public Optional<ItemStack> item;
         public int count;
@@ -134,8 +153,16 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
             if (!locked && this.count <= 0) this.item = Optional.empty();
         }
 
+        private void updateItem() {
+            if (this.count <= 0 && !this.isLocked()) this.item = Optional.empty();
+        }
+
+        public int getMaxStackSize() {
+            return this.item.orElse(ItemStack.EMPTY).getMaxStackSize();
+        }
+
         private int getMaxAmountToAdd(ItemStack stack) {
-            int stackCount = CommonConfig.CRATE_MAX_CONTAINED_STACKS.get();
+            int stackCount = maxStacks();
 
             return this.item.map(
                     itemStack -> Math.max(itemStack.getMaxStackSize() * stackCount - this.count, 0)
@@ -173,7 +200,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
             this.count--;
 
             Optional<ItemStack> returnStack = Optional.of(this.item.get().copyWithCount(1));
-            if (this.count <= 0 && !this.isLocked()) this.item = Optional.empty();
+            this.updateItem();
             return returnStack;
         }
 
@@ -184,8 +211,69 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
             this.count -= amt;
 
             Optional<ItemStack> returnStack = Optional.of(this.item.get().copyWithCount(amt));
-            if (this.count <= 0 && !this.isLocked()) this.item = Optional.empty();
+            this.updateItem();
             return returnStack;
+        }
+
+        public ItemStack getHypotheticalSlot(int slot) {
+            if (this.count <= 0 || this.item.isEmpty()) return ItemStack.EMPTY;
+
+            int maxStackSize = this.getMaxStackSize();
+            int before = slot * maxStackSize;
+            int after = this.count - before;
+            int count = Mth.clamp(after, 0, maxStackSize);
+
+            return count > 0 ? this.item.get().copyWithCount(count) : ItemStack.EMPTY;
+        }
+
+        public void setStackInHypotheticalSlot(int slot, @NotNull ItemStack stack) {
+            ItemStack slotStack = this.getHypotheticalSlot(slot);
+
+            if (stack.isEmpty()) {
+                if (slotStack.isEmpty()) return;
+                this.count -= stack.getCount();
+                this.updateItem();
+                return;
+            }
+
+            if (slotStack.isEmpty()) this.count += stack.getCount();
+            else this.count += stack.getCount() - slotStack.getCount();
+            this.item = Optional.of(slotStack.copyWithCount(1));
+        }
+
+        public ItemStack insertIntoHypotheticalSlot(int slot, @NotNull ItemStack stack, boolean simulate) {
+            ItemStack refStack = stack.copy();
+            if (!this.canAdd(stack)) return refStack;
+
+            ItemStack item = this.item.orElseGet(() -> refStack.copyWithCount(1));
+            ItemStack slotStack = this.getHypotheticalSlot(slot);
+
+            int freeSpace = item.getMaxStackSize() - slotStack.getCount();
+            int toAdd = Math.min(refStack.getCount(), freeSpace);
+            if (toAdd <= 0) return refStack;
+
+            if (!simulate) {
+                this.item = Optional.of(item);
+                this.count += toAdd;
+            }
+
+            refStack.shrink(toAdd);
+            return refStack;
+        }
+
+        public @NotNull ItemStack extractFromHypotheticalSlot(int slot, int amount, boolean simulate) {
+            ItemStack slotStack = this.getHypotheticalSlot(slot);
+            if (slotStack.isEmpty()) return ItemStack.EMPTY;
+
+            int finalAmt = Math.min(slotStack.getCount(), amount);
+            slotStack.setCount(finalAmt);
+
+            if (!simulate) {
+                this.count -= finalAmt;
+                this.updateItem();
+            }
+
+            return slotStack;
         }
 
         public CrateContents toImmutable() {

@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -39,6 +40,11 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
     }
 
     @Override
+    public int getViewDistance() {
+        return 32;
+    }
+
+    @Override
     public void render(CrateBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
         Level level = blockEntity.getLevel();
         if (level == null) return;
@@ -49,19 +55,17 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         ItemStack item = blockEntity.findFirst();
         if (item.isEmpty()) return;
 
-        double distanceSqr = player.getEyePosition(1).distanceToSqr(blockEntity.getBlockPos().getCenter());
-        if (distanceSqr > 1024) return;
-
         FrontAndTop fat = blockEntity.getBlockState().getValue(BlockStateProperties.ORIENTATION);
         Vec3i norm = fat.front().getNormal();
         int light = LevelRenderer.getLightColor(level, blockEntity.getBlockPos().relative(fat.front(), 1));
 
-        if (distanceSqr < 25) renderText(level, player, item, blockEntity, poseStack, buffer, fat, norm, light);
+        renderText(item, blockEntity, poseStack, buffer, fat, norm, light);
         renderItem(level, item, poseStack, buffer, light, packedOverlay, fat, norm, this.itemRenderer);
     }
 
-    private void renderText(Level level, Entity player, ItemStack item, CrateBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, FrontAndTop fat, Vec3i norm, int light) {
-        BlockHitResult hitResult = CrateBlock.getHitResult(level, blockEntity.getBlockPos(), player);
+    private void renderText(ItemStack item, CrateBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, FrontAndTop fat, Vec3i norm, int light) {
+        if (!(Minecraft.getInstance().hitResult instanceof BlockHitResult hitResult)) return;
+        if (hitResult.getType() == HitResult.Type.MISS) return;
         if (!hitResult.getBlockPos().equals(blockEntity.getBlockPos())) return;
         if (hitResult.getDirection() != fat.front()) return;
 

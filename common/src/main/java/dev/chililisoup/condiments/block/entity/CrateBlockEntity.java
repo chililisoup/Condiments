@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.block.entity;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.item.component.CrateContents;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
@@ -45,16 +46,29 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return CommonConfig.CRATE_MAX_CONTAINED_STACKS.get();
     }
 
-    public CrateBlockEntity(BlockPos pos, BlockState blockState) {
+    protected CrateBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.CRATE_BE_TYPE.get(), pos, blockState);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         this.itemType = ItemStack.EMPTY;
+    }
+
+    @ExpectPlatform
+    public static CrateBlockEntity of(BlockPos pos, BlockState blockState) {
+        throw new AssertionError();
     }
 
     public int getCount() {
         int saveCount = 0;
         for (ItemStack item : this.items) saveCount += item.getCount();
         return saveCount;
+    }
+
+    public ItemStack getItemType() {
+        return this.itemType.copy();
+    }
+
+    public boolean isLocked() {
+        return this.locked;
     }
 
     private CompoundTag prepareUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
@@ -128,15 +142,26 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return this.findFirst().isEmpty();
     }
 
+    private void updateItemType() {
+        if (this.shouldSaveItemType()) return;
+        this.itemType = ItemStack.EMPTY;
+    }
+
     @Override
     public @NotNull ItemStack getItem(int slot) {
         return this.getItems().get(slot);
     }
 
     @Override
+    public int getMaxStackSize() {
+        return this.itemType.getMaxStackSize();
+    }
+
+    @Override
     public @NotNull ItemStack removeItem(int slot, int amount) {
         ItemStack itemStack = ContainerHelper.removeItem(this.getItems(), slot, amount);
         if (!itemStack.isEmpty()) this.setChanged();
+        this.updateItemType();
         updateClient();
         return itemStack;
     }
@@ -144,25 +169,27 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     @Override
     public @NotNull ItemStack removeItemNoUpdate(int slot) {
         ItemStack stack = ContainerHelper.takeItem(this.getItems(), slot);
+        this.updateItemType();
         updateClient();
         return stack;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        this.itemType = stack.copyWithCount(1);
+        if (!stack.isEmpty()) this.itemType = stack.copyWithCount(1);
 
         this.getItems().set(slot, stack);
         if (stack.getCount() > this.getMaxStackSize()) {
             stack.setCount(this.getMaxStackSize());
         }
         this.setChanged();
+        if (stack.isEmpty()) this.updateItemType();
         updateClient();
     }
 
     private void populateItems(int count) {
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        int max = itemType.getMaxStackSize();
+        int max = this.getMaxStackSize();
 
         for (int i = 0; i < this.items.size(); i++) {
             int rem = count - (i * max);
@@ -177,7 +204,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         ItemStack first = this.findFirst().copy();
         if (first.isEmpty()) return;
 
-        int max = first.getMaxStackSize();
+        int max = this.getMaxStackSize();
 
         int addCount = player.getInventory().clearOrCountMatchingItems(
                 item -> ItemStack.isSameItemSameComponents(first, item),
@@ -204,13 +231,9 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         updateClient();
     }
 
-    public ItemStack tryAddStack(ItemStack stack, Player player) {
-        if (stack.isEmpty()) {
-            addAllInventory(player);
-            return ItemStack.EMPTY;
-        }
-
+    public ItemStack tryAddStack(ItemStack stack, boolean simulate) {
         if (!canPlaceItem(0, stack)) return stack;
+        if (stack.isEmpty()) return ItemStack.EMPTY;
 
         int max = stack.getMaxStackSize();
         this.itemType = stack.copyWithCount(1);
@@ -221,7 +244,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
             int take = Math.min(stack.getCount(), max - item.getCount());
 
-            this.items.set(i, stack.copyWithCount(item.getCount() + take));
+            if (!simulate) this.items.set(i, stack.copyWithCount(item.getCount() + take));
             stack.setCount(stack.getCount() - take);
 
             if (stack.isEmpty()) {
@@ -236,12 +259,27 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return stack;
     }
 
-    public ItemStack request(boolean fullStack) {
+    public ItemStack tryAddStack(ItemStack stack) {
+        return this.tryAddStack(stack, false);
+    }
+
+    public ItemStack tryAddStack(ItemStack stack, Player player) {
+        if (stack.isEmpty()) {
+            addAllInventory(player);
+            return ItemStack.EMPTY;
+        }
+
+        return this.tryAddStack(stack);
+    }
+
+    public ItemStack request(int amount) {
         if (this.isEmpty()) return ItemStack.EMPTY;
         ItemStack base = this.findFirst().copyWithCount(1);
+        amount = amount < 0 ?
+                this.getMaxStackSize() :
+                Math.min(this.getMaxStackSize(), amount);
 
         int fulfilled = 0;
-        int amount = fullStack ? base.getMaxStackSize() : 1;
         for (ItemStack item : this.items) {
             if (item.isEmpty()) continue;
 
@@ -258,9 +296,14 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
         base.setCount(fulfilled);
         this.setChanged();
+        this.updateItemType();
         updateClient();
         playSound(this.getBlockState(), SoundEvents.ITEM_FRAME_REMOVE_ITEM);
         return base;
+    }
+
+    public ItemStack request(boolean fullStack) {
+        return this.request(fullStack ? -1 : 1);
     }
 
     protected @NotNull NonNullList<ItemStack> getItems() {
@@ -275,6 +318,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     @Override
     public void clearContent() {
         this.getItems().clear();
+        this.updateItemType();
         updateClient();
     }
 
@@ -323,9 +367,18 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         this.name = componentInput.get(DataComponents.CUSTOM_NAME);
 
         CrateContents crateContents = componentInput.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        this.loadCrateContents(crateContents);
+    }
+
+    public void loadCrateContents(CrateContents crateContents) {
         this.locked = crateContents.isLocked();
         this.itemType = crateContents.item().orElse(ItemStack.EMPTY);
         this.populateItems(crateContents.count());
+    }
+
+    public boolean shouldSaveItemType() {
+        if (this.isEmpty()) return this.locked && !this.itemType.isEmpty();
+        return true;
     }
 
     @Override
@@ -333,14 +386,9 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         super.collectImplicitComponents(components);
         components.set(DataComponents.CUSTOM_NAME, this.name);
 
-        boolean saveItemType = true;
-        if (this.isEmpty()) {
-            if (!this.locked || this.itemType.isEmpty()) saveItemType = false;
-        }
-
         int count = this.getCount();
         components.set(ModComponents.CRATE_CONTENTS.get(), new CrateContents(
-                saveItemType ? Optional.of(CrateContents.ItemRecord.of(this.itemType)) : Optional.empty(),
+                this.shouldSaveItemType() ? Optional.of(CrateContents.ItemRecord.of(this.itemType)) : Optional.empty(),
                 count,
                 this.locked ? Optional.of(true) : Optional.empty()
         ));

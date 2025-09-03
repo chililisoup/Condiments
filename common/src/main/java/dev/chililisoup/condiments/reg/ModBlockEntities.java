@@ -17,7 +17,7 @@ public class ModBlockEntities {
         CRATE_BE_TYPE = RegHelper.registerBlockEntityType(
                 Condiments.loc("crate"),
                 () -> PlatHelper.newBlockEntityType(
-                        CrateBlockEntity::new,
+                        CrateBlockEntity::of,
                         ModBlocks.getCrates()
                 )
         );

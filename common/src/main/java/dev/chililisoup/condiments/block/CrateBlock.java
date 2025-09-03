@@ -268,7 +268,7 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CrateBlockEntity(pos, state);
+        return CrateBlockEntity.of(pos, state);
     }
 
     @Override
