@@ -32,7 +32,7 @@ public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvid
     }
 
     public ServerDynamicResourcesGenerator() {
-        super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED);
+        super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED_ZIPPED);
     }
 
     @Override
