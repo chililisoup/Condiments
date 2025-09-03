@@ -1,8 +1,6 @@
 package dev.chililisoup.condiments;
 
-import dev.chililisoup.condiments.config.ClientConfig;
 import dev.chililisoup.condiments.config.CommonConfig;
-import dev.chililisoup.condiments.dynamicpack.ClientDynamicResourcesGenerator;
 import dev.chililisoup.condiments.reg.ModBlockSetVariants;
 import dev.chililisoup.condiments.dynamicpack.ServerDynamicResourcesGenerator;
 import dev.chililisoup.condiments.reg.*;
@@ -34,11 +32,7 @@ public class Condiments {
 
         RegHelper.registerDynamicResourceProvider(ServerDynamicResourcesGenerator.getInstance());
 
-		if (PlatHelper.getPhysicalSide().isClient()) {
-			ClientConfig.init();
-			ClientRegistry.init();
-            RegHelper.registerDynamicResourceProvider(ClientDynamicResourcesGenerator.getInstance());
-		}
+		if (PlatHelper.getPhysicalSide().isClient()) CondimentsClient.init();
 
 		PlatHelper.addCommonSetup(Condiments::setup);
 	}

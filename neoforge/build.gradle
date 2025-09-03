@@ -48,11 +48,10 @@ dependencies {
 
     modRuntimeOnly "maven.modrinth:moonlight:${rootProject.moonlight_version}-neoforge"
 
-    implementation("com.simibubi.create:create-${rootProject.minecraft_version}:${project.create_version}:slim") { transitive = false }
-    implementation("net.createmod.ponder:Ponder-NeoForge-${rootProject.minecraft_version}:${project.ponder_version}")
-    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${rootProject.minecraft_version}:${project.flywheel_version}")
-    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${rootProject.minecraft_version}:${project.flywheel_version}")
-    implementation("com.tterrag.registrate:Registrate:${project.registrate_version}")
+    modCompileOnly("com.simibubi.create:create-${rootProject.minecraft_version}:${project.create_version}:slim") { transitive = false }
+    modCompileOnly("net.createmod.ponder:Ponder-NeoForge-${rootProject.minecraft_version}:${project.ponder_version}")
+    modCompileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${rootProject.minecraft_version}:${project.flywheel_version}")
+    modCompileOnly("com.tterrag.registrate:Registrate:${project.registrate_version}")
 }
 
 processResources {
