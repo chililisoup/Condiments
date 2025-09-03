@@ -40,7 +40,7 @@ public class ClientDynamicResourcesGenerator extends DynamicClientResourceProvid
     }
 
     public ClientDynamicResourcesGenerator() {
-        super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED_ZIPPED);
+        super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED);
     }
 
     @Override
