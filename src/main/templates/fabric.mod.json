@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [ "${mod_author_list}" ],
+  "contact": {
+    "homepage": "${mod_homepage}",
+    "sources": "${mod_sources}",
+    "issues": "${mod_issues}"
+  },
+  "license": "${mod_license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.chililisoup.condiments.loaders.fabric.FabricEntrypoint"
+    ],
+    "modmenu": [
+      "dev.chililisoup.condiments.compat.ModMenuCompat"
+    ],
+    "jei_mod_plugin": [
+      "dev.chililisoup.condiments.compat.JeiCompat"
+    ],
+    "rei_client": [
+      "dev.chililisoup.condiments.compat.ReiCompat"
+    ],
+    "emi": [
+      "dev.chililisoup.condiments.compat.EmiCompat"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.17",
+    "minecraft": "=${minecraft}",
+    "moonlight": ">=${moonlight}",
+    "fabric-api": "*"
+  }
+}

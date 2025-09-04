@@ -1,43 +1,4 @@
-# gradle
-
-.gradle/
+run/
 build/
-out/
-classes/
-
-# idea
-
 .idea/
-*.iml
-*.ipr
-*.iws
-
-# vscode
-
-.settings/
-.vscode/
-bin/
-.classpath
-.project
-
-# common
-
-common/.gradle
-common/build
-
-# forge
-
-forge/.gradle
-forge/build
-forge/run
-
-# fabric
-
-fabric/.gradle
-fabric/build
-fabric/run
-
-# architectury
-
-.architectury-transformer/
-/neoforge/run/
+.gradle/

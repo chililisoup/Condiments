@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "dev.chililisoup.condiments.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AbstractMinecartMixin",
+    "BaseFireBlockMixin",
+    "BeaconBlockEntityMixin",
+    "BlockItemAccess",
+    "FenceGateBlockMixin",
+    "IronBarsBlockMixin",
+    "ShulkerBoxBlockEntityMixin",
+    "WallBlockMixin"
+  ],
+  "client": [
+    "client.BeaconRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
