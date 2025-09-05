@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +54,6 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
         //? if forgeLike
         /*this.handler = new CrateItemHandler(this);*/
-
     }
 
     public CrateContents getContents() {
@@ -263,11 +263,23 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
     void playSound(BlockState state, SoundEvent sound) {
         if (level == null) return;
-        Vec3i vec3i = state.getValue(BlockStateProperties.ORIENTATION).front().getNormal();
-        double d = (double)this.worldPosition.getX() + 0.5 + (double)vec3i.getX() / 2.0;
-        double e = (double)this.worldPosition.getY() + 0.5 + (double)vec3i.getY() / 2.0;
-        double f = (double)this.worldPosition.getZ() + 0.5 + (double)vec3i.getZ() / 2.0;
-        this.level.playSound(null, d, e, f, sound, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+        Vec3i front = state.getValue(BlockStateProperties.ORIENTATION).front().getNormal();
+        Vec3 pos = this.worldPosition.getCenter().add(
+            (double) front.getX() / 2.0,
+            (double) front.getY() / 2.0,
+            (double) front.getZ() / 2.0
+        );
+
+        this.level.playSound(
+                null,
+                pos.x,
+                pos.y,
+                pos.z,
+                sound,
+                SoundSource.BLOCKS,
+                0.5F,
+                this.level.random.nextFloat() * 0.1F + 0.9F
+        );
     }
 
     protected Component getDefaultName() {

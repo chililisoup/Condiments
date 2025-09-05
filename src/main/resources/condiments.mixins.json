@@ -14,7 +14,8 @@
     "WallBlockMixin"
   ],
   "client": [
-    "client.BeaconRendererMixin"
+    "client.BeaconRendererMixin",
+    "client.MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

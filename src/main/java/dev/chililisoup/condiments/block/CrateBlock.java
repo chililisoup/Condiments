@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 //? if forgeLike
 /*@javax.annotation.ParametersAreNonnullByDefault*/
@@ -156,15 +157,31 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
         }
     }
 
+    private boolean playerDidHit(Direction front, BlockHitResult hitResult) {
+        return getHitPosition(hitResult, front).filter(
+                hitPos -> !isNotInBounds(hitPos)
+        ).isPresent();
+    }
+
+    private @Nullable CrateBlockEntity playerHit(BlockState state, BlockPos pos, Player player, Direction face, Supplier<BlockHitResult> hitResultSupplier) {
+        Direction front = state.getValue(ORIENTATION).front();
+
+        if (face != front) return null;
+        if (!(player.level().getBlockEntity(pos) instanceof CrateBlockEntity crateBlockEntity)) return null;
+        return playerDidHit(front, hitResultSupplier.get()) ? crateBlockEntity : null;
+    }
+
+    private @Nullable CrateBlockEntity playerHit(BlockState state, Level level, BlockPos pos, Player player, Direction face) {
+        return this.playerHit(state, pos, player, face, () -> getHitResult(level, pos, player));
+    }
+
     private boolean shouldPreventDamage(BlockState state, Player player, BlockPos pos) {
-        BlockEntity blockEntity = player.level().getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity)) return false;
-
         BlockHitResult hitResult = getHitResult(player.level(), pos, player);
-        if (hitResult.getDirection() != state.getValue(ORIENTATION).front()) return false;
+        Direction front = state.getValue(ORIENTATION).front();
 
-        Optional<Vec2> hitPos = getHitPosition(hitResult, state.getValue(ORIENTATION).front());
-        return hitPos.filter(vec2 -> !isNotInBounds(vec2)).isPresent();
+        if (hitResult.getDirection() != front) return false;
+        if (!(player.level().getBlockEntity(pos) instanceof CrateBlockEntity)) return false;
+        return playerDidHit(front, hitResult);
     }
 
     @Override
@@ -173,17 +190,11 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     }
 
     @Override
-    public boolean shouldCancelDestroy(BlockState state, Level level, BlockPos pos, Player player, Direction direction) {
+    public boolean shouldCancelDestroy(BlockState state, Level level, BlockPos pos, Player player, Direction face) {
         if (!player.isCreative()) return false;
-        if (direction != state.getValue(ORIENTATION).front()) return false;
 
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity)) return false;
-
-        Optional<Vec2> hitPos = getHitPosition(getHitResult(level, pos, player), state.getValue(ORIENTATION).front());
-
-        if (hitPos.isEmpty()) return false;
-        if (isNotInBounds(hitPos.get())) return false;
+        CrateBlockEntity crateBlockEntity = this.playerHit(state, level, pos, player, face);
+        if (crateBlockEntity == null) return false;
 
         if (level.isClientSide) return true;
 
@@ -201,6 +212,11 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean shouldPreventAttackRetrigger(BlockState state, Level level, BlockPos pos, Player player, Direction face, BlockHitResult hitResult) {
+        return this.playerHit(state, pos, player, face, () -> hitResult) != null;
     }
 
     @Override
