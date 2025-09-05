@@ -27,6 +27,7 @@ val minecraft = property("deps.minecraft") as String
 val isFabric = modstitch.isLoom
 val isNeoforge = modstitch.isModDevGradleRegular
 val isForge = modstitch.isModDevGradleLegacy
+val isForgeLike = modstitch.isModDevGradle
 val loaderName = when {
     isFabric -> "Fabric"
     isNeoforge -> "NeoForge"
@@ -41,7 +42,7 @@ stonecutter {
         "neoforge",
         "forge",
     )
-    constants["forgeLike"] = modstitch.isModDevGradle
+    constants["forgeLike"] = isForgeLike
 
     swaps["client_only"] = when {
         isFabric -> "@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)"

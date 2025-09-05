@@ -4,6 +4,7 @@ import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.mixin.BlockItemAccess;
+import dev.chililisoup.condiments.mixin.UseOnContextAccess;
 import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -177,7 +178,7 @@ public class CrateItem extends BlockItem {
         if (blockPlaceContext == null)
             return InteractionResult.FAIL;
 
-        BlockState blockState = ((BlockItemAccess) blockItem).getPlacementStateAccessible(blockPlaceContext);
+        BlockState blockState = ((BlockItemAccess) blockItem).condiments$getPlacementState(blockPlaceContext);
         if (blockState == null || !this.placeBlock(blockPlaceContext, blockState))
             return InteractionResult.FAIL;
 
@@ -188,10 +189,10 @@ public class CrateItem extends BlockItem {
 
         // Make sure to not ignore stored block nbt
         if (clickedState.is(blockState.getBlock())) {
-            clickedState = ((BlockItemAccess) blockItem).updateBlockStateFromTagAccessible(blockPos, level, itemStack, clickedState);
+            clickedState = ((BlockItemAccess) blockItem).condiments$updateBlockStateFromTag(blockPos, level, itemStack, clickedState);
 
-            ((BlockItemAccess) blockItem).updateCustomBlockEntityTagAccessible(blockPos, level, player, itemStack, clickedState);
-            BlockItemAccess.updateBlockEntityComponentsAccessible(level, blockPos, itemStack);
+            ((BlockItemAccess) blockItem).condiments$updateCustomBlockEntityTag(blockPos, level, player, itemStack, clickedState);
+            BlockItemAccess.condiments$updateBlockEntityComponents(level, blockPos, itemStack);
             clickedState.getBlock().setPlacedBy(level, blockPos, clickedState, player, itemStack);
 
             if (player instanceof ServerPlayer serverPlayer)
@@ -199,7 +200,7 @@ public class CrateItem extends BlockItem {
         }
 
         SoundType soundType = clickedState.getSoundType();
-        level.playSound(player, blockPos, ((BlockItemAccess) blockItem).getPlaceSoundAccessible(clickedState), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
+        level.playSound(player, blockPos, ((BlockItemAccess) blockItem).condiments$getPlaceSound(clickedState), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
         level.gameEvent(GameEvent.BLOCK_PLACE, blockPos, GameEvent.Context.of(player, clickedState));
 
         itemStack.consume(1, player);
@@ -224,7 +225,13 @@ public class CrateItem extends BlockItem {
 
         ItemStack contentsStack = itemRecord.get().asItemStack();
         if (contentsStack.getItem() instanceof BlockItem blockItem) {
-            InteractionResult result = this.placeContents(context, blockItem, contentsStack);
+            BlockPlaceContext contentsContext = new BlockPlaceContext(
+                    player,
+                    context.getHand(),
+                    contentsStack,
+                    ((UseOnContextAccess) context).condiments$getHitResult()
+            );
+            InteractionResult result = this.placeContents(contentsContext, blockItem, contentsStack);
 
             if (!player.getAbilities().instabuild && result.indicateItemUse()) {
                 CrateContents.Mutable mutable = crateContents.toMutable();

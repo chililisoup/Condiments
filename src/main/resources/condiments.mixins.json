@@ -10,6 +10,7 @@
     "FenceGateBlockMixin",
     "IronBarsBlockMixin",
     "ShulkerBoxBlockEntityMixin",
+    "UseOnContextAccess",
     "WallBlockMixin"
   ],
   "client": [

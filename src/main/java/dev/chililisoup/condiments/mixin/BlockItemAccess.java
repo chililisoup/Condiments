@@ -12,22 +12,23 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+@SuppressWarnings("UnusedReturnValue")
 @Mixin(BlockItem.class)
 public interface BlockItemAccess {
     @Invoker("getPlacementState")
-    BlockState getPlacementStateAccessible(BlockPlaceContext context);
+    BlockState condiments$getPlacementState(BlockPlaceContext context);
 
     @Invoker("updateBlockStateFromTag")
-    BlockState updateBlockStateFromTagAccessible(BlockPos pos, Level level, ItemStack stack, BlockState state);
+    BlockState condiments$updateBlockStateFromTag(BlockPos pos, Level level, ItemStack stack, BlockState state);
 
     @Invoker("updateCustomBlockEntityTag")
-    boolean updateCustomBlockEntityTagAccessible(BlockPos pos, Level level, @Nullable Player player, ItemStack stack, BlockState state);
+    boolean condiments$updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player, ItemStack stack, BlockState state);
 
     @Invoker("updateBlockEntityComponents")
-    static void updateBlockEntityComponentsAccessible(Level level, BlockPos poa, ItemStack stack) {
+    static void condiments$updateBlockEntityComponents(Level level, BlockPos poa, ItemStack stack) {
         throw new AssertionError();
     }
 
     @Invoker("getPlaceSound")
-    SoundEvent getPlaceSoundAccessible(BlockState state);
+    SoundEvent condiments$getPlaceSound(BlockState state);
 }
