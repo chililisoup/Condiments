@@ -26,6 +26,25 @@ public abstract class MultiPlayerGameModeMixin {
     @Shadow private BlockPos destroyBlockPos = new BlockPos(-1, -1, -1);
     @Shadow private float destroyTicks;
 
+    @Unique
+    private boolean shouldPreventAttackRetrigger(BlockPos pos, Direction face) {
+        if (!pos.equals(this.destroyBlockPos)) return false;
+
+        Level level = this.minecraft.level;
+        if (level == null) return false;
+
+        Player player = this.minecraft.player;
+        if (player == null) return false;
+
+        BlockState state = level.getBlockState(pos);
+        if (!(state.getBlock() instanceof IDestroyPreventable block)) return false;
+
+        HitResult hitResult = this.minecraft.hitResult;
+        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) return false;
+
+        return block.shouldPreventAttackRetrigger(state, level, pos, player, face, (BlockHitResult) hitResult);
+    }
+
     @WrapOperation(method = "startDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;sameDestroyTarget(Lnet/minecraft/core/BlockPos;)Z"))
     private boolean allowStartDestroyRetrigger(
             MultiPlayerGameMode gameMode,
@@ -34,22 +53,7 @@ public abstract class MultiPlayerGameModeMixin {
             @Local(argsOnly = true) Direction face
     ) {
         if (!original.call(gameMode, pos)) return false;
-
-        if (!pos.equals(this.destroyBlockPos)) return true;
-
-        Level level = this.minecraft.level;
-        if (level == null) return true;
-
-        Player player = this.minecraft.player;
-        if (player == null) return true;
-
-        BlockState state = level.getBlockState(pos);
-        if (!(state.getBlock() instanceof IDestroyPreventable block)) return true;
-
-        HitResult hitResult = this.minecraft.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) return true;
-
-        return !block.shouldPreventAttackRetrigger(state, level, pos, player, face, (BlockHitResult) hitResult);
+        return !this.shouldPreventAttackRetrigger(pos, face);
     }
 
     @WrapOperation(method = "continueDestroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;sameDestroyTarget(Lnet/minecraft/core/BlockPos;)Z"))
@@ -59,25 +63,9 @@ public abstract class MultiPlayerGameModeMixin {
             Operation<Boolean> original,
             @Local(argsOnly = true) Direction face
     ) {
-        boolean base = original.call(gameMode, pos);
-        if (!pos.equals(this.destroyBlockPos)) return base;
-
-        Level level = this.minecraft.level;
-        if (level == null) return base;
-
-        Player player = this.minecraft.player;
-        if (player == null) return base;
-
-        BlockState state = level.getBlockState(pos);
-        if (!(state.getBlock() instanceof IDestroyPreventable block)) return base;
-
-        HitResult hitResult = this.minecraft.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) return base;
-
-        if (block.shouldPreventAttackRetrigger(state, level, pos, player, face, (BlockHitResult) hitResult))
-            return (int) this.destroyTicks % 6 != 5;
-
-        return base;
+        return this.shouldPreventAttackRetrigger(pos, face) ?
+                (int) this.destroyTicks % 6 != 5 :
+                original.call(gameMode, pos);
     }
 
     //? if fabric {
