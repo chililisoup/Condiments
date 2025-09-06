@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -115,15 +116,12 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
         if (hitPos.isEmpty()) return InteractionResult.PASS;
         if (isNotInBounds(hitPos.get())) return InteractionResult.PASS;
 
-        if (!level.isClientSide)
-            ((CrateBlockEntity) blockEntity).tryAddStack(
-                    //? if < 1.21 {
-                    /*player.getItemInHand(hand),
-                    *///?} else {
-                    ItemStack.EMPTY,
-                    //?}
-                    player
-            );
+        if (!level.isClientSide) {
+            //? if < 1.21 {
+            /*player.setItemInHand(hand, ((CrateBlockEntity) blockEntity).tryAddStack(player.getItemInHand(hand), player));
+            *///?} else
+            ((CrateBlockEntity) blockEntity).tryAddStack(ItemStack.EMPTY, player);
+        }
 
         return InteractionResult.SUCCESS;
     }
@@ -274,6 +272,15 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
             super.onRemove(state, level, pos, newState, movedByPiston);
         }
     }
+
+    //? if < 1.21 {
+    /*@Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (!stack.hasCustomHoverName()) return;
+        if (level.getBlockEntity(pos) instanceof CrateBlockEntity blockEntity)
+            blockEntity.setCustomName(stack.getHoverName());
+    }
+    *///?}
 
     @Nullable
     public static DyeColor getColorFromItem(Item item) {

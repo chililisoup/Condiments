@@ -31,12 +31,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
+//? if < 1.21 {
+/*import dev.chililisoup.condiments.client.renderer.CrateItemRenderer;
+import net.mehvahdjukaar.moonlight.api.client.ItemStackRenderer;
+import net.mehvahdjukaar.moonlight.api.client.ICustomItemRendererProvider;
+
+import java.util.function.Supplier;
+*///?}
+
 import java.util.List;
 import java.util.Optional;
 
 //? if forgeLike
 /*@javax.annotation.ParametersAreNonnullByDefault*/
-public class CrateItem extends BlockItem {
+public class CrateItem extends BlockItem
+//? if < 1.21
+/*implements ICustomItemRendererProvider*/
+{
     private static final int BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
 
     public CrateItem(Block block, Properties properties) {
@@ -253,4 +264,11 @@ public class CrateItem extends BlockItem {
 
         return super.place(context);
     }
+
+    //? if < 1.21 {
+    /*@Override
+    public Supplier<ItemStackRenderer> getRendererFactory() {
+        return CrateItemRenderer::new;
+    }
+    *///?}
 }

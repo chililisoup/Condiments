@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "dev.chililisoup.condiments.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ItemStackMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -24,6 +24,8 @@ class ModData {
 val mod = ModData()
 val minecraft = property("deps.minecraft") as String
 
+val is120 = stonecutter.eval(stonecutter.current.version, "<1.21")
+
 val isFabric = modstitch.isLoom
 val isNeoforge = modstitch.isModDevGradleRegular
 val isForge = modstitch.isModDevGradleLegacy
@@ -50,7 +52,7 @@ stonecutter {
     }
 
     swaps["public_now_protected"] = when {
-        eval(current.version, "<1.21") -> "public"
+        is120 -> "public"
         else -> "protected"
     }
 }
@@ -144,6 +146,7 @@ modstitch {
         addMixinsToModManifest = true
         configs.register(mod.id)
         if (isFabric) configs.register("${mod.id}-fabric")
+        if (is120) configs.register("${mod.id}-1.20")
     }
 }
 

@@ -1,4 +1,3 @@
-//? if >= 1.21 {
 package dev.chililisoup.condiments.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -36,4 +35,3 @@ public class CrateItemRenderer extends ItemStackRenderer {
         });
     }
 }
-//?}

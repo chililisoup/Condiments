@@ -1,5 +1,6 @@
 package dev.chililisoup.condiments.block.entity;
 
+import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
@@ -41,6 +42,11 @@ import java.util.function.Predicate;
 //? if forgeLike
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateBlockEntity extends BlockEntity implements Container, Nameable {
+    //? if < 1.21 {
+    /*public static final String COUNT_KEY = "Count";
+    *///?} else
+    public static final String COUNT_KEY = "count";
+
     private final CrateContents.SlottedMutable contents;
     private @Nullable Component name;
 
@@ -89,7 +95,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         CompoundTag storageTag = (CompoundTag) this.getItemType().saveOptional(registries);
         //?}
 
-        storageTag.putShort("count", (short) this.getCount());
+        storageTag.putShort(COUNT_KEY, (short) this.getCount());
 
         tag.put("CrateItems", storageTag);
         tag.putBoolean("CrateLocked", this.isLocked());
@@ -125,11 +131,11 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     ) {
         this.contents.setLocked(tag.getBoolean("CrateLocked"));
 
-        short count = tag.getCompound("CrateItems").getShort("count");
+        short count = tag.getCompound("CrateItems").getShort(COUNT_KEY);
         CompoundTag storageTag = tag.getCompound("CrateItems");
 
-        if (storageTag.contains("id")) storageTag.putInt("count", 1);
-        else storageTag.remove("count");
+        if (storageTag.contains("id")) storageTag.putInt(COUNT_KEY, 1);
+        else storageTag.remove(COUNT_KEY);
 
         //? if < 1.21 {
         /*this.contents.setItemType(storageTag.isEmpty() ? null : ItemStack.of(storageTag));
@@ -144,6 +150,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     /*public void load(CompoundTag tag) {
         super.load(tag);
         loadStorage(tag);
+        Condiments.LOGGER.info(tag);
         if (tag.contains("CustomName", 8)) this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
     }
     *///?} else {
@@ -343,7 +350,11 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return this.name;
     }
 
-    //? if >= 1.21 {
+    //? if < 1.21 {
+    /*public void setCustomName(Component name) {
+        this.name = name;
+    }
+    *///?} else {
     @Override
     protected void applyImplicitComponents(BlockEntity.DataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);

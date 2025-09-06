@@ -23,12 +23,12 @@ public class CrateDispenserBehavior extends OptionalDispenseItemBehavior {
         this.setSuccess(false);
         Item item = stack.getItem();
         if (item instanceof BlockItem) {
-            Direction direction = source./*? < 1.21 {*//* getBlockState *//*?} else {*/ state /*?}*/().getValue(DispenserBlock.FACING);
-            BlockPos blockPos = source./*? < 1.21 {*//* getPos *//*?} else {*/ pos /*?}*/().relative(direction);
+            Direction direction = source./*? < 1.21 {*/ /*getBlockState *//*?} else {*/ state /*?}*/().getValue(DispenserBlock.FACING);
+            BlockPos blockPos = source./*? < 1.21 {*/ /*getPos *//*?} else {*/ pos /*?}*/().relative(direction);
 
             try {
                 this.setSuccess(((BlockItem)item).place(new DirectedPlaceContext(
-                        source./*? < 1.21 {*//* getLevel *//*?} else {*/ level /*?}*/(),
+                        source./*? < 1.21 {*/ /*getLevel *//*?} else {*/ level /*?}*/(),
                         blockPos,
                         direction,
                         stack

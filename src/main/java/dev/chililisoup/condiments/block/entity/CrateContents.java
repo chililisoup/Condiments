@@ -28,6 +28,8 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static dev.chililisoup.condiments.block.entity.CrateBlockEntity.COUNT_KEY;
+
 public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional<Boolean> locked) {
     public static final CrateContents EMPTY = new CrateContents();
     //? if >= 1.21 {
@@ -49,7 +51,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         if (compoundTag == null) return EMPTY;
 
         boolean locked = compoundTag.getBoolean("CrateLocked");
-        short count = compoundTag.getCompound("CrateItems").getShort("Count");
+        short count = compoundTag.getCompound("CrateItems").getShort(COUNT_KEY);
 
         CompoundTag storageTag = compoundTag.getCompound("CrateItems").copy();
         ItemRecord record = storageTag.isEmpty() ? null : ItemRecord.of(ItemStack.of(storageTag));
@@ -61,8 +63,19 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
 
     public void updateCrateItem(ItemStack crateItem) {
         //? if < 1.21 {
+        /*CompoundTag compoundTag = crateItem.getOrCreateTagElement("BlockEntityTag");
 
-        //?} else {
+        Optional<ItemStack> itemType = this.item();
+        if (itemType.isEmpty()) {
+            compoundTag.remove("CrateItems");
+            if (compoundTag.isEmpty()) crateItem.removeTagKey("BlockEntityTag");
+            return;
+        }
+
+        CompoundTag storageTag = itemType.get().save(new CompoundTag());
+        storageTag.putShort(COUNT_KEY, (short) this.count);
+        compoundTag.put("CrateItems", storageTag);
+        *///?} else {
         crateItem.set(ModComponents.CRATE_CONTENTS.get(), this);
         crateItem.set(DataComponents.MAX_STACK_SIZE, this.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
         //?}
@@ -139,7 +152,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
 
         if (compoundTag.contains("CrateItems")) {
             if (!CommonConfig.CRATES_CONTAIN_EMPTY_CRATES.get()) return true;
-            return compoundTag.getCompound("CrateItems").getShort("Count") > 0;
+            return compoundTag.getCompound("CrateItems").getShort(COUNT_KEY) > 0;
         }
 
         return false;
@@ -150,7 +163,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
     static {
         CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemRecord.ITEM_CODEC.optionalFieldOf("item").forGetter(CrateContents::itemRecord),
-                Codec.INT.fieldOf("count").forGetter(CrateContents::count),
+                Codec.INT.fieldOf(COUNT_KEY).forGetter(CrateContents::count),
                 Codec.BOOL.optionalFieldOf("locked").forGetter(CrateContents::locked)
         ).apply(instance, CrateContents::new));
 
