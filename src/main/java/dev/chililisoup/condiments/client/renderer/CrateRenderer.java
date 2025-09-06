@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +26,7 @@ import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
+import java.util.List;
 import java.util.Optional;
 
 //$ client_only
@@ -54,14 +56,14 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
         if (player == null) return;
 
         ItemStack item = blockEntity.getItemType();
-        if (item.isEmpty()) return;
+        if (item.isEmpty() && !blockEntity.hasCustomName()) return;
 
         FrontAndTop fat = blockEntity.getBlockState().getValue(BlockStateProperties.ORIENTATION);
         Vec3i norm = fat.front().getNormal();
         int light = LevelRenderer.getLightColor(level, blockEntity.getBlockPos().relative(fat.front(), 1));
 
         renderText(item, blockEntity, poseStack, buffer, fat, norm, light);
-        renderItem(level, item, poseStack, buffer, light, packedOverlay, fat, norm, this.itemRenderer);
+        if (!item.isEmpty()) renderItem(level, item, poseStack, buffer, light, packedOverlay, fat, norm, this.itemRenderer);
     }
 
     private void renderText(ItemStack item, CrateBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, FrontAndTop fat, Vec3i norm, int light) {
@@ -95,7 +97,37 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
 
         poseStack.scale(-0.01F, -0.01F, -0.01F);
 
-        this.font.drawInBatch(text, (float)(-this.font.width(text) / 2), -48.0F, 16777215, true, poseStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, light);
+        if (!item.isEmpty()) {
+            this.font.drawInBatch(
+                    text,
+                    (float) (-this.font.width(text) / 2),
+                    -48.0F,
+                    16777215,
+                    true,
+                    poseStack.last().pose(),
+                    buffer,
+                    Font.DisplayMode.POLYGON_OFFSET,
+                    0,
+                    light
+            );
+        }
+
+        if (blockEntity.hasCustomName()) {
+            List<FormattedCharSequence> list = this.font.split(blockEntity.getCustomName(), 100);
+            FormattedCharSequence clampedWidthName = list.isEmpty() ? FormattedCharSequence.EMPTY : list.getFirst();
+            this.font.drawInBatch(
+                    clampedWidthName,
+                    (float) (-this.font.width(clampedWidthName) / 2),
+                    40.0F,
+                    16777215,
+                    true,
+                    poseStack.last().pose(),
+                    buffer,
+                    Font.DisplayMode.POLYGON_OFFSET,
+                    0,
+                    light
+            );
+        }
 
         poseStack.popPose();
     }

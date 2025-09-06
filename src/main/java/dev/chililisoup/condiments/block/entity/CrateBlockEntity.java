@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block.entity;
 
-import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
@@ -99,14 +98,15 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
         tag.put("CrateItems", storageTag);
         tag.putBoolean("CrateLocked", this.isLocked());
+        if (this.name != null) tag.putString(
+                "CustomName",
+                //? if < 1.21 {
+                /*Component.Serializer.toJson(this.name)
+                *///?} else
+                Component.Serializer.toJson(this.name, registries)
+        );
 
         return tag;
-    }
-
-    private void updateClient() {
-        if (level != null) {
-            level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
-        }
     }
 
     @Override
@@ -114,13 +114,11 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     /*protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         prepareUpdateTag(tag);
-        if (this.name != null) tag.putString("CustomName", Component.Serializer.toJson(this.name));
     }
     *///?} else {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         prepareUpdateTag(tag, registries);
-        if (this.name != null) tag.putString("CustomName", Component.Serializer.toJson(this.name, registries));
     }
     //?}
 
@@ -139,10 +137,16 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
         //? if < 1.21 {
         /*this.contents.setItemType(storageTag.isEmpty() ? null : ItemStack.of(storageTag));
-        *///?} else {
+        *///?} else
         this.contents.setItemType(ItemStack.parseOptional(registries, storageTag));
-        //?}
         this.contents.setCount(count);
+
+        if (tag.contains("CustomName", 8)) {
+            //? if < 1.21 {
+            /*this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
+            *///?} else
+            this.name = parseCustomNameSafe(tag.getString("CustomName"), registries);
+        } else this.name = null;
     }
 
     @Override
@@ -150,16 +154,18 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     /*public void load(CompoundTag tag) {
         super.load(tag);
         loadStorage(tag);
-        Condiments.LOGGER.info(tag);
-        if (tag.contains("CustomName", 8)) this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
     }
     *///?} else {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         loadStorage(tag, registries);
-        if (tag.contains("CustomName", 8)) this.name = parseCustomNameSafe(tag.getString("CustomName"), registries);
     }
     //?}
+
+    private void updateClient() {
+        if (level != null)
+            level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
+    }
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
