@@ -1,31 +1,39 @@
 package dev.chililisoup.condiments.block.entity;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.condiments.config.CommonConfig;
-import dev.chililisoup.condiments.reg.ModComponents;
+import dev.chililisoup.condiments.extra.VersionHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+//? if < 1.21 {
+/*import net.minecraft.nbt.CompoundTag;
+*///?} else {
+import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.component.ItemContainerContents;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+//?}
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional<Boolean> locked) {
     public static final CrateContents EMPTY = new CrateContents();
+    //? if >= 1.21 {
     public static final Codec<CrateContents> CODEC;
     public static final StreamCodec<RegistryFriendlyByteBuf, CrateContents> STREAM_CODEC;
+    //?}
 
     public CrateContents(Optional<ItemRecord> itemRecord, int count) {
         this(itemRecord, count, Optional.empty());
@@ -33,6 +41,31 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
 
     public CrateContents() {
         this(Optional.empty(), 0);
+    }
+
+    public static CrateContents fromCrateItem(ItemStack crateItem) {
+        //? if < 1.21 {
+        /*CompoundTag compoundTag = crateItem.getTagElement("BlockEntityTag");
+        if (compoundTag == null) return EMPTY;
+
+        boolean locked = compoundTag.getBoolean("CrateLocked");
+        short count = compoundTag.getCompound("CrateItems").getShort("Count");
+
+        CompoundTag storageTag = compoundTag.getCompound("CrateItems").copy();
+        ItemRecord record = storageTag.isEmpty() ? null : ItemRecord.of(ItemStack.of(storageTag));
+
+        return new CrateContents(Optional.ofNullable(record), count, locked ? Optional.of(true) : Optional.empty());
+        *///?} else
+        return crateItem.getOrDefault(ModComponents.CRATE_CONTENTS.get(), EMPTY);
+    }
+
+    public void updateCrateItem(ItemStack crateItem) {
+        //? if < 1.21 {
+
+        //?} else {
+        crateItem.set(ModComponents.CRATE_CONTENTS.get(), this);
+        crateItem.set(DataComponents.MAX_STACK_SIZE, this.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
+        //?}
     }
 
     public Optional<ItemStack> item() {
@@ -73,6 +106,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         return String.format("%s x %d, %s", this.item(), this.count, this.isLocked() ? "LOCKED" : "UNLOCKED");
     }
 
+    //? if >= 1.21 {
     public static boolean isItemUnsafe(ItemStack stack) {
         if (stack.isEmpty()) return true;
 
@@ -90,7 +124,29 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
 
         return false;
     }
+    //?} else {
+    /*public static boolean isItemUnsafe(ItemStack stack) {
+        if (stack.isEmpty()) return true;
 
+        CompoundTag compoundTag = stack.getTagElement("BlockEntityTag");
+        if (compoundTag == null) return false;
+
+
+        if (compoundTag.contains("Items", 9)) {
+            net.minecraft.nbt.ListTag containerContents = compoundTag.getList("Items", 10);
+            if (!containerContents.isEmpty()) return true;
+        }
+
+        if (compoundTag.contains("CrateItems")) {
+            if (!CommonConfig.CRATES_CONTAIN_EMPTY_CRATES.get()) return true;
+            return compoundTag.getCompound("CrateItems").getShort("Count") > 0;
+        }
+
+        return false;
+    }
+    *///?}
+
+    //? if >= 1.21 {
     static {
         CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemRecord.ITEM_CODEC.optionalFieldOf("item").forGetter(CrateContents::itemRecord),
@@ -108,7 +164,9 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
                 CrateContents::new
         );
     }
+    //?}
 
+    //? if >= 1.21 {
     public record ItemRecord(Holder<Item> item, DataComponentPatch components) {
         public static final Codec<ItemRecord> ITEM_CODEC;
         public static final StreamCodec<RegistryFriendlyByteBuf, ItemRecord> ITEM_STREAM_CODEC;
@@ -129,6 +187,22 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
             ITEM_STREAM_CODEC = ItemStack.STREAM_CODEC.map(ItemRecord::of, ItemRecord::asItemStack);
         }
     }
+    //?} else {
+    /*public record ItemRecord(Holder<Item> item, Optional<CompoundTag> components) {
+        public ItemStack asItemStack() {
+            ItemStack stack = new ItemStack(this.item, 1);
+            this.components.ifPresent(stack::setTag);
+            return stack;
+        }
+
+        public static ItemRecord of(ItemStack item) {
+            return new ItemRecord(
+                    item.getItemHolder(),
+                    Optional.ofNullable(item.getTag())
+            );
+        }
+    }
+    *///?}
 
     // I think the optionals scattered around are from circumventing a bug in some other mod IIRC
     public static class Mutable {
@@ -222,7 +296,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
             if (isItemUnsafe(stack)) return false;
             ItemStack itemType = this.getItemType();
 
-            return itemType.isEmpty() || ItemStack.isSameItemSameComponents(itemType, stack);
+            return itemType.isEmpty() || VersionHelper.itemsMatch(itemType, stack);
         }
 
         public int getToAdd(ItemStack stack) {
@@ -345,7 +419,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
                     for (int i = 0; i < this.itemStacks.size() && remaining > 0; i++) {
                         ItemStack stack = this.itemStacks.get(i);
 
-                        if (ItemStack.isSameItemSameComponents(stack, itemType)) {
+                        if (VersionHelper.itemsMatch(stack, itemType)) {
                             int free = maxStackSize - stack.getCount();
                             if (free <= 0) continue;
 
@@ -364,7 +438,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
                     for (int i = this.itemStacks.size() - 1; i >= 0 && remaining > 0; i--) {
                         ItemStack stack = this.itemStacks.get(i);
 
-                        if (!ItemStack.isSameItemSameComponents(stack, itemType))
+                        if (!VersionHelper.itemsMatch(stack, itemType))
                             continue;
 
                         int toRemove = Math.min(stack.getCount(), remaining);

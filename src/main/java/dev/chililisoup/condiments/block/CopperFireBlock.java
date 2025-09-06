@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.chililisoup.condiments.reg.ModBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,25 +12,34 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+//? if >= 1.21
+import com.mojang.serialization.MapCodec;
+
 public class CopperFireBlock extends BaseFireBlock {
+    //? if >= 1.21 {
     public static final MapCodec<CopperFireBlock> CODEC = simpleCodec(CopperFireBlock::new);
 
     @Override
-    public @NotNull MapCodec<CopperFireBlock> codec() {
+    protected @NotNull MapCodec<CopperFireBlock> codec() {
         return CODEC;
     }
+    //?}
 
     public CopperFireBlock(BlockBehaviour.Properties properties) {
         super(properties, 1.0F);
     }
 
     @Override
-    protected @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    //$ public_now_protected
+    protected
+    @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         return this.canSurvive(state, level, pos) ? this.defaultBlockState() : Blocks.AIR.defaultBlockState();
     }
 
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    //$ public_now_protected
+    protected
+    boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         return canSurviveOnBlock(level.getBlockState(pos.below()));
     }
 

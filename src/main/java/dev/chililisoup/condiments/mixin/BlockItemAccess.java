@@ -24,10 +24,12 @@ public interface BlockItemAccess {
     @Invoker("updateCustomBlockEntityTag")
     boolean condiments$updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player, ItemStack stack, BlockState state);
 
+    //? if >= 1.21 {
     @Invoker("updateBlockEntityComponents")
     static void condiments$updateBlockEntityComponents(Level level, BlockPos poa, ItemStack stack) {
         throw new AssertionError();
     }
+    //?}
 
     @Invoker("getPlaceSound")
     SoundEvent condiments$getPlaceSound(BlockState state);

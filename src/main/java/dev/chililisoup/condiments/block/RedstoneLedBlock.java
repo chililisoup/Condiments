@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -15,15 +14,21 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//? if >= 1.21
+import com.mojang.serialization.MapCodec;
+
 public class RedstoneLedBlock extends Block {
-    public static final MapCodec<RedstoneLedBlock> CODEC = simpleCodec(RedstoneLedBlock::new);
     public static final IntegerProperty POWER;
     private static final Vec3[] COLORS;
+
+    //? if >= 1.21 {
+    public static final MapCodec<RedstoneLedBlock> CODEC = simpleCodec(RedstoneLedBlock::new);
 
     @Override
     protected @NotNull MapCodec<RedstoneLedBlock> codec() {
         return CODEC;
     }
+    //?}
 
     public RedstoneLedBlock(Properties properties) {
         super(properties);

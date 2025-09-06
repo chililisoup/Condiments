@@ -1,3 +1,4 @@
+//? if > 1.21 {
 package dev.chililisoup.condiments.reg;
 
 import dev.chililisoup.condiments.Condiments;
@@ -27,3 +28,4 @@ public class ModComponents {
         );
     }
 }
+//?}

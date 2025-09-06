@@ -11,8 +11,10 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import net.mehvahdjukaar.moonlight.api.util.Utils;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+
+//? if >= 1.21
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
@@ -31,6 +33,16 @@ public class EmiCompat implements EmiPlugin {
         );
     }
 
+    //? if < 1.21 {
+    /*private static EmiCraftingRecipe emiRecipe(CraftingRecipe recipe) {
+        return new EmiCraftingRecipe(
+                recipe.getIngredients().stream().map(EmiIngredient::of).toList(),
+                EmiStack.of(recipe.getResultItem(null)),
+                recipe.getId(),
+                recipe instanceof ShapelessRecipe
+        );
+    }
+    *///?} else {
     private static EmiCraftingRecipe emiRecipe(RecipeHolder<CraftingRecipe> recipeHolder) {
         CraftingRecipe recipe = recipeHolder.value();
 
@@ -41,4 +53,5 @@ public class EmiCompat implements EmiPlugin {
                 recipe instanceof ShapelessRecipe
         );
     }
+    //?}
 }

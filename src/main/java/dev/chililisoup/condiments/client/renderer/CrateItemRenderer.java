@@ -1,8 +1,8 @@
+//? if >= 1.21 {
 package dev.chililisoup.condiments.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.chililisoup.condiments.block.entity.CrateContents;
-import dev.chililisoup.condiments.reg.ModComponents;
 import net.mehvahdjukaar.moonlight.api.client.ItemStackRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +27,7 @@ public class CrateItemRenderer extends ItemStackRenderer {
         BlockState state = Block.byItem(item).defaultBlockState();
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, light, overlay);
 
-        CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(crateStack);
         Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
         itemRecord.ifPresent(record -> {
             FrontAndTop fat = state.getValue(BlockStateProperties.ORIENTATION);
@@ -36,3 +36,4 @@ public class CrateItemRenderer extends ItemStackRenderer {
         });
     }
 }
+//?}

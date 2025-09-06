@@ -48,6 +48,11 @@ stonecutter {
         isFabric -> "@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)"
         else -> "@net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)"
     }
+
+    swaps["public_now_protected"] = when {
+        eval(current.version, "<1.21") -> "public"
+        else -> "protected"
+    }
 }
 
 modstitch {
@@ -107,13 +112,11 @@ modstitch {
                     client()
                     name = "Test Client"
                     vmArgs("-Dmixin.debug.export=true")
-                    runDir = "../../run/fabric"
                     ideConfigGenerated(true)
                 }
                 register("testServer") {
                     server()
                     name = "Test Server"
-                    runDir = "../../run/fabric"
                     ideConfigGenerated(true)
                 }
             }
@@ -129,11 +132,9 @@ modstitch {
             runs {
                 register("testClient") {
                     client()
-                    gameDirectory = layout.projectDirectory.dir("../../run/neoforge")
                 }
                 register("testServer") {
                     server()
-                    gameDirectory = layout.projectDirectory.dir("../../run/neoforge")
                 }
             }
         }

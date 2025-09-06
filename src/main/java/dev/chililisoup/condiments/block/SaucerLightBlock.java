@@ -2,7 +2,6 @@ package dev.chililisoup.condiments.block;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -28,19 +27,25 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//? if >= 1.21
+import com.mojang.serialization.MapCodec;
+
 import java.util.Map;
 
 public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterloggedBlock {
-    public static final MapCodec<SaucerLightBlock> CODEC = simpleCodec(SaucerLightBlock::new);
     public static final BooleanProperty WATERLOGGED;
     public static final BooleanProperty POWERED;
     public static final BooleanProperty LIT;
     private static final Map<Direction, VoxelShape> AABBS;
 
+    //? if >= 1.21 {
+    public static final MapCodec<SaucerLightBlock> CODEC = simpleCodec(SaucerLightBlock::new);
+
     @Override
-    public @NotNull MapCodec<SaucerLightBlock> codec() {
+    protected @NotNull MapCodec<SaucerLightBlock> codec() {
         return CODEC;
     }
+    //?}
 
     public SaucerLightBlock(Properties properties) {
         super(properties);
@@ -53,7 +58,13 @@ public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterlog
     }
 
     @Override
+    //? if < 1.21 {
+    /*public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hitResult) {
+        if (!player.getItemInHand(hand).isEmpty())
+            return InteractionResult.PASS;
+    *///?} else {
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    //?}
         if (!player.isShiftKeyDown())
             return InteractionResult.PASS;
 
@@ -64,13 +75,17 @@ public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterlog
     }
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    //$ public_now_protected
+    protected
+    void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         if (oldState.getBlock() != state.getBlock() && level instanceof ServerLevel serverLevel)
             this.checkAndFlip(state, serverLevel, pos);
     }
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+    //$ public_now_protected
+    protected
+    void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         if (level instanceof ServerLevel serverLevel)
             this.checkAndFlip(state, serverLevel, pos);
     }
@@ -86,7 +101,17 @@ public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterlog
 
         if (force || !powered) {
             blockState = state.cycle(LIT);
-            level.playSound(null, pos, blockState.getValue(LIT) ? SoundEvents.COPPER_BULB_TURN_ON : SoundEvents.COPPER_BULB_TURN_OFF, SoundSource.BLOCKS);
+            level.playSound(
+                    null,
+                    pos,
+                    blockState.getValue(LIT) ?
+                            //? if < 1.21 {
+                            /*SoundEvents.WOODEN_BUTTON_CLICK_ON : SoundEvents.WOODEN_BUTTON_CLICK_OFF,
+                            *///?} else {
+                            SoundEvents.COPPER_BULB_TURN_ON : SoundEvents.COPPER_BULB_TURN_OFF,
+                            //?}
+                    SoundSource.BLOCKS
+            );
         }
 
         level.setBlock(pos, blockState.setValue(POWERED, signal), 3);
@@ -97,12 +122,16 @@ public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterlog
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    //$ public_now_protected
+    protected
+    @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return AABBS.get(state.getValue(FACING));
     }
 
     @Override
-    protected @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    //$ public_now_protected
+    protected
+    @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(WATERLOGGED))
             level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 
@@ -120,17 +149,23 @@ public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterlog
     }
 
     @Override
-    protected @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+    //$ public_now_protected
+    protected
+    @NotNull BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+    //$ public_now_protected
+    protected
+    @NotNull BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    protected @NotNull FluidState getFluidState(BlockState state) {
+    //$ public_now_protected
+    protected
+     @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
@@ -140,7 +175,14 @@ public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterlog
     }
 
     @Override
-    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+    //$ public_now_protected
+    protected
+    boolean isPathfindable(
+            BlockState state,
+            //? if < 1.21
+            /*BlockGetter level, BlockPos pos,*/
+            PathComputationType pathComputationType
+    ) {
         return false;
     }
 

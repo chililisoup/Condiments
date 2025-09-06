@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.chililisoup.condiments.config.CommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -13,15 +12,21 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+//? if >= 1.21
+import com.mojang.serialization.MapCodec;
+
 public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
-    public static final MapCodec<AnalogRailBlock> CODEC = simpleCodec(AnalogRailBlock::new);
     public static final EnumProperty<RailShape> SHAPE;
     public static final IntegerProperty POWER;
+
+    //? if >= 1.21 {
+    public static final MapCodec<AnalogRailBlock> CODEC = simpleCodec(AnalogRailBlock::new);
 
     @Override
     protected @NotNull MapCodec<AnalogRailBlock> codec() {
         return CODEC;
     }
+    //?}
 
     public AnalogRailBlock(Properties properties) {
         super(true, properties);

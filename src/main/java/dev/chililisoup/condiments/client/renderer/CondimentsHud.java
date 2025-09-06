@@ -3,8 +3,6 @@ package dev.chililisoup.condiments.client.renderer;
 import dev.chililisoup.condiments.config.ClientConfig;
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.block.entity.CrateContents;
-import dev.chililisoup.condiments.reg.ModComponents;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,12 +10,21 @@ import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+//? if >= 1.21
+import net.minecraft.client.DeltaTracker;
+
 import java.util.Optional;
 
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class CondimentsHud {
-    public static void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public static void render(
+            GuiGraphics guiGraphics,
+            //? if < 1.21 {
+            /*float delta
+            *///?} else
+            DeltaTracker deltaTracker
+    ) {
         if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().screen != null) return;
 
         if (!ClientConfig.SHOW_CRATE_HUD.get()) return;
@@ -29,7 +36,7 @@ public class CondimentsHud {
         if (stack.isEmpty()) stack = player.getOffhandItem();
         if (stack.isEmpty() || !(stack.getItem() instanceof CrateItem)) return;
 
-        CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(stack);
         Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
         if (itemRecord.isEmpty()) return;
 
@@ -37,8 +44,8 @@ public class CondimentsHud {
         Font font = Minecraft.getInstance().font;
         String count = String.format("x%d", crateContents.count());
 
-        float xAlign = ClientConfig.CRATE_HUD_X_ALIGNMENT.get();
-        float yAlign = ClientConfig.CRATE_HUD_Y_ALIGNMENT.get();
+        double xAlign = ClientConfig.CRATE_HUD_X_ALIGNMENT.get();
+        double yAlign = ClientConfig.CRATE_HUD_Y_ALIGNMENT.get();
 
         int width = font.width(count) + 17;
 

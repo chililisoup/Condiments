@@ -1,13 +1,10 @@
 package dev.chililisoup.condiments.block.entity;
 
 import dev.chililisoup.condiments.config.CommonConfig;
+import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
-import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -28,6 +25,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+//? if >= 1.21 {
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.HolderLookup;
+import dev.chililisoup.condiments.reg.ModComponents;
+//?}
 
 //? if forgeLike
 /*import dev.chililisoup.condiments.item.CrateItemHandler;*/
@@ -72,8 +76,19 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return this.contents.isLocked();
     }
 
-    private CompoundTag prepareUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+    private CompoundTag prepareUpdateTag(
+            CompoundTag tag
+            //? if >= 1.21
+            , HolderLookup.Provider registries
+    ) {
+        //? if < 1.21 {
+        /*CompoundTag storageTag = new CompoundTag();
+        ItemStack itemType = this.getItemType();
+        if (!itemType.isEmpty()) itemType.save(storageTag);
+        *///?} else {
         CompoundTag storageTag = (CompoundTag) this.getItemType().saveOptional(registries);
+        //?}
+
         storageTag.putShort("count", (short) this.getCount());
 
         tag.put("CrateItems", storageTag);
@@ -89,15 +104,25 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     }
 
     @Override
+    //? if < 1.21 {
+    /*protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        prepareUpdateTag(tag);
+        if (this.name != null) tag.putString("CustomName", Component.Serializer.toJson(this.name));
+    }
+    *///?} else {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         prepareUpdateTag(tag, registries);
-        if (this.name != null) {
-            tag.putString("CustomName", Component.Serializer.toJson(this.name, registries));
-        }
+        if (this.name != null) tag.putString("CustomName", Component.Serializer.toJson(this.name, registries));
     }
+    //?}
 
-    private void loadStorage(CompoundTag tag, HolderLookup.Provider registries) {
+    private void loadStorage(
+            CompoundTag tag
+            //? if >= 1.21
+            , HolderLookup.Provider registries
+    ) {
         this.contents.setLocked(tag.getBoolean("CrateLocked"));
 
         short count = tag.getCompound("CrateItems").getShort("count");
@@ -106,18 +131,28 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         if (storageTag.contains("id")) storageTag.putInt("count", 1);
         else storageTag.remove("count");
 
+        //? if < 1.21 {
+        /*this.contents.setItemType(storageTag.isEmpty() ? null : ItemStack.of(storageTag));
+        *///?} else {
         this.contents.setItemType(ItemStack.parseOptional(registries, storageTag));
+        //?}
         this.contents.setCount(count);
     }
 
     @Override
+    //? if < 1.21 {
+    /*public void load(CompoundTag tag) {
+        super.load(tag);
+        loadStorage(tag);
+        if (tag.contains("CustomName", 8)) this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
+    }
+    *///?} else {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         loadStorage(tag, registries);
-        if (tag.contains("CustomName", 8)) {
-            this.name = parseCustomNameSafe(tag.getString("CustomName"), registries);
-        }
+        if (tag.contains("CustomName", 8)) this.name = parseCustomNameSafe(tag.getString("CustomName"), registries);
     }
+    //?}
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
@@ -182,7 +217,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     public ItemStack tryAddStack(ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) return stack;
         ItemStack item = this.contents.tryAddStack(stack, simulate);
-        if (ItemStack.isSameItemSameComponents(item, stack) && item.getCount() == stack.getCount())
+        if (VersionHelper.itemsMatch(item, stack) && item.getCount() == stack.getCount())
             return item;
 
         this.setChanged();
@@ -257,9 +292,15 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     }
 
     @Override
+    //? if < 1.21 {
+    /*public @NotNull CompoundTag getUpdateTag() {
+        return prepareUpdateTag(new CompoundTag());
+    }
+    *///?} else {
     public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         return prepareUpdateTag(new CompoundTag(), registries);
     }
+    //?}
 
     void playSound(BlockState state, SoundEvent sound) {
         if (level == null) return;
@@ -302,6 +343,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return this.name;
     }
 
+    //? if >= 1.21 {
     @Override
     protected void applyImplicitComponents(BlockEntity.DataComponentInput componentInput) {
         super.applyImplicitComponents(componentInput);
@@ -322,4 +364,5 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         components.set(ModComponents.CRATE_CONTENTS.get(), this.contents.toImmutable());
         components.set(DataComponents.MAX_STACK_SIZE, this.getCount() > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
     }
+    //?}
 }

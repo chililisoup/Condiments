@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.chililisoup.condiments.reg.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -10,13 +9,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+//? if >= 1.21
+import com.mojang.serialization.MapCodec;
+
 public class WaxedIronBlock extends Block {
-    public static final MapCodec<WaxedIronBlock> CODEC = simpleCodec(WaxedIronBlock::new);
+    //? if >= 1.21 {
+    public static final MapCodec<SaucerLightBlock> CODEC = simpleCodec(SaucerLightBlock::new);
 
     @Override
-    protected @NotNull MapCodec<WaxedIronBlock> codec() {
+    protected @NotNull MapCodec<SaucerLightBlock> codec() {
         return CODEC;
     }
+    //?}
 
     public WaxedIronBlock(Properties properties) {
         super(properties);

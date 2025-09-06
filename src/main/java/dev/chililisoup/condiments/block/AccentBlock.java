@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,8 +18,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+//? if >= 1.21
+import com.mojang.serialization.MapCodec;
+
 public class AccentBlock extends Block implements SimpleWaterloggedBlock {
-    public static final MapCodec<AccentBlock> CODEC = simpleCodec(AccentBlock::new);
     public static final DirectionProperty FACING;
     public static final EnumProperty<Half> HALF;
     public static final EnumProperty<StairsShape> SHAPE;
@@ -29,10 +30,14 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
     protected static final VoxelShape[] BOTTOM_SHAPES;
     private static final int[] SHAPE_BY_STATE;
 
+    //? if >= 1.21 {
+    public static final MapCodec<AccentBlock> CODEC = simpleCodec(AccentBlock::new);
+
     @Override
     protected @NotNull MapCodec<AccentBlock> codec() {
         return CODEC;
     }
+    //?}
 
     public AccentBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -144,7 +149,14 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+    //$ public_now_protected
+    protected
+    boolean isPathfindable(
+            BlockState state,
+            //? if < 1.21
+            /*BlockGetter level, BlockPos pos,*/
+            PathComputationType pathComputationType
+    ) {
         return false;
     }
 

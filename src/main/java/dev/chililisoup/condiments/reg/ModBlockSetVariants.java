@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.reg;
 
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.AccentBlock;
+import dev.chililisoup.condiments.extra.VersionHelper;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
 import net.mehvahdjukaar.moonlight.api.misc.Registrator;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
@@ -89,7 +90,7 @@ public class ModBlockSetVariants {
                     return false;
                 })) continue;
 
-                Block block = woodVariant.blockFactory.apply(BlockBehaviour.Properties.ofFullCopy(parent));
+                Block block = woodVariant.blockFactory.apply(VersionHelper.copyProperties(parent));
                 String name = woodVariant.idGetter.get(wood);
 
                 wood.addChild("condiments:" + woodVariant.name, block);

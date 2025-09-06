@@ -1,44 +1,40 @@
-//? if >= 1.21 {
-package dev.chililisoup.condiments.dynamicpack;
+//? if < 1.21 {
+/*package dev.chililisoup.condiments.dynamicpack;
 
 import dev.chililisoup.condiments.Condiments;
+import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockTags;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
-import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
 import net.mehvahdjukaar.moonlight.api.resources.SimpleTagBuilder;
 import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
-import net.mehvahdjukaar.moonlight.api.resources.pack.*;
+import net.mehvahdjukaar.moonlight.api.resources.pack.DynServerResourcesGenerator;
+import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicDataPack;
+import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
+import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
 import net.mehvahdjukaar.moonlight.api.util.Utils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BlockItem;
+import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static dev.chililisoup.condiments.reg.ModBlockSetVariants.*;
 
-public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvider {
-    private static ServerDynamicResourcesGenerator INSTANCE;
+public class ServerDynamicResourcesGeneratorOld extends DynServerResourcesGenerator {
+    public static final ServerDynamicResourcesGeneratorOld INSTANCE = new ServerDynamicResourcesGeneratorOld();
 
-    public static ServerDynamicResourcesGenerator getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ServerDynamicResourcesGenerator();
-        }
-        return INSTANCE;
-    }
-
-    public ServerDynamicResourcesGenerator() {
-        super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED);
+    public ServerDynamicResourcesGeneratorOld() {
+        super(new DynamicDataPack(Condiments.loc("generated_pack")));
     }
 
     @Override
-    protected Collection<String> gatherSupportedNamespaces() {
-        return PlatHelper.getInstalledMods();
+    public Logger getLogger() {
+        return Condiments.LOGGER;
     }
 
     @Override
@@ -127,7 +123,7 @@ public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvid
             polishedItemTagBuilder.addEntry(logItem);
             polishedItemTagBuilder.addEntry(woodItem);
 
-            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(
+            ResourceLocation loc = VersionHelper.resourceLocation(
                     wood.getNamespace(),
                     Utils.getID(wood.log).getPath() + "s"
             );
@@ -169,4 +165,4 @@ public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvid
         sink.addTag(polishedItemTagBuilder, Registries.ITEM);
     }
 }
-//?}
+*///?}

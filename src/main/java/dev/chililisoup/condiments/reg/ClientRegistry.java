@@ -2,6 +2,7 @@ package dev.chililisoup.condiments.reg;
 
 import dev.chililisoup.condiments.block.AnalogRailBlock;
 import dev.chililisoup.condiments.block.RedstoneLedBlock;
+//? if >= 1.21
 import dev.chililisoup.condiments.client.renderer.CrateItemRenderer;
 import dev.chililisoup.condiments.client.renderer.CrateRenderer;
 import dev.chililisoup.condiments.item.tooltip.ClientCrateTooltip;
@@ -18,6 +19,7 @@ public class ClientRegistry {
         ClientHelper.addClientSetup(ClientRegistry::setup);
 
         ClientHelper.addBlockEntityRenderersRegistration(ClientRegistry::registerBlockEntityRenderers);
+        //? if >= 1.21
         ClientHelper.addItemRenderersRegistration(ClientRegistry::registerItemRenderers);
         ClientHelper.addTooltipComponentRegistration(ClientRegistry::registerTooltipComponents);
         ClientHelper.addBlockColorsRegistration(ClientRegistry::registerBlockColors);
@@ -34,10 +36,12 @@ public class ClientRegistry {
         event.register(ModBlockEntities.CRATE_BE_TYPE.get(), CrateRenderer::new);
     }
 
+    //? if >= 1.21 {
     private static void registerItemRenderers(ClientHelper.ItemRendererEvent event) {
         for (Block block : ModBlocks.getCrates())
             event.register(block, new CrateItemRenderer());
     }
+    //?}
 
     private static void registerTooltipComponents(ClientHelper.TooltipComponentEvent event) {
         event.register(CrateTooltip.class, ClientCrateTooltip::new);

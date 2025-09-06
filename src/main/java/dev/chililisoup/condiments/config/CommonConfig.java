@@ -3,6 +3,10 @@ package dev.chililisoup.condiments.config;
 import dev.chililisoup.condiments.Condiments;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigBuilder;
 import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigType;
+
+//? if < 1.21 {
+/*import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigSpec;
+*///?} else
 import net.mehvahdjukaar.moonlight.api.platform.configs.ModConfigHolder;
 
 import java.util.function.Supplier;
@@ -15,12 +19,15 @@ public class CommonConfig {
     public static final Supplier<Boolean> TINTED_GLASS_TERMINATES_BEACONS;
     public static final Supplier<Double> ANALOG_RAIL_MAX_SPEED;
 
+    //? if < 1.21 {
+    /*public static final ConfigSpec CONFIG_SPEC;
+    *///?} else
     public static final ModConfigHolder CONFIG_SPEC;
 
     public static void init() {}
 
     static {
-        ConfigBuilder builder = ConfigBuilder.create(Condiments.MOD_ID, ConfigType.COMMON_SYNCED);
+        ConfigBuilder builder = ConfigBuilder.create(Condiments.MOD_ID, ConfigType./*? < 1.21 {*/ /*COMMON *//*?} else {*/ COMMON_SYNCED /*?}*/);
 
         builder.push("crates");
         CRATE_MAX_CONTAINED_STACKS = builder.comment("How many full stacks of an item each crate can hold")
@@ -39,7 +46,13 @@ public class CommonConfig {
                 .define("analog_rail_max_speed", 0.6, 0.1, 16.0);
         builder.pop();
 
+        //? if < 1.21 {
+        /*builder.setSynced();
+        CONFIG_SPEC = builder.buildAndRegister();
+        CONFIG_SPEC.loadFromFile();
+        *///?} else {
         CONFIG_SPEC = builder.build();
         CONFIG_SPEC.forceLoad();
+        //?}
     }
 }

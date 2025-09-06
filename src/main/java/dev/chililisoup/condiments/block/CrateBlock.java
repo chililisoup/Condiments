@@ -1,7 +1,5 @@
 package dev.chililisoup.condiments.block;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
 import dev.chililisoup.condiments.reg.ModBlocks;
 import net.minecraft.core.BlockPos;
@@ -10,7 +8,6 @@ import net.minecraft.core.FrontAndTop;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +32,12 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//? if >= 1.21 {
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.ItemInteractionResult;
+//?}
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -42,17 +45,20 @@ import java.util.function.Supplier;
 //? if forgeLike
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
+    private static final EnumProperty<FrontAndTop> ORIENTATION;
+    @Nullable private final DyeColor color;
+
+    //? if >= 1.21 {
     public static final MapCodec<CrateBlock> CODEC = RecordCodecBuilder.mapCodec(
             (instance) -> instance.group(DyeColor.CODEC.optionalFieldOf("color").forGetter(
                     (crateBlock) -> Optional.ofNullable(crateBlock.color)), propertiesCodec()).apply(instance,
                     (optional, properties) -> new CrateBlock(optional.orElse(null), properties)));
-    private static final EnumProperty<FrontAndTop> ORIENTATION;
-    @Nullable private final DyeColor color;
 
     @Override
     protected @NotNull MapCodec<CrateBlock> codec() {
         return CODEC;
     }
+    //?}
     
     public CrateBlock(@Nullable DyeColor color, BlockBehaviour.Properties properties) {
         super(properties);
@@ -95,7 +101,11 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     }
 
     @Override
+    //? if < 1.21 {
+    /*public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    *///?} else {
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    //?}
         boolean hitFace = hitResult.getDirection() == state.getValue(ORIENTATION).front();
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -106,11 +116,19 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
         if (isNotInBounds(hitPos.get())) return InteractionResult.PASS;
 
         if (!level.isClientSide)
-            ((CrateBlockEntity) blockEntity).tryAddStack(ItemStack.EMPTY, player);
+            ((CrateBlockEntity) blockEntity).tryAddStack(
+                    //? if < 1.21 {
+                    /*player.getItemInHand(hand),
+                    *///?} else {
+                    ItemStack.EMPTY,
+                    //?}
+                    player
+            );
 
         return InteractionResult.SUCCESS;
     }
 
+    //? if >= 1.21 {
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         boolean hitFace = hitResult.getDirection() == state.getValue(ORIENTATION).front();
@@ -127,6 +145,7 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
 
         return ItemInteractionResult.SUCCESS;
     }
+    //?}
 
     @Override
     public void attack(BlockState state, Level level, BlockPos pos, Player player) {
@@ -185,7 +204,9 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     }
 
     @Override
-    protected float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos) {
+    //$ public_now_protected
+    protected
+    float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos) {
         return this.shouldPreventDamage(state, player, pos) ? 0 : super.getDestroyProgress(state, player, level, pos);
     }
 
@@ -220,7 +241,13 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     }
 
     @Override
-    public @NotNull BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public
+    //? if < 1.21 {
+    /*void
+    *///?} else {
+    @NotNull BlockState
+    //?}
+    playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         super.playerWillDestroy(level, pos, state, player);
 
         if (!level.isClientSide && player.isCreative() && !((CrateBlockEntity) Objects.requireNonNull(level.getBlockEntity(pos))).isEmpty()) {
@@ -232,6 +259,7 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
             });
         }
 
+        //? if >= 1.21
         return state;
     }
 
@@ -321,12 +349,16 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     }
 
     @Override
-    protected @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+    //$ public_now_protected
+    protected
+    @NotNull BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(ORIENTATION, rotation.rotation().rotate(state.getValue(ORIENTATION)));
     }
 
     @Override
-    protected @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+    //$ public_now_protected
+    protected
+    @NotNull BlockState mirror(BlockState state, Mirror mirror) {
         return state.setValue(ORIENTATION, mirror.rotation().rotate(state.getValue(ORIENTATION)));
     }
 

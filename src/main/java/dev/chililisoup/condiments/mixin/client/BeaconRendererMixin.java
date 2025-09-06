@@ -14,6 +14,24 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(BeaconRenderer.class)
 public abstract class BeaconRendererMixin {
+    //? if < 1.21 {
+    /*@WrapOperation(
+            method = "render(Lnet/minecraft/world/level/block/entity/BeaconBlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/blockentity/BeaconRenderer;renderBeaconBeam(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;FJII[F)V")
+    )
+    private void adjustBeamHeight(
+            PoseStack poseStack,
+            MultiBufferSource bufferSource,
+            float partialTick,
+            long gameTime,
+            int yOffset,
+            int height,
+            float[] color,
+            Operation<Void> original,
+            @Local(argsOnly = true) BeaconBlockEntity blockEntity,
+            @Local BeaconBlockEntity.BeaconBeamSection beaconBeamSection
+    ) {
+    *///?} else {
     @WrapOperation(
             method = "render(Lnet/minecraft/world/level/block/entity/BeaconBlockEntity;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/blockentity/BeaconRenderer;renderBeaconBeam(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;FJIII)V")
@@ -30,6 +48,7 @@ public abstract class BeaconRendererMixin {
             @Local(argsOnly = true) BeaconBlockEntity blockEntity,
             @Local BeaconBlockEntity.BeaconBeamSection beaconBeamSection
     ) {
+    //?}
         Level level = blockEntity.getLevel();
 
         int adjustedHeight = (

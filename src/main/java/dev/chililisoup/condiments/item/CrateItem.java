@@ -5,11 +5,9 @@ import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.mixin.BlockItemAccess;
 import dev.chililisoup.condiments.mixin.UseOnContextAccess;
-import dev.chililisoup.condiments.reg.ModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -52,14 +50,14 @@ public class CrateItem extends BlockItem {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(stack);
 
         return crateContents.fillPercent() >= 0;
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(stack);
 
         float fillPercent = crateContents.fillPercent();
         return Math.min((fillPercent > 0 ? 1 : 0) + (int) Math.floor(fillPercent * 12), 13);
@@ -71,10 +69,14 @@ public class CrateItem extends BlockItem {
     }
 
     @Override
+    //? if < 1.21 {
+    /*public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
+    *///?} else {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-
-        CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+    //?}
+        CrateContents crateContents = CrateContents.fromCrateItem(stack);
 
         if (crateContents.isLocked()) {
             tooltipComponents.add(Component.literal(crateContents.item().isEmpty() ? "Locked - Unset" : "Locked").withStyle(ChatFormatting.GRAY));
@@ -95,7 +97,7 @@ public class CrateItem extends BlockItem {
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        CrateContents crateContents = stack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(stack);
 
         return crateContents.item().flatMap(item -> Optional.of(new CrateTooltip(item)));
     }
@@ -105,7 +107,7 @@ public class CrateItem extends BlockItem {
         if (crateStack.getCount() > 1) return false;
         if (action != ClickAction.SECONDARY) return false;
 
-        CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(crateStack);
         CrateContents.Mutable mutable = crateContents.toMutable();
 
         ItemStack insertedStack = slot.getItem();
@@ -120,8 +122,7 @@ public class CrateItem extends BlockItem {
             }
         }
 
-        crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.getCount() > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
+        mutable.toImmutable().updateCrateItem(crateStack);
 
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
@@ -135,7 +136,7 @@ public class CrateItem extends BlockItem {
         if (crateStack.getCount() > 1) return false;
         if (action != ClickAction.SECONDARY || !slot.allowModification(player)) return false;
 
-        CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(crateStack);
         CrateContents.Mutable mutable = crateContents.toMutable();
 
         if (insertedStack.isEmpty()) {
@@ -152,8 +153,7 @@ public class CrateItem extends BlockItem {
             }
         }
 
-        crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-        crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.getCount() > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
+        mutable.toImmutable().updateCrateItem(crateStack);
 
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
@@ -192,6 +192,7 @@ public class CrateItem extends BlockItem {
             clickedState = ((BlockItemAccess) blockItem).condiments$updateBlockStateFromTag(blockPos, level, itemStack, clickedState);
 
             ((BlockItemAccess) blockItem).condiments$updateCustomBlockEntityTag(blockPos, level, player, itemStack, clickedState);
+            //? if >= 1.21
             BlockItemAccess.condiments$updateBlockEntityComponents(level, blockPos, itemStack);
             clickedState.getBlock().setPlacedBy(level, blockPos, clickedState, player, itemStack);
 
@@ -203,7 +204,11 @@ public class CrateItem extends BlockItem {
         level.playSound(player, blockPos, ((BlockItemAccess) blockItem).condiments$getPlaceSound(clickedState), SoundSource.BLOCKS, (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
         level.gameEvent(GameEvent.BLOCK_PLACE, blockPos, GameEvent.Context.of(player, clickedState));
 
+        //? if < 1.21 {
+        /*if (player == null || !player.getAbilities().instabuild) itemStack.shrink(1);
+        *///?} else
         itemStack.consume(1, player);
+
         return InteractionResult.sidedSuccess(level.isClientSide);
 
     }
@@ -215,7 +220,7 @@ public class CrateItem extends BlockItem {
         if (player == null || player.isShiftKeyDown() || !(crateStack.getItem() instanceof CrateItem))
             return super.place(context);
 
-        CrateContents crateContents = crateStack.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
+        CrateContents crateContents = CrateContents.fromCrateItem(crateStack);
         if (crateContents.count() <= 0)
             return super.place(context);
 
@@ -233,12 +238,14 @@ public class CrateItem extends BlockItem {
             );
             InteractionResult result = this.placeContents(contentsContext, blockItem, contentsStack);
 
-            if (!player.getAbilities().instabuild && result.indicateItemUse()) {
+            //? if < 1.21 {
+            /*if (!player.getAbilities().instabuild && result.shouldAwardStats()) {
+            *///?} else
+            if (!player.hasInfiniteMaterials() && result.indicateItemUse()) {
                 CrateContents.Mutable mutable = crateContents.toMutable();
                 mutable.requestOne();
 
-                crateStack.set(ModComponents.CRATE_CONTENTS.get(), mutable.toImmutable());
-                crateStack.set(DataComponents.MAX_STACK_SIZE, mutable.getCount() > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
+                mutable.toImmutable().updateCrateItem(crateStack);
             }
 
             return result;
