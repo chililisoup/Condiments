@@ -3,8 +3,13 @@
 
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+
+//? if neoforge {
+/^import net.neoforged.neoforge.items.ItemStackHandler;
+^///?} else {
+import net.minecraftforge.items.ItemStackHandler;
+//?}
 
 public class CrateItemHandler extends ItemStackHandler {
     private final CrateBlockEntity crateBlockEntity;

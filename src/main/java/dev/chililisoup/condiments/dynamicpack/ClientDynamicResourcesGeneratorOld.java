@@ -3,8 +3,6 @@
 
 import com.mojang.blaze3d.platform.NativeImage;
 import dev.chililisoup.condiments.Condiments;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
 import net.mehvahdjukaar.moonlight.api.resources.RPUtils;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
@@ -24,12 +22,20 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+//? if forge {
+/^import net.minecraft.util.profiling.ProfilerFiller;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+^///?}
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static dev.chililisoup.condiments.reg.ModBlockSetVariants.*;
 
-@Environment(EnvType.CLIENT)
+//$ client_only
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class ClientDynamicResourcesGeneratorOld extends DynClientResourcesGenerator {
     public static final ClientDynamicResourcesGeneratorOld INSTANCE = new ClientDynamicResourcesGeneratorOld();
 
@@ -280,5 +286,12 @@ public class ClientDynamicResourcesGeneratorOld extends DynClientResourcesGenera
     ) {
         from.copyRect(to, xFrom, yFrom * scale, xTo * scale, yTo * scale, width * scale, height * scale, mirrorX, mirrorY);
     }
+
+    //? if forge {
+    /^@Override
+    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller1, Executor executor, Executor executor1) {
+        return null;
+    }
+    ^///?}
 }
 *///?}

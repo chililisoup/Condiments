@@ -114,7 +114,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
 
         if (blockEntity.hasCustomName()) {
             List<FormattedCharSequence> list = this.font.split(blockEntity.getCustomName(), 100);
-            FormattedCharSequence clampedWidthName = list.isEmpty() ? FormattedCharSequence.EMPTY : list.getFirst();
+            FormattedCharSequence clampedWidthName = list.isEmpty() ? FormattedCharSequence.EMPTY : list.get(0);
             this.font.drawInBatch(
                     clampedWidthName,
                     (float) (-this.font.width(clampedWidthName) / 2),

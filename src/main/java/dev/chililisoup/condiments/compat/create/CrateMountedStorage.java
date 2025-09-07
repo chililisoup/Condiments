@@ -1,4 +1,4 @@
-//? if forgeLike {
+//? if neoforge {
 /*package dev.chililisoup.condiments.compat.create;
 
 import com.mojang.serialization.MapCodec;

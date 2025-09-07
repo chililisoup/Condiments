@@ -50,6 +50,7 @@ stonecutter {
     constants["forgeLike"] = isForgeLike
 
     swaps["client_only"] = when {
+        isForge -> "@net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)"
         isFabric -> "@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)"
         else -> "@net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)"
     }
@@ -209,7 +210,8 @@ dependencies {
     // Anything else in the dependencies block will be used for all platforms.
     prop("deps.moonlight") {
         // Implementation crashes on Fabric for some reason, just download the mod and put it into the run's mod folder
-        if (isFabric) modstitchModCompileOnly("maven.modrinth:moonlight:${it}-${loader}")
+        // also crashes on forge cause idk how to get it deobfuscated
+        if (isFabric || isForge) modstitchModCompileOnly("maven.modrinth:moonlight:${it}-${loader}")
         else modstitchModImplementation("maven.modrinth:moonlight:${it}-${loader}")
     }
 

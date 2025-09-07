@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block.entity;
 
-import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -31,6 +30,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.HolderLookup;
 import dev.chililisoup.condiments.reg.ModComponents;
+import dev.chililisoup.condiments.config.CommonConfig;
 //?}
 
 //? if forgeLike

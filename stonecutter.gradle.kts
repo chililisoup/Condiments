@@ -16,5 +16,6 @@ allprojects {
         maven("https://maven.shedaniel.me/") // REI
         maven("https://maven.createmod.net") // Create, Ponder, Flywheel
         maven("https://maven.ithundxr.dev/snapshots") // Registrate
+        maven("https://maven.ithundxr.dev/mirror") // Registrate (1.20.1)
     }
 }
