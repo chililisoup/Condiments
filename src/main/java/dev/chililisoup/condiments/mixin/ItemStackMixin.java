@@ -1,6 +1,7 @@
 //? if < 1.21 {
 /*package dev.chililisoup.condiments.mixin;
 
+import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.item.CrateItem;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +14,7 @@ public abstract class ItemStackMixin {
     @Inject(method = "getMaxStackSize", at = @At("HEAD"), cancellable = true)
     public void getMaxStackSizeInject(CallbackInfoReturnable<Integer> cir) {
         ItemStack item = ((ItemStack) ((Object) this));
-        if (item.getItem() instanceof CrateItem && item.getTagElement("BlockEntityTag") != null)
+        if (item.getItem() instanceof CrateItem && CrateContents.isItemUnsafe(item))
             cir.setReturnValue(1);
     }
 }

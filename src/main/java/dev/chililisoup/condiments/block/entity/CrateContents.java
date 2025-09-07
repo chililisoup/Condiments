@@ -51,10 +51,18 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         if (compoundTag == null) return EMPTY;
 
         boolean locked = compoundTag.getBoolean("CrateLocked");
-        short count = compoundTag.getCompound("CrateItems").getShort(COUNT_KEY);
+
+        short count = 0;
+        ItemRecord record = null;
 
         CompoundTag storageTag = compoundTag.getCompound("CrateItems").copy();
-        ItemRecord record = storageTag.isEmpty() ? null : ItemRecord.of(ItemStack.of(storageTag));
+        if (!storageTag.isEmpty()) {
+            count = storageTag.getShort(COUNT_KEY);
+            storageTag.putShort(COUNT_KEY, (short) 1);
+
+            ItemStack item = ItemStack.of(storageTag);
+            if (!item.isEmpty()) record = ItemRecord.of(item);
+        }
 
         return new CrateContents(Optional.ofNullable(record), count, locked ? Optional.of(true) : Optional.empty());
         *///?} else
@@ -66,15 +74,20 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         /*CompoundTag compoundTag = crateItem.getOrCreateTagElement("BlockEntityTag");
 
         Optional<ItemStack> itemType = this.item();
-        if (itemType.isEmpty()) {
+        if (itemType.isEmpty() && !this.isLocked()) {
             compoundTag.remove("CrateItems");
+            compoundTag.remove("CrateLocked");
             if (compoundTag.isEmpty()) crateItem.removeTagKey("BlockEntityTag");
             return;
         }
 
-        CompoundTag storageTag = itemType.get().save(new CompoundTag());
-        storageTag.putShort(COUNT_KEY, (short) this.count);
-        compoundTag.put("CrateItems", storageTag);
+        compoundTag.putBoolean("CrateLocked", this.isLocked());
+
+        if (itemType.isPresent()) {
+            CompoundTag storageTag = itemType.get().save(new CompoundTag());
+            storageTag.putShort(COUNT_KEY, (short) this.count);
+            compoundTag.put("CrateItems", storageTag);
+        }
         *///?} else {
         crateItem.set(ModComponents.CRATE_CONTENTS.get(), this);
         crateItem.set(DataComponents.MAX_STACK_SIZE, this.count > 0 ? 1 : CommonConfig.EMPTY_CRATE_STACK_SIZE.get());
@@ -230,9 +243,9 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         }
 
         public Mutable setValues(CrateContents contents) {
+            this.setLocked(contents.locked.orElse(false));
             this.setItemType(contents.item().orElse(null));
             this.setCount(contents.count);
-            this.setLocked(contents.locked.orElse(false));
             return this;
         }
 

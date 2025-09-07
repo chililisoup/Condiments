@@ -168,6 +168,10 @@ fletchingTable {
             "data/condiments/item_modifier/* -> ../item_modifiers",
             "data/condiments/loot_table/blocks/* -> ../../loot_tables/blocks",
 
+            "data/**/tags/block/* -> ../blocks",
+            "data/**/tags/block/mineable/* -> ../../blocks/mineable",
+            "data/**/tags/item/* -> ../items",
+
             "data/condiments/recipe/* -> ../recipes",
             "data/condiments/recipe/accents/* -> ../../recipes/accents",
             "data/condiments/recipe/blackened_iron/* -> ../../recipes/blackened_iron",
