@@ -3,11 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "condiments:waxed_iron_block"
+      "item": "condiments:blackened_iron_block"
     }
   ],
   "result": {
     "count": 9,
-    "id": "minecraft:iron_ingot"
+    //$ recipe_result
+    "id":
+    "condiments:blackened_iron_ingot"
   }
 }

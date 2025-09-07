@@ -1,16 +1,18 @@
 {
   "type": "minecraft:crafting_shapeless",
   "category": "building",
-  "group": "polished_logs",
+  "group": "polished_wood",
   "ingredients": [
     {
-      "item": "minecraft:stripped_oak_log"
+      "item": "minecraft:stripped_oak_wood"
     },
     {
       "item": "minecraft:honeycomb"
     }
   ],
   "result": {
-    "id": "condiments:polished_oak_log"
+    //$ recipe_result
+    "id":
+    "condiments:polished_oak_wood"
   }
 }

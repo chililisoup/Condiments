@@ -24,6 +24,8 @@
     " Q "
   ],
   "result": {
-    "id": "condiments:redstone_led"
+    //$ recipe_result
+    "id":
+    "condiments:redstone_led"
   }
 }

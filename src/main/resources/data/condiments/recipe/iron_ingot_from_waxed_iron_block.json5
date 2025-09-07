@@ -3,13 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:rail"
-    },
-    {
-      "item": "minecraft:rail"
+      "item": "condiments:waxed_iron_block"
     }
   ],
   "result": {
-    "id": "condiments:rail_intersection"
+    "count": 9,
+    //$ recipe_result
+    "id":
+    "minecraft:iron_ingot"
   }
 }

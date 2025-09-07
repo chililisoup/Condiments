@@ -12,6 +12,8 @@
   ],
   "result": {
     "count": 8,
-    "id": "condiments:oak_accent"
+    //$ recipe_result
+    "id":
+    "condiments:oak_accent"
   }
 }

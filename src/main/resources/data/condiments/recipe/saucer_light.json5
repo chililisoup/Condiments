@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "condiments:blackened_iron_ingot"
+    },
+    "L": {
+      "item": "minecraft:redstone_lamp"
+    }
+  },
+  "pattern": [
+    " B ",
+    "BLB",
+    " B "
+  ],
+  "result": {
+    "count": 4,
+    //$ recipe_result
+    "id":
+    "condiments:saucer_light"
+  }
+}

@@ -12,7 +12,7 @@ pluginManagement {
         // MDG platform
         maven("https://maven.neoforged.net/releases/")
 
-        // Stonecutter
+        // Stonecutter, Fletching Table
         maven("https://maven.kikugie.dev/releases")
         maven("https://maven.kikugie.dev/snapshots")
     }

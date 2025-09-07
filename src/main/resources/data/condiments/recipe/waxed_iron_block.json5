@@ -10,6 +10,8 @@
     }
   ],
   "result": {
-    "id": "condiments:waxed_iron_block"
+    //$ recipe_result
+    "id":
+    "condiments:waxed_iron_block"
   }
 }

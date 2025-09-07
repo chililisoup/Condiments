@@ -13,6 +13,8 @@
   ],
   "result": {
     "count": 6,
-    "id": "condiments:oak_wall"
+    //$ recipe_result
+    "id":
+    "condiments:oak_wall"
   }
 }

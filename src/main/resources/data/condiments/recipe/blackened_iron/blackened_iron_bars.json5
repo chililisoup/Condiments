@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "building",
+  "category": "misc",
   "key": {
     "#": {
       "item": "condiments:blackened_iron_ingot"
@@ -8,10 +8,12 @@
   },
   "pattern": [
     "###",
-    "###",
     "###"
   ],
   "result": {
-    "id": "condiments:blackened_iron_block"
+    "count": 16,
+    //$ recipe_result
+    "id":
+    "condiments:blackened_iron_bars"
   }
 }

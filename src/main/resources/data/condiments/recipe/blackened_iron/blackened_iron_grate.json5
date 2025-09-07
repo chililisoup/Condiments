@@ -13,6 +13,8 @@
   ],
   "result": {
     "count": 4,
-    "id": "condiments:blackened_iron_grate"
+    //$ recipe_result
+    "id":
+    "condiments:blackened_iron_grate"
   }
 }

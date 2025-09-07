@@ -13,6 +13,8 @@
   ],
   "result": {
     "count": 3,
-    "id": "condiments:polished_oak_wood"
+    //$ recipe_result
+    "id":
+    "condiments:polished_oak_wood"
   }
 }

@@ -3,19 +3,20 @@
   "category": "misc",
   "key": {
     "B": {
-      "item": "condiments:blackened_iron_ingot"
+      "item": "minecraft:barrel"
     },
     "L": {
-      "item": "minecraft:redstone_lamp"
+      "tag": "minecraft:logs"
     }
   },
   "pattern": [
+    "LLL",
     " B ",
-    "BLB",
-    " B "
+    "LLL"
   ],
   "result": {
-    "id": "condiments:saucer_light",
-    "count": 4
+    //$ recipe_result
+    "id":
+    "condiments:crate"
   }
 }

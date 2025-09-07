@@ -1,6 +1,9 @@
 plugins {
+    kotlin("jvm") version "2.2.10"
+    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
     id("dev.kikugie.stonecutter")
     id("dev.isxander.modstitch.base")
+    id("dev.kikugie.fletching-table") version "0.1.0-alpha.16"
 }
 
 fun prop(name: String, consumer: (prop: String) -> Unit) {
@@ -54,6 +57,11 @@ stonecutter {
     swaps["public_now_protected"] = when {
         is120 -> "public"
         else -> "protected"
+    }
+
+    swaps ["recipe_result"] = when {
+        is120 -> "\"item\":"
+        else -> "\"id\":"
     }
 }
 
@@ -147,6 +155,31 @@ modstitch {
         configs.register(mod.id)
         if (isFabric) configs.register("${mod.id}-fabric")
         if (is120) configs.register("${mod.id}-1.20")
+    }
+}
+
+fletchingTable {
+    j52j.register("main") {
+        extension("json",
+            "data/condiments/**/*.json5"
+        )
+
+        if (is120) extension("json",
+            "data/condiments/item_modifier/* -> ../item_modifiers",
+            "data/condiments/loot_table/blocks/* -> ../../loot_tables/blocks",
+
+            "data/condiments/recipe/* -> ../recipes",
+            "data/condiments/recipe/accents/* -> ../../recipes/accents",
+            "data/condiments/recipe/blackened_iron/* -> ../../recipes/blackened_iron",
+            "data/condiments/recipe/polished_wood/* -> ../../recipes/polished_wood",
+            "data/condiments/recipe/wood_walls/* -> ../../recipes/wood_walls",
+
+            "data/condiments/advancement/recipes/* -> ../../advancements/recipes",
+            "data/condiments/advancement/recipes/accents/* -> ../../../advancements/recipes/accents",
+            "data/condiments/advancement/recipes/blackened_iron/* -> ../../../advancements/recipes/blackened_iron",
+            "data/condiments/advancement/recipes/polished_wood/* -> ../../../advancements/recipes/polished_wood",
+            "data/condiments/advancement/recipes/wood_walls/* -> ../../../advancements/recipes/wood_walls",
+        )
     }
 }
 
