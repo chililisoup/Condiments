@@ -101,8 +101,18 @@ public class ModBlocks {
 
         WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(VersionHelper.copyProperties(Blocks.IRON_BLOCK))));
         BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(VersionHelper.copyProperties(Blocks.IRON_BLOCK))));
-        BLACKENED_IRON_GRATE = addBlock(new Params("blackened_iron_grate", () -> new WaterloggedTransparentBlock(VersionHelper.copyProperties(Blocks.IRON_BARS))).cutout());
-        BLACKENED_IRON_BARS = addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(VersionHelper.copyProperties(Blocks.IRON_BARS))).cutout());
+        BLACKENED_IRON_GRATE = addBlock(new Params("blackened_iron_grate", () -> new WaterloggedTransparentBlock(
+                BlockBehaviour.Properties.of().strength(5.0F, 6.0F)
+                        //? if < 1.21 {
+                        /*.sound(SoundType.METAL)
+                        *///?} else
+                        .sound(SoundType.COPPER_GRATE)
+                        .mapColor(MapColor.METAL).noOcclusion().requiresCorrectToolForDrops().isValidSpawn(Blocks::never)
+                        .isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
+        )).cutout());
+        BLACKENED_IRON_BARS = addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(
+                VersionHelper.copyProperties(Blocks.IRON_BARS)
+        )).cutout());
         BLACKENED_IRON_DOOR = addBlock(new Params("blackened_iron_door", () -> new DoorBlock(
                 //? if < 1.21 {
                 /*VersionHelper.copyProperties(Blocks.IRON_DOOR), BlockSetType.IRON
@@ -124,7 +134,9 @@ public class ModBlocks {
                 .pushReaction(PushReaction.NORMAL)
         )));
 
-        COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(VersionHelper.copyProperties(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN))).noItem().cutout());
+        COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(
+                VersionHelper.copyProperties(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN)
+        )).noItem().cutout());
     }
 
     public static class Params {
