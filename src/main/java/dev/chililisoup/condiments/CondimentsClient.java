@@ -16,6 +16,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 //?} elif neoforge {
 /*import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.common.NeoForge;
+*///?} elif forge {
+/*import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.common.MinecraftForge;
 *///?}
 
 //$ client_only
@@ -35,10 +38,12 @@ public class CondimentsClient {
         HudRenderCallback.EVENT.register(CondimentsHud::render);
         //?} elif neoforge {
         /*NeoForge.EVENT_BUS.addListener(CondimentsClient::renderHud);
+        *///?} elif forge {
+        /*MinecraftForge.EVENT_BUS.addListener(CondimentsClient::renderHud);
         *///?}
     }
 
-    //? if neoforge {
+    //? if forgeLike {
     /*public static void renderHud(RenderGuiEvent.Post event) {
         CondimentsHud.render(event.getGuiGraphics(), event.getPartialTick());
     }
