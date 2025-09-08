@@ -1,6 +1,6 @@
 plugins {
     id("dev.kikugie.stonecutter")
-    id("dev.isxander.modstitch.base") version "0.6.3-unstable" apply false
+    id("dev.isxander.modstitch.base") version "0.6+" apply false
 }
 stonecutter active "1.21.1-fabric"
 

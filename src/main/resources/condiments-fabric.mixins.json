@@ -1,5 +1,6 @@
 {
   "required": true,
+  "minVersion": "0.8",
   "package": "dev.chililisoup.condiments.loaders.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
@@ -9,5 +10,6 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "refmap": "unnamed_mod.refmap.json"
 }

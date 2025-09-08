@@ -19,13 +19,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BlockItem;
 import org.apache.logging.log4j.Logger;
 
-//? if forge {
-/^import net.minecraft.util.profiling.ProfilerFiller;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-^///?}
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -171,12 +164,5 @@ public class ServerDynamicResourcesGeneratorOld extends DynServerResourcesGenera
         sink.addTag(polishedBlockTagBuilder, Registries.BLOCK);
         sink.addTag(polishedItemTagBuilder, Registries.ITEM);
     }
-
-    //? if forge {
-    /^@Override
-    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller1, Executor executor, Executor executor1) {
-        return null;
-    }
-    ^///?}
 }
 *///?}

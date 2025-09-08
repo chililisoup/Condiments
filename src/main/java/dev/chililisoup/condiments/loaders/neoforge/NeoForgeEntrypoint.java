@@ -11,11 +11,18 @@ import net.neoforged.fml.common.Mod;
 ^///?} else {
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 //?}
 
 @Mod(Condiments.MOD_ID)
 public class NeoForgeEntrypoint {
-    public NeoForgeEntrypoint(IEventBus modEventBus) {
+    //? if forge
+    /^private final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();^/
+
+    public NeoForgeEntrypoint(
+            //? if neoforge
+            /^IEventBus modEventBus^/
+    ) {
         Condiments.init();
 
         if (PlatHelper.isModLoaded("create"))

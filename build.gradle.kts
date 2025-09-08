@@ -160,6 +160,10 @@ modstitch {
 }
 
 fletchingTable {
+    mixins.create("main") {
+        automatic = false
+    }
+
     j52j.register("main") {
         extension("json",
             "data/condiments/**/*.json5"
@@ -197,7 +201,6 @@ dependencies {
 
     if (isFabric) {
         prop("deps.fabric_api") { modstitchModApi("net.fabricmc.fabric-api:fabric-api:${it}") }
-
         prop("deps.mod_menu") { modstitchModImplementation("com.terraformersmc:modmenu:${it}") }
     }
 
@@ -207,11 +210,16 @@ dependencies {
         compileOnly("org.jetbrains:annotations:20.1.0")
     }
 
-    // Anything else in the dependencies block will be used for all platforms.
     prop("deps.moonlight") {
         // Implementation crashes on Fabric for some reason, just download the mod and put it into the run's mod folder
-        // also crashes on forge cause idk how to get it deobfuscated
-        if (isFabric || isForge) modstitchModCompileOnly("maven.modrinth:moonlight:${it}-${loader}")
+        if (isFabric) modstitchModCompileOnly("maven.modrinth:moonlight:${it}-${loader}")
+        if (isForge) {
+            // ... and you're going to have to build Moonlight for this one, sorry. (will be in Moonlight/forge/build/libs/)
+            // This is just to compile, sadly. Haven't got it to work at all in dev runtime yet.
+            modstitchModCompileOnly(
+                files(rootProject.layout.projectDirectory.file("libs/moonlight-${it}-dev-shadow.jar"))
+            )
+        }
         else modstitchModImplementation("maven.modrinth:moonlight:${it}-${loader}")
     }
 
@@ -270,13 +278,14 @@ modstitch.onEnable {
 }
 
 tasks.named("jar") {
-    dependsOn("filterArtifacts")
+    dependsOn("fixArtifacts")
 }
-tasks.register<Delete>("filterArtifacts") {
+
+tasks.register<Delete>("fixArtifacts") {
     when (loader) {
         "fabric" -> delete(layout.buildDirectory.dir("resources/main/META-INF"))
-        "neoforge" -> delete(layout.buildDirectory.file("resources/main/META-INF/neoforge.mods.toml"))
-        "forge" -> delete(layout.buildDirectory.file("resources/main/META-INF/mods.toml"))
+        "neoforge" -> delete(layout.buildDirectory.file("resources/main/META-INF/mods.toml"))
+        "forge" -> delete(layout.buildDirectory.file("resources/main/META-INF/neoforge.mods.toml"))
     }
 }
 

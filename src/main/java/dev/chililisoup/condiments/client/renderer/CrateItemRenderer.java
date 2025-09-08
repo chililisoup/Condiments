@@ -21,7 +21,7 @@ public class CrateItemRenderer extends ItemStackRenderer {
     }
 
     @Override
-    public void /*? forge {*/ /*m_108829_ *//*?} else {*/ renderByItem /*?}*/(ItemStack crateStack, ItemDisplayContext transform, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
+    public void renderByItem(ItemStack crateStack, ItemDisplayContext transform, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
         Item item = crateStack.getItem();
         BlockState state = Block.byItem(item).defaultBlockState();
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, light, overlay);

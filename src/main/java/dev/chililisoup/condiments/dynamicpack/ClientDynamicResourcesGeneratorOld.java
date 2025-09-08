@@ -22,13 +22,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-//? if forge {
-/^import net.minecraft.util.profiling.ProfilerFiller;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-^///?}
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -286,12 +279,5 @@ public class ClientDynamicResourcesGeneratorOld extends DynClientResourcesGenera
     ) {
         from.copyRect(to, xFrom, yFrom * scale, xTo * scale, yTo * scale, width * scale, height * scale, mirrorX, mirrorY);
     }
-
-    //? if forge {
-    /^@Override
-    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller1, Executor executor, Executor executor1) {
-        return null;
-    }
-    ^///?}
 }
 *///?}
