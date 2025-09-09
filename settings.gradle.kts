@@ -23,6 +23,8 @@ plugins {
 }
 
 stonecutter {
+    kotlinController = true
+
     create(rootProject) {
         fun mc(mcVersion: String, name: String = mcVersion, loaders: Iterable<String>) =
             loaders.forEach { version("$name-$it", mcVersion).buildscript("build-$it.gradle.kts") }

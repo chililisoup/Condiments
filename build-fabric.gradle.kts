@@ -1,11 +1,11 @@
 plugins {
     id("java-library")
     id("idea")
-    id("fabric-loom") version "1.11-SNAPSHOT"
+    id("fabric-loom")
     kotlin("jvm")
     id("com.google.devtools.ksp")
     id("dev.kikugie.stonecutter")
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.17"
+    id("dev.kikugie.fletching-table.fabric")
     id("mod-build-common")
 }
 

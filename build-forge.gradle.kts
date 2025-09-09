@@ -1,11 +1,11 @@
 plugins {
     id("java-library")
     id("idea")
-    id("net.neoforged.moddev.legacyforge") version "2.0.107"
+    id("net.neoforged.moddev.legacyforge")
     kotlin("jvm")
     id("com.google.devtools.ksp")
     id("dev.kikugie.stonecutter")
-    id("dev.kikugie.fletching-table") version "0.1.0-alpha.17"
+    id("dev.kikugie.fletching-table")
     id("mod-build-common")
 }
 
