@@ -20,7 +20,7 @@ val minecraft = deps.minecraft
 val loader = deps.loader.id()
 
 version = mod.archiveVersion
-base.archivesName = mod.name
+base.archivesName = mod.id
 
 stonecutter {
     val config = mod.getStonecutterConfiguration(stonecutter::eval)
@@ -142,6 +142,10 @@ java {
 }
 
 tasks {
+    jar {
+        manifest.attributes["MixinConfigs"] = "${mod.id}.mixins.json"
+    }
+
     processResources {
         val props = mod.getProps()
         inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )

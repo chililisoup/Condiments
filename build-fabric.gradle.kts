@@ -20,7 +20,7 @@ val minecraft = deps.minecraft
 val loader = deps.loader.id()
 
 version = mod.archiveVersion
-base.archivesName = mod.name
+base.archivesName = mod.id
 
 stonecutter {
     val config = mod.getStonecutterConfiguration(stonecutter::eval)

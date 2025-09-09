@@ -37,7 +37,7 @@ class ModData {
 
     val deps = ModDeps()
 
-    val archiveVersion = "${this.deps.loader.formattedName}-${this.version}+${this.deps.minecraft}"
+    val archiveVersion = "${this.deps.loader.id()}-${this.version}+${this.deps.minecraft}"
 
     fun getProps(): Map<String, String> = mapOf(
         "mod_id" to this.id,
