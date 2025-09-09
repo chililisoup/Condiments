@@ -19,6 +19,9 @@ val deps = mod.deps
 val minecraft = deps.minecraft
 val loader = deps.loader.id()
 
+version = mod.archiveVersion
+base.archivesName = mod.name
+
 stonecutter {
     val config = mod.getStonecutterConfiguration(stonecutter::eval)
 
@@ -98,7 +101,6 @@ dependencies {
 }
 
 java {
-    withSourcesJar()
     val requiresJava21: Boolean = stonecutter.eval(stonecutter.current.version, ">=1.20.6")
     val javaVersion: JavaVersion =
         if (requiresJava21) JavaVersion.VERSION_21
@@ -113,20 +115,26 @@ tasks {
         inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
 
         filesMatching("fabric.mod.json") { expand(props) }
+    }
 
+    named("classes") {
         dependsOn("filterResources")
     }
 
     register<Delete>("filterResources") {
-        delete(layout.buildDirectory.dir("generated/stonecutter/main/resources/META-INF"))
+        delete(layout.buildDirectory.dir("resources/main/META-INF"))
+        delete(layout.buildDirectory.dir("resources/main/data/neoforge"))
 
-        dependsOn("stonecutterGenerate")
+        dependsOn("processResources")
     }
 
     register<Copy>("buildAndCollect") {
         group = "build"
 
+        from(layout.buildDirectory.dir("libs"))
+        include("*.jar")
         into(rootProject.layout.buildDirectory.file("libs/${mod.version}"))
+
         dependsOn("build")
     }
 
