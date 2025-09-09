@@ -2,14 +2,9 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-
-        // Loom platform
         maven("https://maven.fabricmc.net/")
-
-        // MDG platform
         maven("https://maven.neoforged.net/releases/")
-
-        // Stonecutter, Fletching Table
+        maven("https://maven.parchmentmc.org")
         maven("https://maven.kikugie.dev/releases")
         maven("https://maven.kikugie.dev/snapshots")
     }

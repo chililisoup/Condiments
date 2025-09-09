@@ -60,7 +60,11 @@ fletchingTable {
 // use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
 dependencies {
     minecraft("com.mojang:minecraft:${minecraft}")
-    mappings(loom.officialMojangMappings())
+    mappings(loom.layered {
+        officialMojangMappings()
+        prop("deps.parchment") { parchment("org.parchmentmc.data:parchment-${minecraft}:${it}@zip") }
+    })
+
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modApi("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 

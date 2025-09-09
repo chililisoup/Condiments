@@ -43,6 +43,11 @@ legacyForge {
             sourceSet(sourceSets.main.get())
         }
     }
+
+    parchment {
+        minecraftVersion = minecraft
+        prop("deps.parchment") { mappingsVersion = it }
+    }
 }
 
 mixin {
