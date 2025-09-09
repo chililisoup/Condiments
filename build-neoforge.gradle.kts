@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm")
     id("com.google.devtools.ksp")
     id("dev.kikugie.stonecutter")
-    id("dev.kikugie.fletching-table")
+    id("dev.kikugie.fletching-table.neoforge")
     id("mod-build-common")
 }
 
@@ -132,19 +132,19 @@ tasks {
         inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
 
         filesMatching("META-INF/neoforge.mods.toml") { expand(props) }
+
+        dependsOn("filterResources")
+    }
+
+    register<Delete>("filterResources") {
+        delete(layout.buildDirectory.file("generated/stonecutter/main/resources/fabric.mod.json"))
+        delete(layout.buildDirectory.file("generated/stonecutter/main/resources/META-INF/mods.toml"))
+
+        dependsOn("stonecutterGenerate")
     }
 
     named("createMinecraftArtifacts") {
         dependsOn("stonecutterGenerate")
-    }
-
-    named("jar") {
-        dependsOn("cleanupArtifacts")
-    }
-
-    register<Delete>("cleanupArtifacts") {
-        delete(layout.buildDirectory.file("resources/main/fabric.mod.json"))
-        delete(layout.buildDirectory.file("resources/main/META-INF/mods.toml"))
     }
 
     register<Copy>("buildAndCollect") {

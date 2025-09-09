@@ -58,6 +58,7 @@ fletchingTable {
 // use the modstitch.createProxyConfigurations(sourceSets["client"]) function.
 dependencies {
     minecraft("com.mojang:minecraft:${minecraft}")
+    @Suppress("UnstableApiUsage")
     mappings(loom.layered {
         officialMojangMappings()
         prop("deps.parchment") { parchment("org.parchmentmc.data:parchment-${minecraft}:${it}@zip") }
@@ -112,14 +113,14 @@ tasks {
         inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
 
         filesMatching("fabric.mod.json") { expand(props) }
+
+        dependsOn("filterResources")
     }
 
-    named("jar") {
-        dependsOn("cleanupArtifacts")
-    }
+    register<Delete>("filterResources") {
+        delete(layout.buildDirectory.dir("generated/stonecutter/main/resources/META-INF"))
 
-    register<Delete>("cleanupArtifacts") {
-        delete(layout.buildDirectory.dir("resources/main/META-INF"))
+        dependsOn("stonecutterGenerate")
     }
 
     register<Copy>("buildAndCollect") {

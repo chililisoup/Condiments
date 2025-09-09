@@ -7,7 +7,6 @@ plugins {
     val fletchingTableVersion = "0.1.0-alpha.17"
     id("dev.kikugie.fletching-table.fabric") version fletchingTableVersion apply false
     id("dev.kikugie.fletching-table.neoforge") version fletchingTableVersion apply false
-    id("dev.kikugie.fletching-table") version fletchingTableVersion apply false
 }
 
 stonecutter active "1.21.1-fabric"
