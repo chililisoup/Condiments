@@ -3,9 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
 
-        // Modstitch
-        maven("https://maven.isxander.dev/releases/")
-
         // Loom platform
         maven("https://maven.fabricmc.net/")
 
@@ -18,25 +15,12 @@ pluginManagement {
     }
 }
 
-
 plugins {
     id("dev.kikugie.stonecutter") version "0.7.10"
 }
 
 stonecutter {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
-
-    create(rootProject) {
-        fun mc(mcVersion: String, name: String = mcVersion, loaders: Iterable<String>) {
-            for (loader in loaders) {
-                version("$name-$loader", mcVersion)
-            }
-        }
-
-        mc("1.21.1", loaders = listOf("fabric", "neoforge"))
-        mc("1.20.1", loaders = listOf("fabric", "forge"))
-
+    create(rootProject, file("versions.json5")) {
         vcsVersion = "1.21.1-fabric"
     }
 }

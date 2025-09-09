@@ -9,6 +9,7 @@ import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
@@ -107,8 +108,8 @@ public class ModBlocks {
                         /*.sound(SoundType.METAL)
                         *///?} else
                         .sound(SoundType.COPPER_GRATE)
-                        .mapColor(MapColor.METAL).noOcclusion().requiresCorrectToolForDrops().isValidSpawn(Blocks::never)
-                        .isRedstoneConductor(Blocks::never).isSuffocating(Blocks::never).isViewBlocking(Blocks::never)
+                        .mapColor(MapColor.METAL).noOcclusion().requiresCorrectToolForDrops().isValidSpawn(ModBlocks::never)
+                        .isRedstoneConductor(ModBlocks::never).isSuffocating(ModBlocks::never).isViewBlocking(ModBlocks::never)
         )).cutout());
         BLACKENED_IRON_BARS = addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(
                 VersionHelper.copyProperties(Blocks.IRON_BARS)
@@ -211,5 +212,11 @@ public class ModBlocks {
 
     public static boolean always(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return true;
+    }
+    public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        return false;
+    }
+    public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entityType) {
+        return false;
     }
 }

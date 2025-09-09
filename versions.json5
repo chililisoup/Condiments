@@ -1,0 +1,9 @@
+{
+  "$schema": "https://codeberg.org/stonecutter/stonecutter/src/branch/0.7/tools/settings-schema.json",
+  versions: [
+    "1.21.1-fabric::build-fabric.gradle.kts",
+    "1.21.1-neoforge::build-neoforge.gradle.kts",
+    "1.20.1-fabric::build-fabric.gradle.kts",
+    "1.20.1-forge::build-forge.gradle.kts"
+  ]
+}
