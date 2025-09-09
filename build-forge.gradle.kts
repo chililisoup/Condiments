@@ -53,17 +53,16 @@ legacyForge {
 mixin {
     add(sourceSets.main.get(), "${mod.id}.refmap.json")
     config("${mod.id}.mixins.json")
-    config("${mod.id}-1.20.mixins.json")
 }
 
 fletchingTable {
     val config = mod.getFletchingTableConfiguration(stonecutter::eval)
 
     mixins.create("main") {
-        automatic = false
-
-        mixin("default", "condiments.mixins.json")
-        mixin("120", "condiments-120.mixins.json")
+        mixin("default", "condiments.mixins.json") {
+            env("MAIN")
+            env("CLIENT", "dev.chililisoup.condiments.mixin.client")
+        }
     }
 
     j52j.register("main") {

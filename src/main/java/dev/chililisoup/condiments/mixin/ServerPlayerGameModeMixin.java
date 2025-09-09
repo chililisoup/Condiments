@@ -1,5 +1,5 @@
 //? if fabric {
-package dev.chililisoup.condiments.loaders.fabric.mixin;
+package dev.chililisoup.condiments.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

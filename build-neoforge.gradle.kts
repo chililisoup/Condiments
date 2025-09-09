@@ -54,11 +54,10 @@ fletchingTable {
     val config = mod.getFletchingTableConfiguration(stonecutter::eval)
 
     mixins.create("main") {
-        automatic = false
-
-        mixin("default", "condiments.mixins.json")
-        if (stonecutter.eval(stonecutter.current.version, "<1.21"))
-            mixin("120", "condiments-120.mixins.json")
+        mixin("default", "condiments.mixins.json") {
+            env("MAIN")
+            env("CLIENT", "dev.chililisoup.condiments.mixin.client")
+        }
     }
 
     j52j.register("main") {
