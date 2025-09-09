@@ -16,7 +16,8 @@
   ],
   "client": [
     "client.BeaconRendererMixin",
-    "client.MultiPlayerGameModeMixin"
+    "client.MultiPlayerGameModeMixin",
+    "client.ItemInHandRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

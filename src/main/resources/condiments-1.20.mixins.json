@@ -4,8 +4,8 @@
   "package": "dev.chililisoup.condiments.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ItemStackMixin",
-    "ItemEntityMixin"
+    "ItemEntityMixin",
+    "ItemStackMixin"
   ],
   "client": [
   ],
