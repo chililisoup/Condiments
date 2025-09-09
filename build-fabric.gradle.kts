@@ -2,8 +2,8 @@ plugins {
     id("java-library")
     id("idea")
     id("fabric-loom") version "1.11-SNAPSHOT"
-    kotlin("jvm") version "2.2.10"
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+    kotlin("jvm")
+    id("com.google.devtools.ksp")
     id("dev.kikugie.stonecutter")
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.17"
     id("mod-build-common")
@@ -28,21 +28,8 @@ stonecutter {
 
 loom {
     runConfigs.all {
-        ideConfigGenerated(false)
-    }
-
-    runs {
-        register("testClient") {
-            client()
-            name = "Test Client"
-            vmArgs("-Dmixin.debug.export=true")
-            ideConfigGenerated(true)
-        }
-        register("testServer") {
-            server()
-            name = "Test Server"
-            ideConfigGenerated(true)
-        }
+        vmArgs("-Dmixin.debug.export=true")
+        ideConfigGenerated(true)
     }
 }
 
@@ -105,6 +92,16 @@ dependencies {
     prop("deps.ponder") { modCompileOnly("net.createmod.ponder:Ponder-${deps.loader.formattedName}-${minecraft}:${it}") }
     prop("deps.flywheel") { modCompileOnly("dev.engine-room.flywheel:flywheel-${loader}-api-${minecraft}:${it}") }
     prop("deps.registrate") { modCompileOnly("com.tterrag.registrate:Registrate:${it}") }
+}
+
+java {
+    withSourcesJar()
+    val requiresJava21: Boolean = stonecutter.eval(stonecutter.current.version, ">=1.20.6")
+    val javaVersion: JavaVersion =
+        if (requiresJava21) JavaVersion.VERSION_21
+        else JavaVersion.VERSION_17
+    targetCompatibility = javaVersion
+    sourceCompatibility = javaVersion
 }
 
 tasks {

@@ -2,8 +2,8 @@ plugins {
     id("java-library")
     id("idea")
     id("net.neoforged.moddev") version "2.0.107"
-    kotlin("jvm") version "2.2.10"
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+    kotlin("jvm")
+    id("com.google.devtools.ksp")
     id("dev.kikugie.stonecutter")
     id("dev.kikugie.fletching-table") version "0.1.0-alpha.17"
     id("mod-build-common")
@@ -30,10 +30,10 @@ neoForge {
     prop("deps.neoforge") { version = it }
 
     runs {
-        register("testClient") {
+        register("client") {
             client()
         }
-        register("testServer") {
+        register("server") {
             server()
         }
     }
@@ -110,6 +110,16 @@ dependencies {
     prop("deps.ponder") { compileOnly("net.createmod.ponder:Ponder-${deps.loader.formattedName}-${minecraft}:${it}") }
     prop("deps.flywheel") { compileOnly("dev.engine-room.flywheel:flywheel-${loader}-api-${minecraft}:${it}") }
     prop("deps.registrate") { compileOnly("com.tterrag.registrate:Registrate:${it}") }
+}
+
+java {
+    withSourcesJar()
+    val requiresJava21: Boolean = stonecutter.eval(stonecutter.current.version, ">=1.20.6")
+    val javaVersion: JavaVersion =
+        if (requiresJava21) JavaVersion.VERSION_21
+        else JavaVersion.VERSION_17
+    targetCompatibility = javaVersion
+    sourceCompatibility = javaVersion
 }
 
 tasks {
