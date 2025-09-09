@@ -133,16 +133,17 @@ tasks {
         val props = mod.getProps()
         inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
 
-        filesMatching("META-INF/neoforge.mods.toml") { expand(props) }
+        filesMatching("META-INF/*mods.toml") { expand(props) }
+    }
 
+    named("classes") {
         dependsOn("filterResources")
     }
 
     register<Delete>("filterResources") {
-        delete(layout.buildDirectory.file("generated/stonecutter/main/resources/fabric.mod.json"))
-        delete(layout.buildDirectory.file("generated/stonecutter/main/resources/META-INF/mods.toml"))
-
-        dependsOn("stonecutterGenerate")
+        delete(layout.buildDirectory.file("resources/main/fabric.mod.json"))
+        delete(layout.buildDirectory.file("resources/main/META-INF/mods.toml"))
+        dependsOn("processResources")
     }
 
     named("createMinecraftArtifacts") {
