@@ -125,11 +125,14 @@ dependencies {
     }
 
     prop("deps.create") {
-        modCompileOnly("com.simibubi.create:create-${minecraft}:${it}:slim") { isTransitive = false }
+        modImplementation("com.simibubi.create:create-${minecraft}:${it}:slim") { isTransitive = false }
     }
-    prop("deps.ponder") { modCompileOnly("net.createmod.ponder:Ponder-${deps.loader.formattedName}-${minecraft}:${it}") }
-    prop("deps.flywheel") { modCompileOnly("dev.engine-room.flywheel:flywheel-${loader}-api-${minecraft}:${it}") }
-    prop("deps.registrate") { modCompileOnly("com.tterrag.registrate:Registrate:${it}") }
+    prop("deps.ponder") { modImplementation("net.createmod.ponder:Ponder-${deps.loader.formattedName}-${minecraft}:${it}") }
+    prop("deps.flywheel") {
+        modCompileOnly("dev.engine-room.flywheel:flywheel-${loader}-api-${minecraft}:${it}")
+        modRuntimeOnly("dev.engine-room.flywheel:flywheel-${loader}-${minecraft}:${it}")
+    }
+    prop("deps.registrate") { modImplementation("com.tterrag.registrate:Registrate:${it}") }
 }
 
 java {

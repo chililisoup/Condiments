@@ -1,7 +1,6 @@
-//? if neoforge {
+//? if forgeLike {
 /*package dev.chililisoup.condiments.compat.create;
 
-import com.mojang.serialization.MapCodec;
 import com.simibubi.create.api.contraption.storage.SyncedMountedStorage;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorage;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
@@ -18,10 +17,16 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//? if < 1.21 {
+/^import com.mojang.serialization.Codec;
+^///?} else
+import com.mojang.serialization.MapCodec;
+
 import java.util.function.Function;
 
 public class CrateMountedStorage extends MountedItemStorage implements SyncedMountedStorage {
-    public static final MapCodec<CrateMountedStorage> CODEC = codec(CrateMountedStorage::new);
+    public static final /^? < 1.21 {^/ /^Codec ^//^?} else {^/ MapCodec /^?}^/<CrateMountedStorage> CODEC =
+            codec(CrateMountedStorage::new);
 
     private final CrateContents.SlottedMutable contents;
     private boolean dirty;
@@ -108,8 +113,9 @@ public class CrateMountedStorage extends MountedItemStorage implements SyncedMou
         return false;
     }
 
-    public static <T extends CrateMountedStorage> MapCodec<T> codec(Function<CrateContents, T> factory) {
-        return CrateContents.CODEC.xmap(factory, CrateMountedStorage::getContents).fieldOf("value");
+    public static <T extends CrateMountedStorage> /^? < 1.21 {^/ /^Codec ^//^?} else {^/ MapCodec /^?}^/<T> codec(Function<CrateContents, T> factory) {
+        return CrateContents.CODEC.xmap(factory, CrateMountedStorage::getContents)
+                /^? >= 1.21 {^/ .fieldOf("value") /^?}^/;
     }
 }
 *///?}

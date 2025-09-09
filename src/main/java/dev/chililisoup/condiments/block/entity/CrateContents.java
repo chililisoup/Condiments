@@ -1,5 +1,7 @@
 package dev.chililisoup.condiments.block.entity;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.extra.VersionHelper;
 import net.minecraft.core.Holder;
@@ -20,8 +22,6 @@ import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.component.ItemContainerContents;
 //?}
 
@@ -32,10 +32,9 @@ import static dev.chililisoup.condiments.block.entity.CrateBlockEntity.COUNT_KEY
 
 public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional<Boolean> locked) {
     public static final CrateContents EMPTY = new CrateContents();
-    //? if >= 1.21 {
     public static final Codec<CrateContents> CODEC;
+    //? if >= 1.21
     public static final StreamCodec<RegistryFriendlyByteBuf, CrateContents> STREAM_CODEC;
-    //?}
 
     public CrateContents(Optional<ItemRecord> itemRecord, int count) {
         this(itemRecord, count, Optional.empty());
@@ -172,7 +171,6 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
     }
     *///?}
 
-    //? if >= 1.21 {
     static {
         CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemRecord.ITEM_CODEC.optionalFieldOf("item").forGetter(CrateContents::itemRecord),
@@ -180,6 +178,8 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
                 Codec.BOOL.optionalFieldOf("locked").forGetter(CrateContents::locked)
         ).apply(instance, CrateContents::new));
 
+
+        //? if >= 1.21 {
         STREAM_CODEC = StreamCodec.composite(
                 ItemRecord.ITEM_STREAM_CODEC.apply(ByteBufCodecs::optional),
                 CrateContents::itemRecord,
@@ -189,46 +189,45 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
                 CrateContents::locked,
                 CrateContents::new
         );
+        //?}
     }
-    //?}
 
-    //? if >= 1.21 {
-    public record ItemRecord(Holder<Item> item, DataComponentPatch components) {
+    public record ItemRecord(
+            Holder<Item> item,
+            //? if < 1.21 {
+            /*Optional<CompoundTag> components
+            *///?} else
+            DataComponentPatch components
+    ) {
         public static final Codec<ItemRecord> ITEM_CODEC;
+        //? if >= 1.21
         public static final StreamCodec<RegistryFriendlyByteBuf, ItemRecord> ITEM_STREAM_CODEC;
 
         public ItemStack asItemStack() {
+            //? if < 1.21 {
+            /*ItemStack stack = new ItemStack(this.item, 1);
+            this.components.ifPresent(stack::setTag);
+            return stack;
+            *///?} else
             return new ItemStack(this.item, 1, this.components);
         }
 
         public static ItemRecord of(ItemStack item) {
             return new ItemRecord(
                     item.getItemHolder(),
+                    //? if < 1.21 {
+                    /*Optional.ofNullable(item.getTag())
+                    *///?} else
                     ((PatchedDataComponentMap) item.getComponents()).asPatch()
             );
         }
 
         static {
             ITEM_CODEC = ItemStack.CODEC.xmap(ItemRecord::of, ItemRecord::asItemStack);
+            //? if >= 1.21
             ITEM_STREAM_CODEC = ItemStack.STREAM_CODEC.map(ItemRecord::of, ItemRecord::asItemStack);
         }
     }
-    //?} else {
-    /*public record ItemRecord(Holder<Item> item, Optional<CompoundTag> components) {
-        public ItemStack asItemStack() {
-            ItemStack stack = new ItemStack(this.item, 1);
-            this.components.ifPresent(stack::setTag);
-            return stack;
-        }
-
-        public static ItemRecord of(ItemStack item) {
-            return new ItemRecord(
-                    item.getItemHolder(),
-                    Optional.ofNullable(item.getTag())
-            );
-        }
-    }
-    *///?}
 
     // I think the optionals scattered around are from circumventing a bug in some other mod IIRC
     public static class Mutable {

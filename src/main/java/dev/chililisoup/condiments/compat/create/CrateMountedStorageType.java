@@ -1,7 +1,6 @@
-//? if neoforge {
+//? if forgeLike {
 /*package dev.chililisoup.condiments.compat.create;
 
-import com.mojang.serialization.MapCodec;
 import com.simibubi.create.api.contraption.storage.item.MountedItemStorageType;
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
 import dev.chililisoup.condiments.block.entity.CrateContents;
@@ -11,10 +10,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+//? if < 1.21 {
+/^import com.mojang.serialization.Codec;
+^///?} else
+import com.mojang.serialization.MapCodec;
+
 import java.util.Optional;
 
 public class CrateMountedStorageType<T extends CrateMountedStorage> extends MountedItemStorageType<CrateMountedStorage> {
-    protected CrateMountedStorageType(MapCodec<T> codec) {
+    protected CrateMountedStorageType(/^? < 1.21 {^/ /^Codec ^//^?} else {^/ MapCodec /^?}^/<T> codec) {
         super(codec);
     }
 

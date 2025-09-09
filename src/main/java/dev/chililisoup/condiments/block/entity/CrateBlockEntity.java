@@ -36,6 +36,13 @@ import dev.chililisoup.condiments.config.CommonConfig;
 //? if forgeLike
 /*import dev.chililisoup.condiments.item.CrateItemHandler;*/
 
+//? if forge {
+/*import net.minecraft.core.Direction;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+*///?}
+
 import java.util.function.Predicate;
 
 //? if forgeLike
@@ -49,8 +56,25 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     private final CrateContents.SlottedMutable contents;
     private @Nullable Component name;
 
-    //? if forgeLike
-    /*public final CrateItemHandler handler;*/
+    //? if neoforge {
+    /*public final CrateItemHandler handler;
+    *///?} else if forge {
+    /*LazyOptional<CrateItemHandler> handler;
+
+    @Override
+    public <T> @NotNull LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return this.handler.cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.handler.invalidate();
+    }
+    *///?}
 
     @Override
     public int getContainerSize() {
@@ -61,12 +85,18 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         super(ModBlockEntities.CRATE_BE_TYPE.get(), pos, blockState);
         this.contents = new CrateContents().toSlottedMutable();
 
-        //? if forgeLike
-        /*this.handler = new CrateItemHandler(this);*/
+        //? if neoforge {
+        /*this.handler = new CrateItemHandler(this);
+         *///?} else if forge
+        /*this.handler = LazyOptional.of(() -> new CrateItemHandler(this));*/
     }
 
     public CrateContents getContents() {
         return this.contents.toImmutable();
+    }
+
+    public void loadCrateContents(CrateContents crateContents) {
+        this.contents.setValues(crateContents);
     }
 
     public ItemStack getItemType() {
@@ -368,10 +398,6 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
         CrateContents crateContents = componentInput.getOrDefault(ModComponents.CRATE_CONTENTS.get(), CrateContents.EMPTY);
         this.loadCrateContents(crateContents);
-    }
-
-    public void loadCrateContents(CrateContents crateContents) {
-        this.contents.setValues(crateContents);
     }
 
     @Override
