@@ -27,22 +27,3 @@ allprojects {
         maven("https://maven.ithundxr.dev/mirror") // Registrate (1.20.1)
     }
 }
-
-subprojects {
-    tasks {
-        register<Delete>("buildCollectAndClean") {
-            group = "build"
-
-            delete(layout.buildDirectory.dir("libs"))
-            delete(layout.buildDirectory.dir("devlibs"))
-
-            dependsOn("buildAndCollect")
-        }
-
-        register<Delete>("deleteBuildCache") {
-            group = "build"
-
-            delete(layout.buildDirectory)
-        }
-    }
-}
