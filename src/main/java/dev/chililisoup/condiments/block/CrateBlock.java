@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -37,7 +36,9 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.ItemInteractionResult;
-//?}
+//?} else {
+/*import net.minecraft.world.entity.LivingEntity;
+*///?}
 
 import java.util.Objects;
 import java.util.Optional;
@@ -101,47 +102,55 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
                pos.y < 0.125 || pos.y > 0.875;
     }
 
+    private static Optional<CrateBlockEntity> checkUseAndGet(BlockState state, Level level, BlockPos pos, BlockHitResult hitResult) {
+        boolean hitFace = hitResult.getDirection() == state.getValue(ORIENTATION).front();
+
+        if (!(level.getBlockEntity(pos) instanceof CrateBlockEntity crateBlockEntity && hitFace))
+            return Optional.empty();
+
+        Optional<Vec2> hitPos = getHitPosition(hitResult, state.getValue(ORIENTATION).front());
+        if (hitPos.isEmpty() || isNotInBounds(hitPos.get()))
+            return Optional.empty();
+
+        return Optional.of(crateBlockEntity);
+    }
+
     @Override
     //? if < 1.21 {
-    /*public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    /*public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
     *///?} else {
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
     //?}
-        boolean hitFace = hitResult.getDirection() == state.getValue(ORIENTATION).front();
-
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity && hitFace)) return InteractionResult.PASS;
-
-        Optional<Vec2> hitPos = getHitPosition(hitResult, state.getValue(ORIENTATION).front());
-        if (hitPos.isEmpty()) return InteractionResult.PASS;
-        if (isNotInBounds(hitPos.get())) return InteractionResult.PASS;
+        Optional<CrateBlockEntity> crateBlockEntity = checkUseAndGet(state, level, pos, hitResult);
+        if (crateBlockEntity.isEmpty()) return InteractionResult.PASS;
 
         if (!level.isClientSide) {
             //? if < 1.21 {
-            /*player.setItemInHand(hand, ((CrateBlockEntity) blockEntity).tryAddStack(player.getItemInHand(hand), player));
+            /*ItemStack stack = player.getItemInHand(hand);
+            if (crateBlockEntity.get().canAddItem(stack))
+                player.setItemInHand(hand, crateBlockEntity.get().tryAddStack(player.getItemInHand(hand), player));
+            else if (player.swingTime > 0) crateBlockEntity.get().tryAddStack(ItemStack.EMPTY, player);
             *///?} else
-            ((CrateBlockEntity) blockEntity).tryAddStack(ItemStack.EMPTY, player);
+            if (player.swingTime > 0) crateBlockEntity.get().tryAddStack(ItemStack.EMPTY, player);
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     //? if >= 1.21 {
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        boolean hitFace = hitResult.getDirection() == state.getValue(ORIENTATION).front();
+        Optional<CrateBlockEntity> crateBlockEntity = checkUseAndGet(state, level, pos, hitResult);
+        if (crateBlockEntity.isEmpty())
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity && hitFace)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-
-        Optional<Vec2> hitPos = getHitPosition(hitResult, state.getValue(ORIENTATION).front());
-        if (hitPos.isEmpty()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        if (isNotInBounds(hitPos.get())) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!crateBlockEntity.get().canAddItem(stack))
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         if (!level.isClientSide)
-            player.setItemInHand(hand, ((CrateBlockEntity) blockEntity).tryAddStack(player.getItemInHand(hand), player));
+            player.setItemInHand(hand, crateBlockEntity.get().tryAddStack(stack, player));
 
-        return ItemInteractionResult.SUCCESS;
+        return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
     //?}
 
@@ -149,20 +158,12 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     public void attack(BlockState state, Level level, BlockPos pos, Player player) {
         if (level.isClientSide) return;
 
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity)) return;
-
-        BlockHitResult hitResult = getHitResult(level, pos, player);
-        if (hitResult.getDirection() != state.getValue(ORIENTATION).front()) return;
-
-        Optional<Vec2> hitPos = getHitPosition(hitResult, state.getValue(ORIENTATION).front());
-
-        if (hitPos.isEmpty()) return;
-        if (isNotInBounds(hitPos.get())) return;
+        Optional<CrateBlockEntity> crateBlockEntity = checkUseAndGet(state, level, pos, getHitResult(level, pos, player));
+        if (crateBlockEntity.isEmpty()) return;
 
         ItemStack itemStack = player.isShiftKeyDown() ?
-                crateBlockEntity.requestOneStack() :
-                crateBlockEntity.requestOne();
+                crateBlockEntity.get().requestOneStack() :
+                crateBlockEntity.get().requestOne();
         player.addItem(itemStack);
 
         if (itemStack.getCount() > 0) {
@@ -275,7 +276,7 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
 
     //? if < 1.21 {
     /*@Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         if (!stack.hasCustomHoverName()) return;
         if (level.getBlockEntity(pos) instanceof CrateBlockEntity blockEntity)
             blockEntity.setCustomName(stack.getHoverName());

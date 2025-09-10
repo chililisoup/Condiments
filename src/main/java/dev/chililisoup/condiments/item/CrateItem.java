@@ -235,11 +235,11 @@ public class CrateItem extends BlockItem
         if (crateContents.count() <= 0)
             return super.place(context);
 
-        Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
-        if (itemRecord.isEmpty())
+        CrateContents.ItemRecord itemRecord = crateContents.itemRecord();
+        if (itemRecord == null)
             return super.place(context);
 
-        ItemStack contentsStack = itemRecord.get().asItemStack();
+        ItemStack contentsStack = itemRecord.asItemStack();
         if (contentsStack.getItem() instanceof BlockItem blockItem) {
             BlockPlaceContext contentsContext = new BlockPlaceContext(
                     player,

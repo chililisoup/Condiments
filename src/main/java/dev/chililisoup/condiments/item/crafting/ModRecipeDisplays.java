@@ -11,14 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class ModRecipeDisplays {
     //? if < 1.21 {
@@ -72,9 +70,13 @@ public class ModRecipeDisplays {
 
         for (ItemStack input : ingredients.getItems()) {
             ItemStack output = input.copy();
-            new CrateContents(Optional.empty(), 0, Optional.of(true)).updateCrateItem(output);
+            new CrateContents(null, 0, true).updateCrateItem(output);
 
-            NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.REDSTONE_TORCH));
+            NonNullList<Ingredient> inputs = NonNullList.of(
+                    Ingredient.EMPTY,
+                    Ingredient.of(input),
+                    Ingredient.of(ModItemTags.CRATE_LOCKING_ITEMS)
+            );
 
             ResourceLocation loc = Condiments.loc("/crate_coloring_" + "crate_locking_" + input.getDescriptionId());
             //? if < 1.21 {
@@ -98,9 +100,13 @@ public class ModRecipeDisplays {
 
         for (ItemStack output : ingredients.getItems()) {
             ItemStack input = output.copy();
-            new CrateContents(Optional.empty(), 0, Optional.of(true)).updateCrateItem(input);
+            new CrateContents(null, 0, true).updateCrateItem(input);
 
-            NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(input), Ingredient.of(Items.STICK));
+            NonNullList<Ingredient> inputs = NonNullList.of(
+                    Ingredient.EMPTY,
+                    Ingredient.of(input),
+                    Ingredient.of(ModItemTags.CRATE_UNLOCKING_ITEMS)
+            );
 
             ResourceLocation loc = Condiments.loc("/crate_unlocking_" + input.getDescriptionId());
             //? if < 1.21 {

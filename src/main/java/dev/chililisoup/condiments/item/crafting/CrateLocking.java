@@ -3,9 +3,9 @@ package dev.chililisoup.condiments.item.crafting;
 import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.block.entity.CrateContents;
+import dev.chililisoup.condiments.reg.ModItemTags;
 import dev.chililisoup.condiments.reg.ModRecipeSerializers;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -40,7 +40,7 @@ public class CrateLocking extends CustomRecipe {
             if (!itemStack.isEmpty()) {
                 if (itemStack.getItem() instanceof CrateItem) ++i;
                 else {
-                    if (!(itemStack.is(Items.REDSTONE_TORCH))) return false;
+                    if (!(itemStack.is(ModItemTags.CRATE_LOCKING_ITEMS))) return false;
                     ++j;
                 }
                 if (j > 1 || i > 1) return false;

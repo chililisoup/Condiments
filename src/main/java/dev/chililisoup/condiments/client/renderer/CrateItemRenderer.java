@@ -12,8 +12,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.util.Optional;
-
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class CrateItemRenderer extends ItemStackRenderer {
@@ -27,11 +25,11 @@ public class CrateItemRenderer extends ItemStackRenderer {
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffer, light, overlay);
 
         CrateContents crateContents = CrateContents.fromCrateItem(crateStack);
-        Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
-        itemRecord.ifPresent(record -> {
-            FrontAndTop fat = state.getValue(BlockStateProperties.ORIENTATION);
-            Vec3i norm = fat.front().getNormal();
-            CrateRenderer.renderItem(null, record.asItemStack(), poseStack, buffer, light, overlay, fat, norm, Minecraft.getInstance().getItemRenderer());
-        });
+        CrateContents.ItemRecord itemRecord = crateContents.itemRecord();
+        if (itemRecord == null) return;
+
+        FrontAndTop fat = state.getValue(BlockStateProperties.ORIENTATION);
+        Vec3i norm = fat.front().getNormal();
+        CrateRenderer.renderItem(null, itemRecord.asItemStack(), poseStack, buffer, light, overlay, fat, norm, Minecraft.getInstance().getItemRenderer());
     }
 }

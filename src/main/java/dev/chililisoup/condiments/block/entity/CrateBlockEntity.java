@@ -44,7 +44,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import java.util.function.Predicate;
 
-//? if forgeLike || < 1.21
+//? if forgeLike
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateBlockEntity extends BlockEntity implements Container, Nameable {
     //? if < 1.21 {
@@ -198,6 +198,10 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
+        return this.canAddItem(stack);
+    }
+
+    public boolean canAddItem(ItemStack stack) {
         return this.contents.canAdd(stack);
     }
 

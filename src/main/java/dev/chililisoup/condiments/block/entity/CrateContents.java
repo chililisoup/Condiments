@@ -29,18 +29,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static dev.chililisoup.condiments.block.entity.CrateBlockEntity.COUNT_KEY;
 
-public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional<Boolean> locked) {
+public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean locked) {
     public static final CrateContents EMPTY = new CrateContents();
     public static final Codec<CrateContents> CODEC;
     //? if >= 1.21
     public static final StreamCodec<RegistryFriendlyByteBuf, CrateContents> STREAM_CODEC;
 
-    public CrateContents(Optional<ItemRecord> itemRecord, int count) {
-        this(itemRecord, count, Optional.empty());
+    public CrateContents(@Nullable ItemRecord itemRecord, int count) {
+        this(itemRecord, count, false);
     }
 
     public CrateContents() {
-        this(Optional.empty(), 0);
+        this(null, 0);
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private CrateContents(Optional<ItemRecord> itemRecord, int count, Optional<Boolean> locked) {
+        this(itemRecord.orElse(null), count, locked.orElse(false));
+    }
+
+    private Optional<ItemRecord> itemRecordOptional() {
+        return Optional.ofNullable(this.itemRecord);
+    }
+
+    private Optional<Boolean> lockedOptional() {
+        return this.locked ? Optional.of(true) : Optional.empty();
     }
 
     public static CrateContents fromCrateItem(ItemStack crateItem) {
@@ -93,11 +106,11 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
     }
 
     public Optional<ItemStack> item() {
-        return this.itemRecord.flatMap(itemRecord -> Optional.of(itemRecord.asItemStack()));
+        return this.itemRecordOptional().flatMap(itemRecord -> Optional.of(itemRecord.asItemStack()));
     }
 
     public boolean isLocked() {
-        return this.locked.orElse(false);
+        return this.locked;
     }
 
     public static int maxStacks() {
@@ -172,20 +185,20 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
 
     static {
         CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ItemRecord.ITEM_CODEC.optionalFieldOf("item").forGetter(CrateContents::itemRecord),
+                ItemRecord.ITEM_CODEC.optionalFieldOf("item").forGetter(CrateContents::itemRecordOptional),
                 Codec.INT.fieldOf(COUNT_KEY).forGetter(CrateContents::count),
-                Codec.BOOL.optionalFieldOf("locked").forGetter(CrateContents::locked)
+                Codec.BOOL.optionalFieldOf("locked").forGetter(CrateContents::lockedOptional)
         ).apply(instance, CrateContents::new));
 
 
         //? if >= 1.21 {
         STREAM_CODEC = StreamCodec.composite(
                 ItemRecord.ITEM_STREAM_CODEC.apply(ByteBufCodecs::optional),
-                CrateContents::itemRecord,
+                CrateContents::itemRecordOptional,
                 ByteBufCodecs.INT,
                 CrateContents::count,
                 ByteBufCodecs.BOOL.apply(ByteBufCodecs::optional),
-                CrateContents::locked,
+                CrateContents::lockedOptional,
                 CrateContents::new
         );
         //?}
@@ -241,7 +254,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
         }
 
         public Mutable setValues(CrateContents contents) {
-            this.setLocked(contents.locked.orElse(false));
+            this.setLocked(contents.locked);
             this.setItemType(contents.item().orElse(null));
             this.setCount(contents.count);
             return this;

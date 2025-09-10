@@ -44,6 +44,7 @@ public class CrateItemHandler extends ItemStackHandler {
     protected void onContentsChanged(int slot) {
         this.crateBlockEntity.setItem(slot, this.getStackInSlot(slot));
     }
+
     //?} else {
     /^@Override
     public int getSlots() {

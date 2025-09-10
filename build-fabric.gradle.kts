@@ -63,22 +63,6 @@ fletchingTable {
     }
 }
 
-repositories {
-    maven("https://mvn.devos.one/releases") // Porting Lib releases
-    maven("https://mvn.devos.one/snapshots") // Create and several dependencies
-    maven("https://modmaven.dev/") // Flywheel
-    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
-    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven") // Forge Config API Port
-
-    maven("https://jitpack.io/") // Fabric ASM for Porting Lib
-        .content { includeGroupAndSubgroups("com.github") }
-
-    maven("https://maven.shedaniel.me") // Cloth Config, REI
-    maven("https://maven.blamejared.com") // JEI
-
-    maven("https://maven.terraformersmc.com/releases") // Mod Menu, EMI
-}
-
 configurations.configureEach {
     resolutionStrategy {
         // make sure the desired version of loader is used. Sometimes old versions are pulled in transitively.
@@ -124,7 +108,19 @@ dependencies {
     }
 
     prop("deps.create") {
-        modImplementation("com.simibubi.create:create-fabric-${minecraft}:${it}")
+        modCompileOnly("com.simibubi.create:create-fabric-${minecraft}:${it}") { isTransitive = false }
+    }
+    prop("deps.flywheel") {
+        modCompileOnly("com.jozufozu.flywheel:flywheel-${loader}-${minecraft}:${it}") { isTransitive = false }
+    }
+    prop("deps.registrate") {
+        modCompileOnly("com.tterrag.registrate_fabric:Registrate:${it}") { isTransitive = false }
+    }
+    prop("deps.porting_lib") {
+        // uncomment to check modules if needed
+//        modCompileOnly("io.github.fabricators_of_create.Porting-Lib:base:${it}+${minecraft}")
+        modCompileOnly("io.github.fabricators_of_create.Porting-Lib:core:${it}+${minecraft}") { isTransitive = false }
+        modCompileOnly("io.github.fabricators_of_create.Porting-Lib:transfer:${it}+${minecraft}") { isTransitive = false }
     }
 }
 

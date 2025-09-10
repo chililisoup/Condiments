@@ -13,8 +13,6 @@ import net.minecraft.world.item.ItemStack;
 //? if >= 1.21
 import net.minecraft.client.DeltaTracker;
 
-import java.util.Optional;
-
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class CondimentsHud {
@@ -37,10 +35,10 @@ public class CondimentsHud {
         if (stack.isEmpty() || !(stack.getItem() instanceof CrateItem)) return;
 
         CrateContents crateContents = CrateContents.fromCrateItem(stack);
-        Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
-        if (itemRecord.isEmpty()) return;
+        CrateContents.ItemRecord itemRecord = crateContents.itemRecord();
+        if (itemRecord == null) return;
 
-        ItemStack contentsStack = itemRecord.get().asItemStack();
+        ItemStack contentsStack = itemRecord.asItemStack();
         Font font = Minecraft.getInstance().font;
         String count = String.format("x%d", crateContents.count());
 

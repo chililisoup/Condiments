@@ -19,8 +19,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-import java.util.Optional;
-
 @Mixin(ItemInHandRenderer.class)
 public abstract class ItemInHandRendererMixin {
     @Unique
@@ -31,10 +29,10 @@ public abstract class ItemInHandRendererMixin {
         CrateContents crateContents = CrateContents.fromCrateItem(itemStack);
         if (crateContents.count() <= 0) return null;
 
-        Optional<CrateContents.ItemRecord> itemRecord = crateContents.itemRecord();
-        if (itemRecord.isEmpty()) return null;
+        CrateContents.ItemRecord itemRecord = crateContents.itemRecord();
+        if (itemRecord == null) return null;
 
-        ItemStack contentsStack = itemRecord.get().asItemStack();
+        ItemStack contentsStack = itemRecord.asItemStack();
         if (contentsStack.getItem() instanceof BlockItem) return contentsStack;
         return null;
     }
