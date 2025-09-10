@@ -18,14 +18,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //? if < 1.21 {
-/^import com.mojang.serialization.Codec;
-^///?} else
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
+//?} else
+/^import com.mojang.serialization.MapCodec;^/
 
 import java.util.function.Function;
 
 public class CrateMountedStorage extends MountedItemStorage implements SyncedMountedStorage {
-    public static final /^? < 1.21 {^/ /^Codec ^//^?} else {^/ MapCodec /^?}^/<CrateMountedStorage> CODEC =
+    public static final /^? < 1.21 {^/ Codec /^?} else {^/ /^MapCodec ^//^?}^/<CrateMountedStorage> CODEC =
             codec(CrateMountedStorage::new);
 
     private final CrateContents.SlottedMutable contents;
@@ -113,9 +113,9 @@ public class CrateMountedStorage extends MountedItemStorage implements SyncedMou
         return false;
     }
 
-    public static <T extends CrateMountedStorage> /^? < 1.21 {^/ /^Codec ^//^?} else {^/ MapCodec /^?}^/<T> codec(Function<CrateContents, T> factory) {
+    public static <T extends CrateMountedStorage> /^? < 1.21 {^/ Codec /^?} else {^/ /^MapCodec ^//^?}^/<T> codec(Function<CrateContents, T> factory) {
         return CrateContents.CODEC.xmap(factory, CrateMountedStorage::getContents)
-                /^? >= 1.21 {^/ .fieldOf("value") /^?}^/;
+                /^? >= 1.21 {^/ /^.fieldOf("value") ^//^?}^/;
     }
 }
 *///?}

@@ -21,9 +21,15 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.minecraftforge.common.MinecraftForge;
 *///?}
 
+//? if fabric && < 1.21
+/*import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;*/
+
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class CondimentsClient {
+    //? if fabric && < 1.21
+    /*public static boolean CREATE_LOADED;*/
+
     public static void init() {
         ClientConfig.init();
         ClientRegistry.init();
@@ -46,6 +52,12 @@ public class CondimentsClient {
     //? if forgeLike {
     /*public static void renderHud(RenderGuiEvent.Post event) {
         CondimentsHud.render(event.getGuiGraphics(), event.getPartialTick());
+    }
+    *///?}
+
+    //? if fabric && < 1.21 {
+    /*static {
+        CREATE_LOADED = PlatHelper.isModLoaded("create");
     }
     *///?}
 }

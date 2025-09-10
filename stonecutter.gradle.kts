@@ -33,5 +33,8 @@ allprojects {
         maven("https://maven.createmod.net") // Create, Ponder, Flywheel
         maven("https://maven.ithundxr.dev/snapshots") // Registrate
         maven("https://maven.ithundxr.dev/mirror") // Registrate (1.20.1)
+
+        maven("https://server.bbkr.space/artifactory/libs-release/")
+        maven("https://maven.quiltmc.org/repository/release")
     }
 }

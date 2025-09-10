@@ -22,11 +22,19 @@ val loader = deps.loader.id()
 version = mod.archiveVersion
 base.archivesName = mod.id
 
+val javaVersion: JavaVersion =
+    if (stonecutter.eval(stonecutter.current.version, ">=1.20.6"))
+        JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+
 stonecutter {
     val config = mod.getStonecutterConfiguration(stonecutter::eval)
 
     config.constants.forEach { entry -> constants[entry.key] = entry.value }
     config.swaps.forEach { entry -> swaps[entry.key] = entry.value }
+    config.replacements.forEach { entry -> replacements.string {
+        direction = entry.value
+        replace(entry.key.first, entry.key.second)
+    } }
 }
 
 loom {
@@ -52,6 +60,29 @@ fletchingTable {
         )
 
         config.extensions.forEach { entry -> extension(entry.first, *entry.second) }
+    }
+}
+
+repositories {
+    maven("https://mvn.devos.one/releases") // Porting Lib releases
+    maven("https://mvn.devos.one/snapshots") // Create and several dependencies
+    maven("https://modmaven.dev/") // Flywheel
+    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
+    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven") // Forge Config API Port
+
+    maven("https://jitpack.io/") // Fabric ASM for Porting Lib
+        .content { includeGroupAndSubgroups("com.github") }
+
+    maven("https://maven.shedaniel.me") // Cloth Config, REI
+    maven("https://maven.blamejared.com") // JEI
+
+    maven("https://maven.terraformersmc.com/releases") // Mod Menu, EMI
+}
+
+configurations.configureEach {
+    resolutionStrategy {
+        // make sure the desired version of loader is used. Sometimes old versions are pulled in transitively.
+        force("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     }
 }
 
@@ -93,28 +124,30 @@ dependencies {
     }
 
     prop("deps.create") {
-        modCompileOnly("com.simibubi.create:create-${minecraft}:${it}:slim") { isTransitive = false }
+        modImplementation("com.simibubi.create:create-fabric-${minecraft}:${it}")
     }
-    prop("deps.ponder") { modCompileOnly("net.createmod.ponder:Ponder-${deps.loader.formattedName}-${minecraft}:${it}") }
-    prop("deps.flywheel") { modCompileOnly("dev.engine-room.flywheel:flywheel-${loader}-api-${minecraft}:${it}") }
-    prop("deps.registrate") { modCompileOnly("com.tterrag.registrate:Registrate:${it}") }
 }
 
 java {
-    val requiresJava21: Boolean = stonecutter.eval(stonecutter.current.version, ">=1.20.6")
-    val javaVersion: JavaVersion =
-        if (requiresJava21) JavaVersion.VERSION_21
-        else JavaVersion.VERSION_17
     targetCompatibility = javaVersion
     sourceCompatibility = javaVersion
 }
 
 tasks {
     processResources {
-        val props = mod.getProps()
-        inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
+        fun inputProps(props: Map<String, Any>): Map<String, Any> {
+            inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
+            return props
+        }
 
+        val props = inputProps(mod.getProps())
         filesMatching("fabric.mod.json") { expand(props) }
+
+        val mixinProps = inputProps(mapOf(
+            "compatibility_level" to "JAVA_${javaVersion.majorVersion}",
+            "appendable_refmap" to ""
+        ))
+        filesMatching("*.mixins.json") { expand(mixinProps) }
     }
 
     named("classes") {

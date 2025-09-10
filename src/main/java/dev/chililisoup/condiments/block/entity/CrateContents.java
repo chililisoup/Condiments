@@ -3,7 +3,6 @@ package dev.chililisoup.condiments.block.entity;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.condiments.config.CommonConfig;
-import dev.chililisoup.condiments.extra.VersionHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -321,7 +320,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
             if (isItemUnsafe(stack)) return false;
             ItemStack itemType = this.getItemType();
 
-            return itemType.isEmpty() || VersionHelper.itemsMatch(itemType, stack);
+            return itemType.isEmpty() || ItemStack.isSameItemSameComponents(itemType, stack);
         }
 
         public int getToAdd(ItemStack stack) {
@@ -444,7 +443,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
                     for (int i = 0; i < this.itemStacks.size() && remaining > 0; i++) {
                         ItemStack stack = this.itemStacks.get(i);
 
-                        if (VersionHelper.itemsMatch(stack, itemType)) {
+                        if (ItemStack.isSameItemSameComponents(stack, itemType)) {
                             int free = maxStackSize - stack.getCount();
                             if (free <= 0) continue;
 
@@ -463,7 +462,7 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
                     for (int i = this.itemStacks.size() - 1; i >= 0 && remaining > 0; i--) {
                         ItemStack stack = this.itemStacks.get(i);
 
-                        if (!VersionHelper.itemsMatch(stack, itemType))
+                        if (!ItemStack.isSameItemSameComponents(stack, itemType))
                             continue;
 
                         int toRemove = Math.min(stack.getCount(), remaining);
@@ -478,6 +477,10 @@ public record CrateContents(Optional<ItemRecord> itemRecord, int count, Optional
 
         public ItemStack getSlot(int slot) {
             return this.itemStacks.get(slot);
+        }
+
+        public ItemStack[] getSlottedStacks() {
+            return this.itemStacks.stream().map(ItemStack::copy).toArray(ItemStack[]::new);
         }
 
         public boolean setStackInSlot(int slot, @NotNull ItemStack stack) {

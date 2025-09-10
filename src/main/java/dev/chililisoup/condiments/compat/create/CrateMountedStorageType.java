@@ -11,14 +11,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 //? if < 1.21 {
-/^import com.mojang.serialization.Codec;
-^///?} else
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
+//?} else
+/^import com.mojang.serialization.MapCodec;^/
 
 import java.util.Optional;
 
 public class CrateMountedStorageType<T extends CrateMountedStorage> extends MountedItemStorageType<CrateMountedStorage> {
-    protected CrateMountedStorageType(/^? < 1.21 {^/ /^Codec ^//^?} else {^/ MapCodec /^?}^/<T> codec) {
+    protected CrateMountedStorageType(/^? < 1.21 {^/ Codec /^?} else {^/ /^MapCodec ^//^?}^/<T> codec) {
         super(codec);
     }
 

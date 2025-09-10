@@ -1,8 +1,8 @@
 package dev.chililisoup.condiments.reg;
 
 import dev.chililisoup.condiments.Condiments;
-import dev.chililisoup.condiments.extra.VersionHelper;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -18,6 +18,6 @@ public class ModBlockTags {
     }
 
     private static TagKey<Block> createCommon(String name) {
-        return TagKey.create(Registries.BLOCK, VersionHelper.resourceLocation("c", name));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", name));
     }
 }

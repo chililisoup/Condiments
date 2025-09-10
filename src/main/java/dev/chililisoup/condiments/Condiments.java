@@ -1,7 +1,6 @@
 package dev.chililisoup.condiments;
 
 import dev.chililisoup.condiments.config.CommonConfig;
-import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockSetVariants;
 import dev.chililisoup.condiments.reg.*;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
@@ -21,7 +20,7 @@ public class Condiments {
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	public static ResourceLocation loc(String id) {
-		return VersionHelper.resourceLocation(MOD_ID, id);
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
 	}
 
 	public static void init() {

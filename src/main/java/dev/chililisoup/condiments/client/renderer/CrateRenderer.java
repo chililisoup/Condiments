@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -26,12 +27,18 @@ import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
+//? if fabric && < 1.21 {
+/*import dev.chililisoup.condiments.CondimentsClient;
+import dev.chililisoup.condiments.compat.create.client.CreateRenderHelper;
+*///?}
+
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-//? if forgeLike
+//? if forgeLike || < 1.21
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
     private final ItemRenderer itemRenderer;
@@ -60,6 +67,11 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
 
         FrontAndTop fat = blockEntity.getBlockState().getValue(BlockStateProperties.ORIENTATION);
         Vec3i norm = fat.front().getNormal();
+        //? if fabric && < 1.21 {
+        /*int light = CondimentsClient.CREATE_LOADED && CreateRenderHelper.isLevelVirtual(level) ?
+                packedLight :
+                LevelRenderer.getLightColor(level, blockEntity.getBlockPos().relative(fat.front(), 1));
+        *///?} else
         int light = LevelRenderer.getLightColor(level, blockEntity.getBlockPos().relative(fat.front(), 1));
 
         renderText(item, blockEntity, poseStack, buffer, fat, norm, light);
@@ -112,8 +124,9 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
             );
         }
 
-        if (blockEntity.hasCustomName()) {
-            List<FormattedCharSequence> list = this.font.split(blockEntity.getCustomName(), 100);
+        Component customName = blockEntity.getCustomName();
+        if (customName != null) {
+            List<FormattedCharSequence> list = this.font.split(customName, 100);
             FormattedCharSequence clampedWidthName = list.isEmpty() ? FormattedCharSequence.EMPTY : list.get(0);
             this.font.drawInBatch(
                     clampedWidthName,

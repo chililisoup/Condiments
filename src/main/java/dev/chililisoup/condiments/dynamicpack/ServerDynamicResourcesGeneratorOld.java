@@ -2,7 +2,6 @@
 /*package dev.chililisoup.condiments.dynamicpack;
 
 import dev.chililisoup.condiments.Condiments;
-import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockTags;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
@@ -123,7 +122,7 @@ public class ServerDynamicResourcesGeneratorOld extends DynServerResourcesGenera
             polishedItemTagBuilder.addEntry(logItem);
             polishedItemTagBuilder.addEntry(woodItem);
 
-            ResourceLocation loc = VersionHelper.resourceLocation(
+            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(
                     wood.getNamespace(),
                     Utils.getID(wood.log).getPath() + "s"
             );

@@ -65,10 +65,12 @@ inline fun <reified K: Any>toImmutable(list: MutableList<K>) = listOf(*list.toTy
 class StonecutterConfiguration {
     val constants: Map<String, Boolean>
     val swaps: Map<String, String>
+    val replacements: Map<Pair<String, String>, Boolean>
 
     constructor(mod: ModData, eval: (version: String, predicates: Array<String>) -> Boolean) {
         val constants = mutableMapOf<String, Boolean>()
         val swaps = mutableMapOf<String, String>()
+        val replacements = mutableMapOf<Pair<String, String>, Boolean>()
 
         val deps = mod.deps
         val is120 = eval(deps.minecraft, arrayOf("<1.21"))
@@ -87,13 +89,18 @@ class StonecutterConfiguration {
             else -> "protected"
         }
 
-        swaps ["recipe_result"] = when {
+        swaps["recipe_result"] = when {
             is120 -> "\"item\":"
             else -> "\"id\":"
         }
 
+        replacements["ItemStack.isSameItemSameTags" to "ItemStack.isSameItemSameComponents"] = !is120
+        replacements["new ResourceLocation" to "ResourceLocation.fromNamespaceAndPath"] = !is120
+        replacements["BlockBehaviour.Properties.copy" to "BlockBehaviour.Properties.ofFullCopy"] = !is120
+
         this.constants = toImmutable(constants)
         this.swaps = toImmutable(swaps)
+        this.replacements = toImmutable(replacements)
     }
 }
 
@@ -108,6 +115,8 @@ class FletchingTableConfiguration {
 
         if (is120) {
             extensions.add("json" to arrayOf(
+                "data/condiments/**/*.json5",
+
                 "data/condiments/item_modifier/* -> ../item_modifiers",
                 "data/condiments/loot_table/blocks/* -> ../../loot_tables/blocks",
 

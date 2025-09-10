@@ -1,6 +1,5 @@
 package dev.chililisoup.condiments.block.entity;
 
-import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.reg.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -45,7 +44,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import java.util.function.Predicate;
 
-//? if forgeLike
+//? if forgeLike || < 1.21
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateBlockEntity extends BlockEntity implements Container, Nameable {
     //? if < 1.21 {
@@ -229,6 +228,10 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
         return this.contents.getMaxStackSize();
     }
 
+    public ItemStack[] getSlottedStacks() {
+        return this.contents.getSlottedStacks();
+    }
+
     @Override
     public @NotNull ItemStack removeItem(int slot, int amount) {
         ItemStack item = this.contents.extractFromSlot(slot, amount, false);
@@ -260,7 +263,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
     public ItemStack tryAddStack(ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) return stack;
         ItemStack item = this.contents.tryAddStack(stack, simulate);
-        if (VersionHelper.itemsMatch(item, stack) && item.getCount() == stack.getCount())
+        if (ItemStack.isSameItemSameComponents(item, stack) && item.getCount() == stack.getCount())
             return item;
 
         this.setChanged();

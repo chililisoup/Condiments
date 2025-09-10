@@ -22,11 +22,19 @@ val loader = deps.loader.id()
 version = mod.archiveVersion
 base.archivesName = mod.id
 
+val javaVersion: JavaVersion =
+    if (stonecutter.eval(stonecutter.current.version, ">=1.20.6"))
+        JavaVersion.VERSION_21 else JavaVersion.VERSION_17
+
 stonecutter {
     val config = mod.getStonecutterConfiguration(stonecutter::eval)
 
     config.constants.forEach { entry -> constants[entry.key] = entry.value }
     config.swaps.forEach { entry -> swaps[entry.key] = entry.value }
+    config.replacements.forEach { entry -> replacements.string {
+        direction = entry.value
+        replace(entry.key.first, entry.key.second)
+    } }
 }
 
 neoForge {
@@ -120,20 +128,25 @@ dependencies {
 }
 
 java {
-    val requiresJava21: Boolean = stonecutter.eval(stonecutter.current.version, ">=1.20.6")
-    val javaVersion: JavaVersion =
-        if (requiresJava21) JavaVersion.VERSION_21
-        else JavaVersion.VERSION_17
     targetCompatibility = javaVersion
     sourceCompatibility = javaVersion
 }
 
 tasks {
     processResources {
-        val props = mod.getProps()
-        inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
+        fun inputProps(props: Map<String, Any>): Map<String, Any> {
+            inputs.properties(*props.map { entry -> entry.key to entry.value }.toTypedArray() )
+            return props
+        }
 
+        val props = inputProps(mod.getProps())
         filesMatching("META-INF/*mods.toml") { expand(props) }
+
+        val mixinProps = inputProps(mapOf(
+            "compatibility_level" to "JAVA_${javaVersion.majorVersion}",
+            "appendable_refmap" to ""
+        ))
+        filesMatching("*.mixins.json") { expand(mixinProps) }
     }
 
     named("classes") {

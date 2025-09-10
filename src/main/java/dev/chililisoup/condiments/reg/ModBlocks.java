@@ -2,7 +2,6 @@ package dev.chililisoup.condiments.reg;
 
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.*;
-import dev.chililisoup.condiments.extra.VersionHelper;
 import dev.chililisoup.condiments.item.CrateItem;
 import dev.chililisoup.condiments.block.entity.CrateContents;
 import net.mehvahdjukaar.moonlight.api.misc.RegSupplier;
@@ -79,8 +78,8 @@ public class ModBlocks {
     public static void init() {}
 
     static {
-        RAIL_INTERSECTION = addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(VersionHelper.copyProperties(Blocks.RAIL))).cutout());
-        ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(VersionHelper.copyProperties(Blocks.POWERED_RAIL))).cutout());
+        RAIL_INTERSECTION = addBlock(new Params("rail_intersection",  () -> new RailIntersectionBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL))).cutout());
+        ANALOG_RAIL = addBlock(new Params("analog_rail", () -> new AnalogRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL))).cutout());
 
         CRATE = addCrate("crate", null);
         WHITE_CRATE = addCrate("white_crate", DyeColor.WHITE);
@@ -100,8 +99,8 @@ public class ModBlocks {
         MAGENTA_CRATE = addCrate("magenta_crate", DyeColor.MAGENTA);
         PINK_CRATE = addCrate("pink_crate", DyeColor.PINK);
 
-        WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(VersionHelper.copyProperties(Blocks.IRON_BLOCK))));
-        BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(VersionHelper.copyProperties(Blocks.IRON_BLOCK))));
+        WAXED_IRON_BLOCK = addBlock(new Params("waxed_iron_block", () -> new WaxedIronBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))));
+        BLACKENED_IRON_BLOCK = addBlock(new Params("blackened_iron_block", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK))));
         BLACKENED_IRON_GRATE = addBlock(new Params("blackened_iron_grate", () -> new WaterloggedTransparentBlock(
                 BlockBehaviour.Properties.of().strength(5.0F, 6.0F)
                         //? if < 1.21 {
@@ -112,31 +111,31 @@ public class ModBlocks {
                         .isRedstoneConductor(ModBlocks::never).isSuffocating(ModBlocks::never).isViewBlocking(ModBlocks::never)
         )).cutout());
         BLACKENED_IRON_BARS = addBlock(new Params("blackened_iron_bars", () -> new IronBarsBlock(
-                VersionHelper.copyProperties(Blocks.IRON_BARS)
+                BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
         )).cutout());
         BLACKENED_IRON_DOOR = addBlock(new Params("blackened_iron_door", () -> new DoorBlock(
                 //? if < 1.21 {
-                /*VersionHelper.copyProperties(Blocks.IRON_DOOR), BlockSetType.IRON
+                /*BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR), BlockSetType.IRON
                 *///?} else
-                BlockSetType.IRON, VersionHelper.copyProperties(Blocks.IRON_DOOR)
+                BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR)
         )).cutout());
         BLACKENED_IRON_TRAPDOOR = addBlock(new Params("blackened_iron_trapdoor", () -> new TrapDoorBlock(
                 //? if < 1.21 {
-                /*VersionHelper.copyProperties(Blocks.IRON_TRAPDOOR), BlockSetType.IRON
+                /*BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR), BlockSetType.IRON
                 *///?} else
-                BlockSetType.IRON, VersionHelper.copyProperties(Blocks.IRON_TRAPDOOR)
+                BlockSetType.IRON, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_TRAPDOOR)
         )).cutout());
 
         REDSTONE_LED = addBlock(new Params("redstone_led", () -> new RedstoneLedBlock(BlockBehaviour.Properties.of()
                 .strength(0.3F).sound(SoundType.GLASS).lightLevel(state -> 1).emissiveRendering(ModBlocks::always)
         )).cutout());
-        SAUCER_LIGHT = addBlock(new Params("saucer_light", () -> new SaucerLightBlock(VersionHelper.copyProperties(Blocks.LANTERN)
+        SAUCER_LIGHT = addBlock(new Params("saucer_light", () -> new SaucerLightBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)
                 .lightLevel(state -> (Boolean)state.getValue(BlockStateProperties.LIT) ? 15 : 0)
                 .pushReaction(PushReaction.NORMAL)
         )));
 
         COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(
-                VersionHelper.copyProperties(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN)
+                BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN)
         )).noItem().cutout());
     }
 
@@ -185,7 +184,7 @@ public class ModBlocks {
     }
 
     private static Supplier<Block> addCrate(String id, DyeColor color) {
-        return addBlock(new CrateParams(id, () -> new CrateBlock(color, VersionHelper.copyProperties(Blocks.BARREL).pushReaction(PushReaction.DESTROY))));
+        return addBlock(new CrateParams(id, () -> new CrateBlock(color, BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL).pushReaction(PushReaction.DESTROY))));
     }
 
     public static Block[] getCrates() {

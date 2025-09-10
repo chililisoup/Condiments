@@ -28,7 +28,7 @@ import java.util.function.Function;
 import static dev.chililisoup.condiments.reg.ModBlockSetVariants.*;
 
 //$ client_only
-@net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class ClientDynamicResourcesGeneratorOld extends DynClientResourcesGenerator {
     public static final ClientDynamicResourcesGeneratorOld INSTANCE = new ClientDynamicResourcesGeneratorOld();
 
