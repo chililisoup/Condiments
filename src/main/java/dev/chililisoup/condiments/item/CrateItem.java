@@ -5,8 +5,12 @@ import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.item.tooltip.CrateTooltip;
 import dev.chililisoup.condiments.mixin.BlockItemAccess;
 import dev.chililisoup.condiments.mixin.UseOnContextAccess;
+import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -89,17 +93,19 @@ public class CrateItem extends BlockItem
     //?}
         CrateContents crateContents = CrateContents.fromCrateItem(stack);
 
-        if (crateContents.isLocked()) {
-            tooltipComponents.add(Component.literal(crateContents.item().isEmpty() ? "Locked - Unset" : "Locked").withStyle(ChatFormatting.GRAY));
-        }
+        if (crateContents.isLocked())
+            tooltipComponents.add(Component.translatable(
+                    crateContents.item().isEmpty() ?
+                            "item.condiments.crate.tooltip.locked_unset" :
+                            "item.condiments.crate.tooltip.locked"
+            ).withStyle(ChatFormatting.GRAY));
 
-        if (crateContents.item().isEmpty()) {
-            tooltipComponents.add(Component.literal("Empty").withStyle(ChatFormatting.GRAY));
-            return;
-        }
 
-        if (crateContents.count() <= 0 && !crateContents.isLocked()) {
-            tooltipComponents.add(Component.literal("Empty").withStyle(ChatFormatting.GRAY));
+        if (crateContents.autoPickup())
+            tooltipComponents.add(Component.translatable("item.condiments.crate.tooltip.auto_pickup").withStyle(ChatFormatting.GRAY));
+
+        if (crateContents.item().isEmpty() || (crateContents.count() <= 0 && !crateContents.isLocked())) {
+            tooltipComponents.add(Component.translatable("item.condiments.crate.tooltip.empty").withStyle(ChatFormatting.GRAY));
             return;
         }
 
@@ -111,6 +117,15 @@ public class CrateItem extends BlockItem
         CrateContents crateContents = CrateContents.fromCrateItem(stack);
 
         return crateContents.item().flatMap(item -> Optional.of(new CrateTooltip(item)));
+    }
+
+    private static void updateCreativeScreen(ItemStack crateStack, Slot slot) {
+        if (PlatHelper.getPhysicalSide().isClient()) {
+            if (Minecraft.getInstance().screen instanceof CreativeModeInventoryScreen) {
+                MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
+                if (gameMode != null) gameMode.handleCreativeModeItemAdd(crateStack, slot.getContainerSlot());
+            }
+        }
     }
 
     @Override
@@ -138,6 +153,7 @@ public class CrateItem extends BlockItem
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
         player.inventoryMenu.slotsChanged(slot.container);
+        updateCreativeScreen(crateStack, slot);
 
         return true;
     }
@@ -169,6 +185,7 @@ public class CrateItem extends BlockItem
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
         player.inventoryMenu.slotsChanged(slot.container);
+        updateCreativeScreen(crateStack, slot);
 
         return true;
     }

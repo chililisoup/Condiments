@@ -127,6 +127,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
 
         tag.put("CrateItems", storageTag);
         tag.putBoolean("CrateLocked", this.isLocked());
+        tag.putBoolean("CrateAutoPickup", this.contents.isAutoPickup());
         if (this.name != null) tag.putString(
                 "CustomName",
                 //? if < 1.21 {
@@ -157,6 +158,7 @@ public class CrateBlockEntity extends BlockEntity implements Container, Nameable
             , HolderLookup.Provider registries
     ) {
         this.contents.setLocked(tag.getBoolean("CrateLocked"));
+        this.contents.setAutoPickup(tag.getBoolean("CrateAutoPickup"));
 
         short count = tag.getCompound("CrateItems").getShort(COUNT_KEY);
         CompoundTag storageTag = tag.getCompound("CrateItems");

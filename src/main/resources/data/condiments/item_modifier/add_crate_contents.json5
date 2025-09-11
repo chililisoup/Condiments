@@ -16,6 +16,11 @@
         "op": "replace",
         "source": "CrateLocked",
         "target": "BlockEntityTag.CrateLocked"
+      },
+      {
+        "op": "replace",
+        "source": "CrateAutoPickup",
+        "target": "BlockEntityTag.CrateAutoPickup"
       }
     ],
     "source": "block_entity"

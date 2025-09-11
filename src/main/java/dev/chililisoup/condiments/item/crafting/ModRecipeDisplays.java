@@ -29,6 +29,7 @@ public class ModRecipeDisplays {
         combined.addAll(crateColoringRecipe());
         combined.addAll(crateLockingRecipe());
         combined.addAll(crateUnlockingRecipe());
+        combined.addAll(crateAutoPickupUpgradeRecipe());
 
         return combined;
     }
@@ -70,7 +71,7 @@ public class ModRecipeDisplays {
 
         for (ItemStack input : ingredients.getItems()) {
             ItemStack output = input.copy();
-            new CrateContents(null, 0, true).updateCrateItem(output);
+            new CrateContents(null, 0, true, false).updateCrateItem(output);
 
             NonNullList<Ingredient> inputs = NonNullList.of(
                     Ingredient.EMPTY,
@@ -78,7 +79,7 @@ public class ModRecipeDisplays {
                     Ingredient.of(ModItemTags.CRATE_LOCKING_ITEMS)
             );
 
-            ResourceLocation loc = Condiments.loc("/crate_coloring_" + "crate_locking_" + input.getDescriptionId());
+            ResourceLocation loc = Condiments.loc("/crate_locking_" + input.getDescriptionId());
             //? if < 1.21 {
             /*recipeList.add(new ShapelessRecipe(loc, group, CraftingBookCategory.MISC, output, inputs));
             *///?} else
@@ -100,7 +101,7 @@ public class ModRecipeDisplays {
 
         for (ItemStack output : ingredients.getItems()) {
             ItemStack input = output.copy();
-            new CrateContents(null, 0, true).updateCrateItem(input);
+            new CrateContents(null, 0, true, false).updateCrateItem(input);
 
             NonNullList<Ingredient> inputs = NonNullList.of(
                     Ingredient.EMPTY,
@@ -112,6 +113,36 @@ public class ModRecipeDisplays {
             //? if < 1.21 {
             /*recipeList.add(new ShapelessRecipe(loc, group, CraftingBookCategory.MISC, output, inputs));
             *///?} else
+            recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
+        }
+
+        return recipeList;
+    }
+
+    //? if < 1.21 {
+    /*public static List<CraftingRecipe> crateAutoPickupUpgradeRecipe() {
+        ArrayList<CraftingRecipe> recipeList = new ArrayList<>();
+    *///?} else {
+    public static List<RecipeHolder<CraftingRecipe>> crateAutoPickupUpgradeRecipe() {
+        ArrayList<RecipeHolder<CraftingRecipe>> recipeList = new ArrayList<>();
+    //?}
+        String group = "crate_upgrades";
+        Ingredient ingredients = Ingredient.of(ModItemTags.CRATES);
+
+        for (ItemStack input : ingredients.getItems()) {
+            ItemStack output = input.copy();
+            new CrateContents(null, 0, false, true).updateCrateItem(output);
+
+            NonNullList<Ingredient> inputs = NonNullList.of(
+                    Ingredient.EMPTY,
+                    Ingredient.of(input),
+                    Ingredient.of(ModItemTags.CRATE_AUTO_PICKUP_UPGRADE_ITEMS)
+            );
+
+            ResourceLocation loc = Condiments.loc("/crate_auto_pickup_upgrade_" + input.getDescriptionId());
+            //? if < 1.21 {
+            /*recipeList.add(new ShapelessRecipe(loc, group, CraftingBookCategory.MISC, output, inputs));
+             *///?} else
             recipeList.add(new RecipeHolder<>(loc, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs)));
         }
 

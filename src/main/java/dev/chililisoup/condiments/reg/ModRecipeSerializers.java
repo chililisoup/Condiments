@@ -1,6 +1,7 @@
 package dev.chililisoup.condiments.reg;
 
 import dev.chililisoup.condiments.Condiments;
+import dev.chililisoup.condiments.item.crafting.CrateAutoPickupUpgrade;
 import dev.chililisoup.condiments.item.crafting.CrateColoring;
 import dev.chililisoup.condiments.item.crafting.CrateLocking;
 import dev.chililisoup.condiments.item.crafting.CrateUnlocking;
@@ -16,6 +17,7 @@ public class ModRecipeSerializers {
     public static final Supplier<RecipeSerializer<CrateColoring>> CRATE_COLORING;
     public static final Supplier<RecipeSerializer<CrateLocking>> CRATE_LOCKING;
     public static final Supplier<RecipeSerializer<CrateUnlocking>> CRATE_UNLOCKING;
+    public static final Supplier<RecipeSerializer<CrateAutoPickupUpgrade>> CRATE_AUTO_PICKUP_UPGRADE;
 
     public static void init() {}
 
@@ -23,6 +25,7 @@ public class ModRecipeSerializers {
         CRATE_COLORING = register("crate_coloring", new SimpleCraftingRecipeSerializer<>(CrateColoring::new));
         CRATE_LOCKING = register("crate_locking", new SimpleCraftingRecipeSerializer<>(CrateLocking::new));
         CRATE_UNLOCKING = register("crate_unlocking", new SimpleCraftingRecipeSerializer<>(CrateUnlocking::new));
+        CRATE_AUTO_PICKUP_UPGRADE = register("crate_auto_pickup_upgrade", new SimpleCraftingRecipeSerializer<>(CrateAutoPickupUpgrade::new));
     }
 
     private static <S extends RecipeSerializer<T>, T extends Recipe<?>> Supplier<S> register(String name, S recipeSerializer) {

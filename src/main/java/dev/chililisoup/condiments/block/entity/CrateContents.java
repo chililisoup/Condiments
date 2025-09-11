@@ -29,14 +29,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static dev.chililisoup.condiments.block.entity.CrateBlockEntity.COUNT_KEY;
 
-public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean locked) {
+public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean locked, Boolean autoPickup) {
     public static final CrateContents EMPTY = new CrateContents();
     public static final Codec<CrateContents> CODEC;
     //? if >= 1.21
     public static final StreamCodec<RegistryFriendlyByteBuf, CrateContents> STREAM_CODEC;
 
     public CrateContents(@Nullable ItemRecord itemRecord, int count) {
-        this(itemRecord, count, false);
+        this(itemRecord, count, false, false);
     }
 
     public CrateContents() {
@@ -44,8 +44,8 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private CrateContents(Optional<ItemRecord> itemRecord, int count, Optional<Boolean> locked) {
-        this(itemRecord.orElse(null), count, locked.orElse(false));
+    private CrateContents(Optional<ItemRecord> itemRecord, int count, Optional<Boolean> locked, Optional<Boolean> autoPickup) {
+        this(itemRecord.orElse(null), count, locked.orElse(false), autoPickup.orElse(false));
     }
 
     private Optional<ItemRecord> itemRecordOptional() {
@@ -56,12 +56,17 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
         return this.locked ? Optional.of(true) : Optional.empty();
     }
 
+    private Optional<Boolean> autoPickupOptional() {
+        return this.autoPickup ? Optional.of(true) : Optional.empty();
+    }
+
     public static CrateContents fromCrateItem(ItemStack crateItem) {
         //? if < 1.21 {
         /*CompoundTag compoundTag = crateItem.getTagElement("BlockEntityTag");
         if (compoundTag == null) return EMPTY;
 
         boolean locked = compoundTag.getBoolean("CrateLocked");
+        boolean autoPickup = compoundTag.getBoolean("CrateAutoPickup");
 
         short count = 0;
         ItemRecord record = null;
@@ -75,7 +80,7 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
             if (!item.isEmpty()) record = ItemRecord.of(item);
         }
 
-        return new CrateContents(Optional.ofNullable(record), count, locked ? Optional.of(true) : Optional.empty());
+        return new CrateContents(record, count, locked, autoPickup);
         *///?} else
         return crateItem.getOrDefault(ModComponents.CRATE_CONTENTS.get(), EMPTY);
     }
@@ -83,6 +88,8 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
     public void updateCrateItem(ItemStack crateItem) {
         //? if < 1.21 {
         /*CompoundTag compoundTag = crateItem.getOrCreateTagElement("BlockEntityTag");
+        if (this.autoPickup) compoundTag.putBoolean("CrateAutoPickup", true);
+        else compoundTag.remove("CrateAutoPickup");
 
         Optional<ItemStack> itemType = this.item();
         if (itemType.isEmpty() && !this.isLocked()) {
@@ -187,7 +194,8 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
         CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemRecord.ITEM_CODEC.optionalFieldOf("item").forGetter(CrateContents::itemRecordOptional),
                 Codec.INT.fieldOf(COUNT_KEY).forGetter(CrateContents::count),
-                Codec.BOOL.optionalFieldOf("locked").forGetter(CrateContents::lockedOptional)
+                Codec.BOOL.optionalFieldOf("locked").forGetter(CrateContents::lockedOptional),
+                Codec.BOOL.optionalFieldOf("autoPickup").forGetter(CrateContents::autoPickupOptional)
         ).apply(instance, CrateContents::new));
 
 
@@ -199,6 +207,8 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
                 CrateContents::count,
                 ByteBufCodecs.BOOL.apply(ByteBufCodecs::optional),
                 CrateContents::lockedOptional,
+                ByteBufCodecs.BOOL.apply(ByteBufCodecs::optional),
+                CrateContents::autoPickupOptional,
                 CrateContents::new
         );
         //?}
@@ -246,6 +256,7 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
         private ItemStack item = ItemStack.EMPTY;
         private int count;
         private boolean locked;
+        private boolean autoPickup;
 
         private Mutable() {}
 
@@ -257,6 +268,7 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
             this.setLocked(contents.locked);
             this.setItemType(contents.item().orElse(null));
             this.setCount(contents.count);
+            this.setAutoPickup(contents.autoPickup);
             return this;
         }
 
@@ -310,6 +322,14 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
         public void setLocked(boolean locked) {
             this.locked = locked;
             this.updateItemType();
+        }
+
+        public boolean isAutoPickup() {
+            return this.autoPickup;
+        }
+
+        public void setAutoPickup(boolean autoPickup) {
+            this.autoPickup = autoPickup;
         }
 
         public int getMaxStackSize() {
@@ -412,9 +432,10 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
             ItemStack itemType = this.getItemType();
 
             return new CrateContents(
-                    itemType.isEmpty() ? Optional.empty() : Optional.of(ItemRecord.of(itemType)),
+                    itemType.isEmpty() ? null : ItemRecord.of(itemType),
                     this.getCount(),
-                    this.isLocked() ? Optional.of(true) : Optional.empty()
+                    this.isLocked(),
+                    this.isAutoPickup()
             );
         }
 
