@@ -32,7 +32,8 @@
       "condiments:blackened_iron/blackened_iron_bars",
       "condiments:blackened_iron/blackened_iron_door",
       "condiments:blackened_iron/blackened_iron_trapdoor",
-      "condiments:saucer_light"
+      "condiments:saucer_light",
+      "condiments:brazier"
     ]
   }
 }

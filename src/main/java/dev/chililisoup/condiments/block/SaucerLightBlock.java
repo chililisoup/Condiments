@@ -33,9 +33,9 @@ import com.mojang.serialization.MapCodec;
 import java.util.Map;
 
 public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterloggedBlock {
-    public static final BooleanProperty WATERLOGGED;
-    public static final BooleanProperty POWERED;
-    public static final BooleanProperty LIT;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
     private static final Map<Direction, VoxelShape> AABBS;
 
     //? if >= 1.21 {
@@ -187,10 +187,6 @@ public class SaucerLightBlock extends DirectionalBlock implements SimpleWaterlog
     }
 
     static {
-        WATERLOGGED = BlockStateProperties.WATERLOGGED;
-        POWERED = BlockStateProperties.POWERED;
-        LIT = BlockStateProperties.LIT;
-
         double margin = 4;
         double height = 2;
         //noinspection SuspiciousNameCombination

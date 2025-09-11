@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.MapCodec;
 
 public class RedstoneLedBlock extends Block {
-    public static final IntegerProperty POWER;
+    public static final IntegerProperty POWER = BlockStateProperties.POWER;
     private static final Vec3[] COLORS;
 
     //? if >= 1.21 {
@@ -75,7 +75,6 @@ public class RedstoneLedBlock extends Block {
     }
 
     static {
-        POWER = BlockStateProperties.POWER;
         COLORS = new Vec3[]{
                 new Vec3(1.0 / 8,   1.0 / 8,   1.0 / 8 ), // black
                 new Vec3(0,         0,         2.0 / 3 ), // dark_blue

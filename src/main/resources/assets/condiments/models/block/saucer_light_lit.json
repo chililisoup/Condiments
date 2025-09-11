@@ -1,7 +1,7 @@
 {
-  "parent": "condiments:block/saucer_light",
-	"textures": {
-		"texture": "condiments:block/saucer_light_lit",
-		"particle": "condiments:block/saucer_light_lit"
-	}
+    "parent": "condiments:block/saucer_light",
+    "textures": {
+        "texture": "condiments:block/saucer_light_lit",
+        "particle": "condiments:block/saucer_light_lit"
+    }
 }

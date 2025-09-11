@@ -27,7 +27,8 @@ public class ModCreativeTabs {
                 CreativeModeTabs.FUNCTIONAL_BLOCKS,
                 itemStack -> itemStack.is(Items.REDSTONE_LAMP),
                 ModBlocks.REDSTONE_LED.get(),
-                ModBlocks.SAUCER_LIGHT.get()
+                ModBlocks.SAUCER_LIGHT.get(),
+                ModBlocks.BRAZIER.get()
         );
 
         event.addAfter(

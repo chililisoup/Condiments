@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "condiments:block/brazier"
+    },
+    "lit=true": {
+      "model": "condiments:block/brazier_lit"
+    }
+  }
+}

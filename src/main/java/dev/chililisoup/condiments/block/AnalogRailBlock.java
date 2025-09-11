@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.MapCodec;
 
 public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
-    public static final EnumProperty<RailShape> SHAPE;
-    public static final IntegerProperty POWER;
+    public static final EnumProperty<RailShape> SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
+    public static final IntegerProperty POWER = BlockStateProperties.POWER;
 
     //? if >= 1.21 {
     public static final MapCodec<AnalogRailBlock> CODEC = simpleCodec(AnalogRailBlock::new);
@@ -205,11 +205,6 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(SHAPE, POWER, WATERLOGGED);
-    }
-
-    static {
-        SHAPE = BlockStateProperties.RAIL_SHAPE_STRAIGHT;
-        POWER = BlockStateProperties.POWER;
     }
 
     //? if forgeLike {

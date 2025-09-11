@@ -1,6 +1,5 @@
 {
     "ambientocclusion": false,
-    "render_type": "cutout",
     "textures": {
         "particle": "condiments:block/rail_intersection",
         "texture": "condiments:block/rail_intersection"

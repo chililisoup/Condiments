@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 //? if forgeLike
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
-    private static final EnumProperty<FrontAndTop> ORIENTATION;
+    private static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;
     @Nullable private final DyeColor color;
 
     //? if >= 1.21 {
@@ -373,9 +373,5 @@ public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(ORIENTATION);
-    }
-
-    static {
-        ORIENTATION = BlockStateProperties.ORIENTATION;
     }
 }

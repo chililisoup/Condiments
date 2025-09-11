@@ -22,10 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.MapCodec;
 
 public class AccentBlock extends Block implements SimpleWaterloggedBlock {
-    public static final DirectionProperty FACING;
-    public static final EnumProperty<Half> HALF;
-    public static final EnumProperty<StairsShape> SHAPE;
-    public static final BooleanProperty WATERLOGGED;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
+    public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape[] TOP_SHAPES;
     protected static final VoxelShape[] BOTTOM_SHAPES;
     private static final int[] SHAPE_BY_STATE;
@@ -161,11 +161,6 @@ public class AccentBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     static {
-        FACING = HorizontalDirectionalBlock.FACING;
-        HALF = BlockStateProperties.HALF;
-        SHAPE = BlockStateProperties.STAIRS_SHAPE;
-        WATERLOGGED = BlockStateProperties.WATERLOGGED;
-
         VoxelShape SIDE_BN = Block.box(0, 0, 0, 16, 3, 3);
         VoxelShape SIDE_BS = Block.box(0, 0, 13, 16, 3, 16);
         VoxelShape SIDE_BW = Block.box(0, 0, 0, 3, 3, 16);

@@ -1,5 +1,5 @@
 {
-  "parent": "condiments:block/saucer_light",
+    "parent": "condiments:block/saucer_light",
 	"textures": {
 		"texture": "condiments:block/saucer_light_powered_lit",
 		"particle": "condiments:block/saucer_light_powered_lit"

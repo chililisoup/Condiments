@@ -119,7 +119,11 @@ public class CrateItem extends BlockItem
         return crateContents.item().flatMap(item -> Optional.of(new CrateTooltip(item)));
     }
 
-    private static void updateCreativeScreen(ItemStack crateStack, Slot slot) {
+    private static void updateInventories(ItemStack crateStack, Slot slot, Player player) {
+        slot.setChanged();
+        player.containerMenu.slotsChanged(slot.container);
+        player.inventoryMenu.slotsChanged(slot.container);
+
         if (PlatHelper.getPhysicalSide().isClient()) {
             if (Minecraft.getInstance().screen instanceof CreativeModeInventoryScreen) {
                 MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
@@ -149,12 +153,7 @@ public class CrateItem extends BlockItem
         }
 
         mutable.toImmutable().updateCrateItem(crateStack);
-
-        slot.setChanged();
-        player.containerMenu.slotsChanged(slot.container);
-        player.inventoryMenu.slotsChanged(slot.container);
-        updateCreativeScreen(crateStack, slot);
-
+        updateInventories(crateStack, slot, player);
         return true;
     }
 
@@ -181,12 +180,7 @@ public class CrateItem extends BlockItem
         }
 
         mutable.toImmutable().updateCrateItem(crateStack);
-
-        slot.setChanged();
-        player.containerMenu.slotsChanged(slot.container);
-        player.inventoryMenu.slotsChanged(slot.container);
-        updateCreativeScreen(crateStack, slot);
-
+        updateInventories(crateStack, slot, player);
         return true;
     }
 

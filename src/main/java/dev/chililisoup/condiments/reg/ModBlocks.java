@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.PushReaction;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 public class ModBlocks {
     public static final HashMap<Supplier<Block>, String> ALT_RENDERED_BLOCKS = new HashMap<>();
@@ -55,6 +56,7 @@ public class ModBlocks {
 
     public static final Supplier<Block> REDSTONE_LED;
     public static final Supplier<Block> SAUCER_LIGHT;
+    public static final Supplier<Block> BRAZIER;
 
     public static final Supplier<Block> COPPER_FIRE;
 
@@ -133,6 +135,15 @@ public class ModBlocks {
                 .lightLevel(state -> (Boolean)state.getValue(BlockStateProperties.LIT) ? 15 : 0)
                 .pushReaction(PushReaction.NORMAL)
         )));
+        BRAZIER = addBlock(new Params("brazier", () -> new BrazierBlock(1, BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL)
+                .requiresCorrectToolForDrops()
+                .strength(3.5F)
+                .sound(SoundType.LANTERN)
+                .lightLevel(litBlockEmission(15))
+                .noOcclusion()
+                .ignitedByLava()
+        )).cutout());
 
         COPPER_FIRE = addBlock(new Params("copper_fire", () -> new CopperFireBlock(
                 BlockBehaviour.Properties.ofFullCopy(Blocks.SOUL_FIRE).mapColor(MapColor.COLOR_LIGHT_GREEN)
@@ -217,5 +228,8 @@ public class ModBlocks {
     }
     public static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos, EntityType<?> entityType) {
         return false;
+    }
+    public static ToIntFunction<BlockState> litBlockEmission(int lightValue) {
+        return blockState -> blockState.getValue(BlockStateProperties.LIT) ? lightValue : 0;
     }
 }

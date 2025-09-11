@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "condiments:blackened_iron_ingot"
+    },
+    "C": {
+      "tag": "minecraft:coals"
+    }
+  },
+  "pattern": [
+    "BCB",
+    " B "
+  ],
+  "result": {
+    "count": 1,
+    //$ recipe_result
+    "id":
+    "condiments:brazier"
+  }
+}

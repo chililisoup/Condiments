@@ -24,7 +24,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 public class WaterloggedTransparentBlock extends HalfTransparentBlock implements SimpleWaterloggedBlock {
-    public static final BooleanProperty WATERLOGGED;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public WaterloggedTransparentBlock(Properties properties) {
         super(properties);
@@ -54,10 +54,6 @@ public class WaterloggedTransparentBlock extends HalfTransparentBlock implements
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
         return this.defaultBlockState().setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
-    }
-
-    static {
-        WATERLOGGED = BlockStateProperties.WATERLOGGED;
     }
 
     @Override

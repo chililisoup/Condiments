@@ -38,12 +38,10 @@
   "block.condiments.blackened_iron_grate": "Blackened Iron Grate",
 
   "block.condiments.waxed_iron_block": "Waxed Iron Block",
-
   "block.condiments.redstone_led": "Redstone LED",
-
   "block.condiments.copper_fire": "Copper Fire",
-
   "block.condiments.saucer_light": "Saucer Light",
+  "block.condiments.brazier": "Brazier",
 
   "tag.item.condiments.crates": "Crates",
   "tag.item.condiments.wood_accents": "Wood Accents",
