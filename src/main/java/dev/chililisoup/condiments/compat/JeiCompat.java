@@ -6,6 +6,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,11 @@ public class JeiCompat implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registry) {
         registry.addRecipes(RecipeTypes.CRAFTING, ModRecipeDisplays.getAll());
 
-        ModRecipeDisplays.ingredientInfos().forEach(registry::addIngredientInfo);
+        ModRecipeDisplays.ingredientInfos().forEach((ingredients, infos) ->
+                registry.addItemStackInfo(
+                        ingredients.stream().map(ingredient -> ingredient.asItem().getDefaultInstance()).toList(),
+                        infos.stream().map(Component::translatable).toArray(Component[]::new)
+                )
+        );
     }
 }

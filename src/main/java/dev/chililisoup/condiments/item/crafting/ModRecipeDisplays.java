@@ -5,8 +5,8 @@ import dev.chililisoup.condiments.block.CrateBlock;
 import dev.chililisoup.condiments.block.entity.CrateContents;
 import dev.chililisoup.condiments.reg.ModBlocks;
 import dev.chililisoup.condiments.reg.ModItemTags;
+import dev.chililisoup.condiments.reg.ModItems;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -149,9 +149,10 @@ public class ModRecipeDisplays {
         return recipeList;
     }
 
-    public static Map<ItemLike, Component> ingredientInfos() {
+    public static Map<List<ItemLike>, List<String>> ingredientInfos() {
         return Map.of(
-                ModBlocks.BLACKENED_IRON_BLOCK.get(), Component.translatable("condiments.ingredient_info.blackened_iron_block")
+                List.of(ModBlocks.BLACKENED_IRON_BLOCK.get(), ModItems.BLACKENED_IRON_INGOT.get()),
+                List.of("condiments.ingredient_info.blackened_iron_block")
         );
     }
 }

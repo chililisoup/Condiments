@@ -9,14 +9,12 @@ import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.recipe.EmiInfoRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import net.mehvahdjukaar.moonlight.api.util.Utils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 //? if >= 1.21
 import net.minecraft.world.item.crafting.RecipeHolder;
-
-import java.util.List;
 
 @EmiEntrypoint
 public class EmiCompat implements EmiPlugin {
@@ -24,11 +22,11 @@ public class EmiCompat implements EmiPlugin {
     public void register(EmiRegistry registry) {
         ModRecipeDisplays.getAll().forEach(recipeHolder -> registry.addRecipe(emiRecipe(recipeHolder)));
 
-        ModRecipeDisplays.ingredientInfos().forEach((ingredient, info) ->
+        ModRecipeDisplays.ingredientInfos().forEach((ingredients, infos) ->
                 registry.addRecipe(new EmiInfoRecipe(
-                        List.of(EmiStack.of(ingredient)),
-                        List.of(info),
-                        Condiments.loc("/info_" + Utils.getID(ingredient.asItem()).getPath())
+                        ingredients.stream().map(ingredient -> (EmiIngredient) EmiStack.of(ingredient)).toList(),
+                        infos.stream().map(info -> (Component) Component.translatable(info)).toList(),
+                        Condiments.loc("/info_" + infos.getFirst())
                 ))
         );
     }
