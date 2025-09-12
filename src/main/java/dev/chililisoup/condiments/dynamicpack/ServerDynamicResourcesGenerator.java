@@ -1,10 +1,8 @@
-//? if >= 1.21 {
 package dev.chililisoup.condiments.dynamicpack;
 
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.reg.ModBlockTags;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
-import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
 import net.mehvahdjukaar.moonlight.api.resources.SimpleTagBuilder;
 import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
@@ -15,14 +13,28 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BlockItem;
 
+//? if < 1.21 {
+/*import org.apache.logging.log4j.Logger;
+*///?} else {
+import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import java.util.Collection;
+//?}
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static dev.chililisoup.condiments.reg.ModBlockSetVariants.*;
 
-public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvider {
+public class ServerDynamicResourcesGenerator extends
+        //? if < 1.21 {
+        /*DynServerResourcesGenerator
+        *///?} else
+        DynamicServerResourceProvider
+{
+    //? if < 1.21 {
+    /*public static final ServerDynamicResourcesGenerator INSTANCE = new ServerDynamicResourcesGenerator();
+    *///?} else {
     private static ServerDynamicResourcesGenerator INSTANCE;
 
     public static ServerDynamicResourcesGenerator getInstance() {
@@ -31,15 +43,26 @@ public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvid
         }
         return INSTANCE;
     }
+    //?}
 
     public ServerDynamicResourcesGenerator() {
+        //? if < 1.21 {
+        /*super(new DynamicDataPack(Condiments.loc("generated_pack")));
+        *///?} else
         super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED_ZIPPED);
     }
 
+    //? if < 1.21 {
+    /*@Override
+    public Logger getLogger() {
+        return Condiments.LOGGER;
+    }
+    *///?} else {
     @Override
     protected Collection<String> gatherSupportedNamespaces() {
         return PlatHelper.getInstalledMods();
     }
+    //?}
 
     @Override
     public void regenerateDynamicAssets(Consumer<ResourceGenTask> executor) {
@@ -169,4 +192,3 @@ public class ServerDynamicResourcesGenerator extends DynamicServerResourceProvid
         sink.addTag(polishedItemTagBuilder, Registries.ITEM);
     }
 }
-//?}

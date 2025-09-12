@@ -1,4 +1,3 @@
-//? if >= 1.21 {
 package dev.chililisoup.condiments.dynamicpack;
 
 import com.mojang.blaze3d.platform.NativeImage;
@@ -19,8 +18,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.NotNull;
 
+//? if < 1.21 {
+/*import org.apache.logging.log4j.Logger;
+*///?} else {
 import java.util.Collection;
 import java.util.List;
+//?}
+
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,7 +33,15 @@ import static dev.chililisoup.condiments.reg.ModBlockSetVariants.*;
 
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-public class ClientDynamicResourcesGenerator extends DynamicClientResourceProvider {
+public class ClientDynamicResourcesGenerator extends
+        //? if < 1.21 {
+        /*DynClientResourcesGenerator
+        *///?} else
+        DynamicClientResourceProvider
+{
+    //? if < 1.21 {
+    /*public static final ClientDynamicResourcesGenerator INSTANCE = new ClientDynamicResourcesGenerator();
+    *///?} else {
     private static ClientDynamicResourcesGenerator INSTANCE;
 
     public static ClientDynamicResourcesGenerator getInstance() {
@@ -38,15 +50,26 @@ public class ClientDynamicResourcesGenerator extends DynamicClientResourceProvid
         }
         return INSTANCE;
     }
+    //?}
 
     public ClientDynamicResourcesGenerator() {
+        //? if < 1.21 {
+        /*super(new DynamicTexturePack(Condiments.loc("generated_pack")));
+        *///?} else
         super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED_ZIPPED);
     }
 
+    //? if < 1.21 {
+    /*@Override
+    public Logger getLogger() {
+        return Condiments.LOGGER;
+    }
+    *///?} else {
     @Override
     protected Collection<String> gatherSupportedNamespaces() {
         return List.of("minecraft");
     }
+    //?}
 
     @Override
     public void regenerateDynamicAssets(Consumer<ResourceGenTask> executor) {
@@ -75,7 +98,7 @@ public class ClientDynamicResourcesGenerator extends DynamicClientResourceProvid
                 String id = Utils.getID(wall).getPath();
 
                 ResourceLocation log = RPUtils.findFirstBlockTextureLocation(
-                        manager, wood.getBlockOfThis("log"), t -> !t.contains("top")
+                        manager, wood.log, t -> !t.contains("top")
                 );
 
                 ResourceLocation strippedLog = RPUtils.findFirstBlockTextureLocation(
@@ -270,7 +293,9 @@ public class ClientDynamicResourcesGenerator extends DynamicClientResourceProvid
     }
 
     @Override
-    protected void addDynamicTranslations(AfterLanguageLoadEvent event) {
+    //$ public_now_protected
+    protected
+    void addDynamicTranslations(AfterLanguageLoadEvent event) {
         LangBuilder langBuilder = new LangBuilder();
 
         addWoodWallLang(langBuilder, event::getEntry);
@@ -322,4 +347,3 @@ public class ClientDynamicResourcesGenerator extends DynamicClientResourceProvid
         });
     }
 }
-//?}

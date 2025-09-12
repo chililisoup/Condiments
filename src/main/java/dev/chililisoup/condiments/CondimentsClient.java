@@ -2,13 +2,11 @@ package dev.chililisoup.condiments;
 
 import dev.chililisoup.condiments.client.renderer.CondimentsHud;
 import dev.chililisoup.condiments.config.ClientConfig;
+import dev.chililisoup.condiments.dynamicpack.ClientDynamicResourcesGenerator;
 import dev.chililisoup.condiments.reg.ClientRegistry;
 
-//? if < 1.21 {
-/*import dev.chililisoup.condiments.dynamicpack.ClientDynamicResourcesGeneratorOld;
-*///?} else {
+//? if >= 1.21 {
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
-import dev.chililisoup.condiments.dynamicpack.ClientDynamicResourcesGenerator;
 //?}
 
 //? if fabric {
@@ -35,7 +33,7 @@ public class CondimentsClient {
         ClientRegistry.init();
 
         //? if < 1.21 {
-        /*ClientDynamicResourcesGeneratorOld.INSTANCE.register();
+        /*ClientDynamicResourcesGenerator.INSTANCE.register();
         *///?} else {
         RegHelper.registerDynamicResourceProvider(ClientDynamicResourcesGenerator.getInstance());
          //?}
