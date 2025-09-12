@@ -26,7 +26,7 @@ public class EmiCompat implements EmiPlugin {
                 registry.addRecipe(new EmiInfoRecipe(
                         ingredients.stream().map(ingredient -> (EmiIngredient) EmiStack.of(ingredient)).toList(),
                         infos.stream().map(info -> (Component) Component.translatable(info)).toList(),
-                        Condiments.loc("/info_" + infos.getFirst())
+                        Condiments.loc("/info_" + infos.get(0))
                 ))
         );
     }

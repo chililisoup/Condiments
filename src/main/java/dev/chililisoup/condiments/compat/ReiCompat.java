@@ -25,7 +25,7 @@ public class ReiCompat implements REIClientPlugin {
                                         ingredient -> EntryStack.of(VanillaEntryTypes.ITEM, ingredient.asItem().getDefaultInstance())
                                 ).toList()
                         ),
-                        Component.literal(Condiments.loc("/info_" + infos.getFirst()).toString())
+                        Component.literal(Condiments.loc("/info_" + infos.get(0)).toString())
                 ).lines(infos.stream().map(info -> (Component) Component.translatable(info)).toList()))
         );
     }
