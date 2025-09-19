@@ -1,4 +1,4 @@
-<p align="center"><img alt="Condiments Logo" src="./src/main/resources/icon.png"></p>
+<p align="center"><img alt="Condiments Logo" width="400px" src="https://github.com/user-attachments/assets/6f02a0e3-03e1-4178-9922-7246a28760b6"></p>
 
 <h1 align="center">Condiments</h1>
 
