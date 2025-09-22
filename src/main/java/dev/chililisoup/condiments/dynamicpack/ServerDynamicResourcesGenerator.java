@@ -32,18 +32,8 @@ public class ServerDynamicResourcesGenerator extends
         *///?} else
         DynamicServerResourceProvider
 {
-    //? if < 1.21 {
-    /*public static final ServerDynamicResourcesGenerator INSTANCE = new ServerDynamicResourcesGenerator();
-    *///?} else {
-    private static ServerDynamicResourcesGenerator INSTANCE;
-
-    public static ServerDynamicResourcesGenerator getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ServerDynamicResourcesGenerator();
-        }
-        return INSTANCE;
-    }
-    //?}
+    //? if < 1.21
+    /*public static final ServerDynamicResourcesGenerator INSTANCE = new ServerDynamicResourcesGenerator();*/
 
     public ServerDynamicResourcesGenerator() {
         //? if < 1.21 {

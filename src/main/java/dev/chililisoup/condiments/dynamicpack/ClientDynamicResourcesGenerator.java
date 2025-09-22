@@ -39,18 +39,8 @@ public class ClientDynamicResourcesGenerator extends
         *///?} else
         DynamicClientResourceProvider
 {
-    //? if < 1.21 {
-    /*public static final ClientDynamicResourcesGenerator INSTANCE = new ClientDynamicResourcesGenerator();
-    *///?} else {
-    private static ClientDynamicResourcesGenerator INSTANCE;
-
-    public static ClientDynamicResourcesGenerator getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ClientDynamicResourcesGenerator();
-        }
-        return INSTANCE;
-    }
-    //?}
+    //? if < 1.21
+    /*public static final ClientDynamicResourcesGenerator INSTANCE = new ClientDynamicResourcesGenerator();*/
 
     public ClientDynamicResourcesGenerator() {
         //? if < 1.21 {

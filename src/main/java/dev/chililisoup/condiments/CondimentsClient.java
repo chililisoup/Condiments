@@ -35,7 +35,7 @@ public class CondimentsClient {
         //? if < 1.21 {
         /*ClientDynamicResourcesGenerator.INSTANCE.register();
         *///?} else {
-        RegHelper.registerDynamicResourceProvider(ClientDynamicResourcesGenerator.getInstance());
+        RegHelper.registerDynamicResourceProvider(new ClientDynamicResourcesGenerator());
          //?}
 
         //? if fabric {

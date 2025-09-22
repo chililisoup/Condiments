@@ -37,7 +37,7 @@ public class Condiments {
         //? if < 1.21 {
         /*ServerDynamicResourcesGenerator.INSTANCE.register();
         *///?} else {
-        RegHelper.registerDynamicResourceProvider(ServerDynamicResourcesGenerator.getInstance());
+        RegHelper.registerDynamicResourceProvider(new ServerDynamicResourcesGenerator());
         //?}
 
 		if (PlatHelper.getPhysicalSide().isClient()) CondimentsClient.init();
