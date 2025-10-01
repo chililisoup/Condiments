@@ -3,6 +3,7 @@ package dev.chililisoup.condiments.dynamicpack;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.reg.ModBlockTags;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
+import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import net.mehvahdjukaar.moonlight.api.resources.ResType;
 import net.mehvahdjukaar.moonlight.api.resources.SimpleTagBuilder;
 import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.BlockItem;
 //? if < 1.21 {
 /*import org.apache.logging.log4j.Logger;
 *///?} else {
-import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
 import java.util.Collection;
 //?}
 
@@ -38,6 +38,7 @@ public class ServerDynamicResourcesGenerator extends
     public ServerDynamicResourcesGenerator() {
         //? if < 1.21 {
         /*super(new DynamicDataPack(Condiments.loc("generated_pack")));
+        this.dynamicPack.addNamespaces(PlatHelper.getInstalledMods().toArray(String[]::new));
         *///?} else
         super(Condiments.loc("dynamic_resources"), PackGenerationStrategy.CACHED_ZIPPED);
     }
