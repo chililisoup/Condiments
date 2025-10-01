@@ -151,8 +151,13 @@ public class ModRecipeDisplays {
 
     public static Map<List<ItemLike>, List<String>> ingredientInfos() {
         return Map.of(
-                List.of(ModBlocks.BLACKENED_IRON_BLOCK.get(), ModItems.BLACKENED_IRON_INGOT.get()),
+                List.of(
+                        ModBlocks.WAXED_IRON_BLOCK.get(),
+                        ModBlocks.BLACKENED_IRON_BLOCK.get(),
+                        ModItems.BLACKENED_IRON_INGOT.get()
+                ),
                 List.of("condiments.ingredient_info.blackened_iron_block")
         );
     }
+
 }

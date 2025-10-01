@@ -42,7 +42,7 @@ class ModData {
     fun getProps(): Map<String, String> = mapOf(
         "mod_id" to this.id,
         "mod_name" to this.name,
-        "mod_version" to "${this.version}+${this.deps.minecraft}-${this.deps.loader}",
+        "mod_version" to "${this.version}+${this.deps.minecraft}-${this.deps.loader.formattedName}",
         "mod_group" to this.group,
         "mod_author" to this.authors,
         "mod_license" to this.license,

@@ -1,0 +1,24 @@
+{
+  "added": [
+    "condiments:crate",
+    "condiments:/crate_coloring_white",
+    "condiments:/crate_coloring_light_gray",
+    "condiments:/crate_coloring_gray",
+    "condiments:/crate_coloring_black",
+    "condiments:/crate_coloring_brown",
+    "condiments:/crate_coloring_red",
+    "condiments:/crate_coloring_orange",
+    "condiments:/crate_coloring_yellow",
+    "condiments:/crate_coloring_lime",
+    "condiments:/crate_coloring_green",
+    "condiments:/crate_coloring_cyan",
+    "condiments:/crate_coloring_light_blue",
+    "condiments:/crate_coloring_blue",
+    "condiments:/crate_coloring_purple",
+    "condiments:/crate_coloring_magenta",
+    "condiments:/crate_coloring_pink"
+  ],
+  "tags": {
+    "#item:condiments:crates": "item:condiments:crate"
+  }
+}
