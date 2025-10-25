@@ -6,6 +6,7 @@ import dev.chililisoup.condiments.config.CommonConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -336,13 +337,18 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
             return this.getItemType().getMaxStackSize();
         }
 
-        protected int getMaxAmountToAdd(ItemStack stack) {
-            int stackCount = maxStacks();
+        public int getCountRemaining() {
             ItemStack itemType = this.getItemType();
-
             return itemType.isEmpty() ?
-                    stack.getMaxStackSize() * stackCount :
-                    Math.max(itemType.getMaxStackSize() * stackCount - this.getCount(), 0);
+                    -1 :
+                    Math.max(itemType.getMaxStackSize() * maxStacks() - this.getCount(), 0);
+        }
+
+        protected int getMaxAmountToAdd(ItemStack stack) {
+            int countRemaining = this.getCountRemaining();
+            return countRemaining == -1 ?
+                    stack.getMaxStackSize() * maxStacks() :
+                    countRemaining;
         }
 
         protected int getMaxAmountToAdd() {
@@ -361,25 +367,27 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
             return Math.min(this.getMaxAmountToAdd(stack), stack.getCount());
         }
 
-        public void addFromStack(ItemStack stack, int maxToAdd, boolean simulate) {
+        public int addFromStack(ItemStack stack, boolean simulate) {
             if (this.canAdd(stack)) this.setItemType(stack);
-            else return;
+            else return 0;
 
-            int amt = Math.min(maxToAdd, stack.getCount());
+            int amt = this.getToAdd(stack);
+            if (amt == 0) return 0;
+
             stack.shrink(amt);
             if (!simulate) this.grow(amt);
+            return amt;
         }
 
-        public void addFromStack(ItemStack stack, int maxToAdd) {
-            this.addFromStack(stack, maxToAdd, false);
+        public int addFromStack(ItemStack stack) {
+            return this.addFromStack(stack, false);
         }
 
-        public void addFromStack(ItemStack stack, boolean simulate) {
-            this.addFromStack(stack, stack.getCount(), simulate);
-        }
-
-        public void addFromStack(ItemStack stack) {
-            this.addFromStack(stack, stack.getCount());
+        public int addFromSlot(Slot slot, Player player) {
+            ItemStack stack = slot.getItem();
+            int amt = this.getToAdd(stack);
+            if (amt == 0) return 0;
+            return this.addFromStack(slot.safeTake(stack.getCount(), amt, player));
         }
 
         public ItemStack tryAddStack(ItemStack stack, boolean simulate) {

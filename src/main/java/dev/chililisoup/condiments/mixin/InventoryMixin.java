@@ -19,18 +19,16 @@ public abstract class InventoryMixin {
     private int addToCrates(Inventory inventory, ItemStack stack, Operation<Integer> original) {
         for (int i = 0; i < inventory.items.size(); i++) {
             ItemStack crateItem = inventory.getItem(i);
-            if (crateItem.getItem() instanceof CrateItem) {
-                CrateContents crateContents = CrateContents.fromCrateItem(crateItem);
-                if (crateContents.itemRecord() == null) continue;
+            if (!(crateItem.getItem() instanceof CrateItem)) continue;
 
-                CrateContents.Mutable mutable = crateContents.toMutable();
-                if (!mutable.canAdd(stack)) continue;
+            CrateContents crateContents = CrateContents.fromCrateItem(crateItem);
+            if (crateContents.itemRecord() == null) continue;
 
-                mutable.addFromStack(stack);
-                mutable.toImmutable().updateCrateItem(crateItem);
+            CrateContents.Mutable mutable = crateContents.toMutable();
+            if (mutable.addFromStack(stack) == 0) continue;
 
-                return stack.getCount();
-            }
+            mutable.toImmutable().updateCrateItem(crateItem);
+            if (stack.isEmpty()) return stack.getCount();
         }
 
         return original.call(inventory, stack);

@@ -119,7 +119,7 @@ public class CrateItem extends BlockItem
         return crateContents.item().flatMap(item -> Optional.of(new CrateTooltip(item)));
     }
 
-    private static void updateInventories(ItemStack crateStack, Slot slot, Player player) {
+    private static void updateInventories(ItemStack slotStack, Slot slot, Player player) {
         slot.setChanged();
         player.containerMenu.slotsChanged(slot.container);
         player.inventoryMenu.slotsChanged(slot.container);
@@ -127,7 +127,7 @@ public class CrateItem extends BlockItem
         if (PlatHelper.getPhysicalSide().isClient()) {
             if (Minecraft.getInstance().screen instanceof CreativeModeInventoryScreen) {
                 MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
-                if (gameMode != null) gameMode.handleCreativeModeItemAdd(crateStack, slot.getContainerSlot());
+                if (gameMode != null) gameMode.handleCreativeModeItemAdd(slotStack, slot.index);
             }
         }
     }
@@ -142,18 +142,17 @@ public class CrateItem extends BlockItem
 
         ItemStack insertedStack = slot.getItem();
         if (insertedStack.isEmpty()) {
+            ItemStack itemType = mutable.getItemType();
+            if (itemType.isEmpty() || !slot.mayPlace(itemType)) return false;
+
             this.playRemoveOneSound(player);
             slot.safeInsert(mutable.requestOneStack());
-        } else {
-            int amt = mutable.getToAdd(insertedStack);
-            if (amt > 0) {
-                this.playInsertSound(player);
-                mutable.addFromStack(insertedStack, amt);
-            }
-        }
+        } else if (mutable.addFromSlot(slot, player) > 0)
+            this.playInsertSound(player);
+        else return false;
 
         mutable.toImmutable().updateCrateItem(crateStack);
-        updateInventories(crateStack, slot, player);
+        updateInventories(insertedStack, slot, player);
         return true;
     }
 
@@ -171,13 +170,9 @@ public class CrateItem extends BlockItem
                 this.playRemoveOneSound(player);
                 access.set(itemStack);
             }
-        } else {
-            int amt = mutable.getToAdd(insertedStack);
-            if (amt > 0) {
-                this.playInsertSound(player);
-                mutable.addFromStack(insertedStack, amt);
-            }
-        }
+        } else if (mutable.addFromStack(insertedStack) > 0)
+            this.playInsertSound(player);
+        else return false;
 
         mutable.toImmutable().updateCrateItem(crateStack);
         updateInventories(crateStack, slot, player);
