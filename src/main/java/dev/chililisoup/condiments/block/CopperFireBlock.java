@@ -3,6 +3,7 @@ package dev.chililisoup.condiments.block;
 import dev.chililisoup.condiments.reg.ModBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseFireBlock;
@@ -40,11 +41,13 @@ public class CopperFireBlock extends BaseFireBlock {
     //$ public_now_protected
     protected
     boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        return canSurviveOnBlock(level.getBlockState(pos.below()));
+        return canSurviveOnBlock(level.getBlockState(pos.below()), level, pos.below());
     }
 
-    public static boolean canSurviveOnBlock(BlockState state) {
-        return state.is(ModBlockTags.COPPER_FIRE_BASE_BLOCKS) || state.getBlock() instanceof WeatheringCopper;
+    public static boolean canSurviveOnBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        if (state.is(ModBlockTags.COPPER_FIRE_BASE_BLOCKS) || state.getBlock() instanceof WeatheringCopper)
+            return state.isFaceSturdy(level, pos, Direction.UP);
+        else return false;
     }
 
     @Override

@@ -65,6 +65,7 @@
   "condiments.configuration.misc": "Misc",
   "condiments.configuration.tinted_glass_terminates_beacons": "Tinted Glass Terminates Beacon Beams",
   "condiments.configuration.analog_rail_max_speed": "Analog Rail Max Speed",
+  "condiments.configuration.copper_fire": "Copper Fire",
 
   "condiments.ingredient_info.blackened_iron_block": "§9Waxed iron blocks §rwith fire directly on top of or below them will eventually turn into §9blackened iron blocks§r."
 }

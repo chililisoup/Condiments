@@ -18,6 +18,7 @@ public class CommonConfig {
 
     public static final Supplier<Boolean> TINTED_GLASS_TERMINATES_BEACONS;
     public static final Supplier<Double> ANALOG_RAIL_MAX_SPEED;
+    public static final Supplier<Boolean> COPPER_FIRE;
 
     //? if < 1.21 {
     /*public static final ConfigSpec CONFIG_SPEC;
@@ -27,7 +28,7 @@ public class CommonConfig {
     public static void init() {}
 
     static {
-        ConfigBuilder builder = ConfigBuilder.create(Condiments.MOD_ID, ConfigType./*? < 1.21 {*/ /*COMMON *//*?} else {*/ COMMON_SYNCED /*?}*/);
+        ConfigBuilder builder = ConfigBuilder.create(Condiments.MOD_ID, ConfigType./*? if < 1.21 {*/ /*COMMON *//*?} else {*/ COMMON_SYNCED /*?}*/);
 
         builder.push("crates");
         CRATE_MAX_CONTAINED_STACKS = builder.comment("How many full stacks of an item each crate can hold")
@@ -44,6 +45,8 @@ public class CommonConfig {
                 .define("tinted_glass_terminates_beacons", true);
         ANALOG_RAIL_MAX_SPEED = builder.comment("Analog rail max speed (blocks per tick, before natural slowdown)")
                 .define("analog_rail_max_speed", 0.6, 0.1, 16.0);
+        COPPER_FIRE = builder.comment("If fire on copper blocks should turn into a green copper fire")
+                .define("copper_fire", true);
         builder.pop();
 
         //? if < 1.21 {
