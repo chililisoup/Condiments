@@ -105,7 +105,7 @@ public class ServerDynamicResourcesGenerator extends
         StaticResource advancement = StaticResource.getOrLog(manager, ResType.ADVANCEMENTS.getPath(Condiments.loc("recipes/accents/oak_accent")));
 
         WOOD_ACCENTS.items.forEach((wood, accent) -> {
-            String log = Utils.getID(wood.getBlockOfThis("stripped_log")).toString();
+            String log = Utils.getID(getWoodBlock(wood, "stripped_log")).toString();
             String id = Utils.getID(accent).getPath();
 
             Function<String, String> textTransform = s -> s
@@ -157,8 +157,8 @@ public class ServerDynamicResourcesGenerator extends
             sink.addTag(itemTagBuilder, Registries.ITEM);
 
 
-            String strippedLog = Utils.getID(wood.getBlockOfThis("stripped_log")).toString();
-            String strippedWood = Utils.getID(wood.getBlockOfThis("stripped_wood")).toString();
+            String strippedLog = Utils.getID(getWoodBlock(wood, "stripped_log")).toString();
+            String strippedWood = Utils.getID(getWoodBlock(wood, "stripped_wood")).toString();
             String logId = Utils.getID(logItem).getPath();
             String woodId = Utils.getID(woodItem).getPath();
 

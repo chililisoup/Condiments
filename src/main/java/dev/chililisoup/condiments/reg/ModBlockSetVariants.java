@@ -8,16 +8,23 @@ import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.mehvahdjukaar.moonlight.api.set.wood.WoodType;
 import net.mehvahdjukaar.moonlight.api.util.Utils;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
 
 public class ModBlockSetVariants {
+    public static final Map<String, String> WOOD_OVERRIDES = Map.of(
+            "mynethersdelight:powdery stripped_log", "mynethersdelight:stripped_powdery_block"
+    );
+
     public static final ArrayList<WoodVariant> WOOD_VARIANTS = new ArrayList<>();
 
     public static final WoodVariant WOOD_WALLS = new WoodVariant(
@@ -31,7 +38,7 @@ public class ModBlockSetVariants {
             "accent",
             "fence",
             AccentBlock::new
-    ).setRequiresSolid("stripped_log");
+    ).setRequiresSolid("stripped_log").setIgnoresSolid("natures_spirit:joshua");
 
     public static final WoodVariant POLISHED_WOOD = new WoodVariant(
             "polished_wood",
@@ -39,7 +46,7 @@ public class ModBlockSetVariants {
             RotatedPillarBlock::new,
             "stripped_log", "wood"
     ).setIdGetter(wood -> {
-        Block block = wood.getBlockOfThis("stripped_wood");
+        Block block = getWoodBlock(wood, "stripped_wood");
         return block == null ? wood.getVariantId("polished_%s_wood") :
                 (wood.isVanilla() ? "" : wood.getNamespace() + "/") +
                         Utils.getID(block).getPath().replace("stripped", "polished");
@@ -51,7 +58,7 @@ public class ModBlockSetVariants {
             RotatedPillarBlock::new,
             "stripped_wood"
     ).setIdGetter(wood -> {
-        Block block = wood.getBlockOfThis("stripped_log");
+        Block block = getWoodBlock(wood, "stripped_log");
         return block == null ? wood.getVariantId("polished_%s_log") :
                 (wood.isVanilla() ? "" : wood.getNamespace() + "/") +
                         Utils.getID(block).getPath().replace("stripped", "polished");
@@ -66,28 +73,43 @@ public class ModBlockSetVariants {
         BlockSetAPI.addDynamicItemRegistration(ModBlockSetVariants::registerWoodItems, WoodType.class);
     }
 
+    public static @Nullable Block getWoodBlock(WoodType wood, String variant) {
+        Block base = wood.getBlockOfThis(variant);
+        if (base != null) return base;
+
+        String override = WOOD_OVERRIDES.get(wood.id.toString() + " " + variant);
+        if (override == null) return null;
+
+        ResourceLocation overrideLoc = ResourceLocation.tryParse(override);
+        if (overrideLoc == null) return null;
+
+        return BuiltInRegistries.BLOCK.getOptional(overrideLoc).orElse(null);
+    }
+
     private static void registerWoodBlocks(Registrator<Block> event, Collection<WoodType> woodTypes) {
         for (WoodVariant woodVariant : WOOD_VARIANTS) {
             for (WoodType wood : woodTypes) {
-                if (Arrays.stream(woodVariant.typeRequirements).anyMatch(req -> wood.getBlockOfThis(req) == null))
+                if (Arrays.stream(woodVariant.typeRequirements).anyMatch(req -> getWoodBlock(wood, req) == null))
                     continue;
 
-                Block parent = wood.getBlockOfThis(woodVariant.parent);
+                Block parent = getWoodBlock(wood, woodVariant.parent);
                 if (parent == null) continue;
 
-                if (woodVariant.requiresSolid.stream().anyMatch(variant -> {
-                    Block solid = wood.getBlockOfThis(variant);
-                    if (solid == null) return true;
+                if (!woodVariant.ignoresSolid.contains(wood.id.toString())) {
+                    if (woodVariant.requiresSolid.stream().anyMatch(variant -> {
+                        Block solid = getWoodBlock(wood, variant);
+                        if (solid == null) return true;
 
-                    try {
-                        if (!Block.isShapeFullBlock(solid.defaultBlockState().getShape(null, null)))
+                        try {
+                            if (!Block.isShapeFullBlock(solid.defaultBlockState().getShape(null, null)))
+                                return true;
+                        } catch (Exception e) {
                             return true;
-                    } catch (Exception e) {
-                        return true;
-                    }
+                        }
 
-                    return false;
-                })) continue;
+                        return false;
+                    })) continue;
+                }
 
                 Block block = woodVariant.blockFactory.apply(BlockBehaviour.Properties.ofFullCopy(parent));
                 String name = woodVariant.idGetter.get(wood);
@@ -122,6 +144,7 @@ public class ModBlockSetVariants {
         public final String[] typeRequirements;
         public IdGetter idGetter;
         public final Set<String> requiresSolid = new HashSet<>();
+        public final Set<String> ignoresSolid = new HashSet<>();
 
         WoodVariant(String name, String parent, Function<BlockBehaviour.Properties, ? extends Block> blockFactory, String... typeRequirements) {
             this.name = name;
@@ -145,6 +168,11 @@ public class ModBlockSetVariants {
 
         public WoodVariant setRequiresSolid(String... variants) {
             this.requiresSolid.addAll(List.of(variants));
+            return this;
+        }
+
+        public WoodVariant setIgnoresSolid(String... ids) {
+            this.ignoresSolid.addAll(List.of(ids));
             return this;
         }
 

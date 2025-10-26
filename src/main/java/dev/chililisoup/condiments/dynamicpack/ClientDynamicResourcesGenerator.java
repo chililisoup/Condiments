@@ -92,7 +92,7 @@ public class ClientDynamicResourcesGenerator extends
                 );
 
                 ResourceLocation strippedLog = RPUtils.findFirstBlockTextureLocation(
-                        manager, wood.getBlockOfThis("stripped_log"), t -> !t.contains("top")
+                        manager, getWoodBlock(wood, "stripped_log"), t -> !t.contains("top")
                 );
 
                 Function<String, String> textTransform = s -> s
@@ -133,11 +133,11 @@ public class ClientDynamicResourcesGenerator extends
             try (
                     TextureImage top = TextureImage.open(
                             manager,
-                            RPUtils.findFirstBlockTextureLocation(manager, wood.getBlockOfThis("stripped_log"), t -> t.contains("top"))
+                            RPUtils.findFirstBlockTextureLocation(manager, getWoodBlock(wood, "stripped_log"), t -> t.contains("top"))
                     );
                     TextureImage side = TextureImage.open(
                             manager,
-                            RPUtils.findFirstBlockTextureLocation(manager, wood.getBlockOfThis("stripped_log"), t -> !t.contains("top"))
+                            RPUtils.findFirstBlockTextureLocation(manager, getWoodBlock(wood, "stripped_log"), t -> !t.contains("top"))
                     )
             ) {
                 sink.addSimilarJsonResource(manager, itemModel, textTransform);
@@ -202,11 +202,11 @@ public class ClientDynamicResourcesGenerator extends
                 try (
                         TextureImage top = TextureImage.open(
                                 manager,
-                                RPUtils.findFirstBlockTextureLocation(manager, wood.getBlockOfThis("stripped_log"), t -> t.contains("top"))
+                                RPUtils.findFirstBlockTextureLocation(manager, getWoodBlock(wood, "stripped_log"), t -> t.contains("top"))
                         );
                         TextureImage side = TextureImage.open(
                                 manager,
-                                RPUtils.findFirstBlockTextureLocation(manager, wood.getBlockOfThis("stripped_log"), t -> !t.contains("top"))
+                                RPUtils.findFirstBlockTextureLocation(manager, getWoodBlock(wood, "stripped_log"), t -> !t.contains("top"))
                         )
                 ) {
                     sink.addSimilarJsonResource(manager, logModel, textTransform);
@@ -328,7 +328,7 @@ public class ClientDynamicResourcesGenerator extends
                     String.format(template, entryProvider.apply(Utils.getID(wood.log).toLanguageKey("block")))
             );
 
-            Optional.ofNullable(wood.getBlockOfThis("wood")).ifPresent(block ->
+            Optional.ofNullable(getWoodBlock(wood, "wood")).ifPresent(block ->
                 langBuilder.addEntry(
                         woodItem.getBlock(),
                         String.format(template, entryProvider.apply(Utils.getID(block).toLanguageKey("block")))
