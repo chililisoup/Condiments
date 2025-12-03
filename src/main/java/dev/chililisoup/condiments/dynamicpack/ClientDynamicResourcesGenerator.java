@@ -148,7 +148,7 @@ public class ClientDynamicResourcesGenerator extends
                 sink.addSimilarJsonResource(manager, inner, textTransform);
                 sink.addSimilarJsonResource(manager, outer, textTransform);
 
-                ResourceLocation textureLoc = Condiments.loc("block/" + wood.getTexturePath() + "_accent");
+                ResourceLocation textureLoc = Condiments.loc("block/" + id);
                 if (!sink.alreadyHasTextureAtLocation(manager, textureLoc)) {
                     sink.addTexture(
                             textureLoc,
