@@ -7,6 +7,7 @@ import net.mehvahdjukaar.moonlight.api.misc.Registrator;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.mehvahdjukaar.moonlight.api.set.wood.WoodType;
+import net.mehvahdjukaar.moonlight.api.set.wood.WoodTypeRegistry;
 import net.mehvahdjukaar.moonlight.api.util.Utils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +39,9 @@ public class ModBlockSetVariants {
             "accent",
             "fence",
             AccentBlock::new
-    ).setRequiresSolid("stripped_log").setIgnoresSolid("natures_spirit:joshua");
+    ).setRequiresSolid("stripped_log")
+            .setIgnoresSolid("natures_spirit:joshua")
+            .blacklist("ecologics:flowering_azalea");
 
     public static final WoodVariant POLISHED_WOOD = new WoodVariant(
             "polished_wood",
@@ -46,31 +49,41 @@ public class ModBlockSetVariants {
             RotatedPillarBlock::new,
             "stripped_log", "wood"
     ).setIdGetter(wood -> {
-        Block block = getWoodBlock(wood, "stripped_wood");
+        Block block = getWoodBlock(wood, "wood");
         return block == null ? wood.getVariantId("polished_%s_wood") :
                 (wood.isVanilla() ? "" : wood.getNamespace() + "/") +
-                        Utils.getID(block).getPath().replace("stripped", "polished");
-    }).setRequiresSolid();
+                        "polished_" + Utils.getID(block).getPath();
+    }).setRequiresSolid()
+            .blacklist("ecologics:flowering_azalea");
 
     public static final WoodVariant POLISHED_LOGS = new WoodVariant(
             "polished_log",
             "stripped_log",
             RotatedPillarBlock::new,
             "stripped_wood"
-    ).setIdGetter(wood -> {
-        Block block = getWoodBlock(wood, "stripped_log");
-        return block == null ? wood.getVariantId("polished_%s_log") :
-                (wood.isVanilla() ? "" : wood.getNamespace() + "/") +
-                        Utils.getID(block).getPath().replace("stripped", "polished");
-    }).setRequiresSolid();
+    ).setIdGetter(wood ->
+            (wood.isVanilla() ? "" : wood.getNamespace() + "/") +
+                    "polished_" + Utils.getID(wood.log).getPath()
+    ).setRequiresSolid()
+            .blacklist("ecologics:flowering_azalea");
 
     private static void markFlammable(Block block) {
         RegHelper.registerBlockFlammability(block, 5, 5);
     }
 
     public static void init() {
-        BlockSetAPI.addDynamicBlockRegistration(ModBlockSetVariants::registerWoodBlocks, WoodType.class);
-        BlockSetAPI.addDynamicItemRegistration(ModBlockSetVariants::registerWoodItems, WoodType.class);
+        BlockSetAPI.addDynamicRegistration(
+                //? if < 1.21 {
+                /*ModBlockSetVariants::registerWoodBlocks, WoodType.class, BuiltInRegistries.BLOCK
+                *///?} else
+                Condiments.MOD_ID, ModBlockSetVariants::registerWoodBlocks, BuiltInRegistries.BLOCK
+        );
+        BlockSetAPI.addDynamicRegistration(
+                //? if < 1.21 {
+                /*ModBlockSetVariants::registerWoodItems, WoodType.class, BuiltInRegistries.ITEM
+                *///?} else
+                Condiments.MOD_ID, ModBlockSetVariants::registerWoodItems, BuiltInRegistries.ITEM
+        );
     }
 
     public static @Nullable Block getWoodBlock(WoodType wood, String variant) {
@@ -86,16 +99,24 @@ public class ModBlockSetVariants {
         return BuiltInRegistries.BLOCK.getOptional(overrideLoc).orElse(null);
     }
 
-    private static void registerWoodBlocks(Registrator<Block> event, Collection<WoodType> woodTypes) {
+    private static void registerWoodBlocks(
+            //? if < 1.21 {
+            /*Registrator<Block> event, Collection<WoodType> woodTypes
+            *///?} else
+            Registrator<Block> event
+    ) {
         for (WoodVariant woodVariant : WOOD_VARIANTS) {
-            for (WoodType wood : woodTypes) {
+            for (WoodType wood : /*? if < 1.21 {*//*woodTypes*//*?} else {*/WoodTypeRegistry.INSTANCE/*?}*/) {
                 if (Arrays.stream(woodVariant.typeRequirements).anyMatch(req -> getWoodBlock(wood, req) == null))
                     continue;
+
+                String id = wood.id.toString();
+                if (woodVariant.blacklist.contains(id)) continue;
 
                 Block parent = getWoodBlock(wood, woodVariant.parent);
                 if (parent == null) continue;
 
-                if (!woodVariant.ignoresSolid.contains(wood.id.toString())) {
+                if (!woodVariant.ignoresSolid.contains(id)) {
                     if (woodVariant.requiresSolid.stream().anyMatch(variant -> {
                         Block solid = getWoodBlock(wood, variant);
                         if (solid == null) return true;
@@ -122,9 +143,15 @@ public class ModBlockSetVariants {
         }
     }
 
-    private static void registerWoodItems(Registrator<Item> event, Collection<WoodType> woodTypes) {
+
+    private static void registerWoodItems(
+            //? if < 1.21 {
+            /*Registrator<Item> event, Collection<WoodType> woodTypes
+            *///?} else
+            Registrator<Item> event
+    ) {
         for (WoodVariant woodVariant : WOOD_VARIANTS) {
-            for (WoodType wood : woodTypes) {
+            for (WoodType wood : /*? if < 1.21 {*//*woodTypes*//*?} else {*/WoodTypeRegistry.INSTANCE/*?}*/) {
                 if (wood.getChild("condiments:" + woodVariant.name) instanceof Block block) {
                     String name = woodVariant.idGetter.get(wood);
                     WoodBasedBlockItem item = new WoodBasedBlockItem(block, new Item.Properties(), wood);
@@ -145,6 +172,7 @@ public class ModBlockSetVariants {
         public IdGetter idGetter;
         public final Set<String> requiresSolid = new HashSet<>();
         public final Set<String> ignoresSolid = new HashSet<>();
+        public final Set<String> blacklist = new HashSet<>();
 
         WoodVariant(String name, String parent, Function<BlockBehaviour.Properties, ? extends Block> blockFactory, String... typeRequirements) {
             this.name = name;
@@ -178,6 +206,11 @@ public class ModBlockSetVariants {
 
         public WoodVariant setRequiresSolid() {
             return this.setRequiresSolid(this.parent);
+        }
+
+        public WoodVariant blacklist(String... ids) {
+            this.blacklist.addAll(List.of(ids));
+            return this;
         }
 
         public interface IdGetter {
