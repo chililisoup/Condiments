@@ -1,10 +1,10 @@
-//? if forgeLike || < 1.21 {
+//? if forge_like || < 1.21 {
 /*package dev.chililisoup.condiments.item;
 
 import dev.chililisoup.condiments.block.entity.CrateBlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-//? if forgeLike {
+//? if forge_like {
 /^import net.minecraft.world.item.ItemStack;
 ^///?}
 
@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 ^///?} else {
 import io.github.fabricators_of_create.porting_lib.transfer.item.ItemStackHandler;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 //?}
 
 @SuppressWarnings("UnstableApiUsage")
@@ -36,7 +37,12 @@ public class CrateItemHandler extends ItemStackHandler {
             //?} else
             /^@NotNull ItemStack stack^/
     ) {
-        return this.crateBlockEntity.canPlaceItem(slot, stack/^? fabric {^/ .toStack() /^?}^/);
+        return this.crateBlockEntity.canPlaceItem(slot, stack/^? if fabric {^/ .toStack() /^?}^/);
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return this.crateBlockEntity.getMaxStackSize();
     }
 
     //? if fabric {
@@ -45,6 +51,12 @@ public class CrateItemHandler extends ItemStackHandler {
         this.crateBlockEntity.setItem(slot, this.getStackInSlot(slot));
     }
 
+    @Override
+    public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+        return crateBlockEntity.canAddItem(resource.toStack()) ?
+                super.insert(resource, maxAmount, transaction) :
+                0;
+    }
     //?} else {
     /^@Override
     public int getSlots() {
@@ -59,11 +71,6 @@ public class CrateItemHandler extends ItemStackHandler {
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
         this.crateBlockEntity.setItem(slot, stack);
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        return this.crateBlockEntity.getMaxStackSize();
     }
 
     @Override

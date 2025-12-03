@@ -108,10 +108,10 @@ dependencies {
     }
 
     prop("deps.create") {
-        modCompileOnly("com.simibubi.create:create-fabric-${minecraft}:${it}") { isTransitive = false }
+        modCompileOnly("com.simibubi.create:create-fabric:${it}") { isTransitive = false }
     }
     prop("deps.flywheel") {
-        modCompileOnly("com.jozufozu.flywheel:flywheel-${loader}-${minecraft}:${it}") { isTransitive = false }
+        modCompileOnly("dev.engine-room.flywheel:flywheel-${loader}-${minecraft}:${it}") { isTransitive = false }
     }
     prop("deps.registrate") {
         modCompileOnly("com.tterrag.registrate_fabric:Registrate:${it}") { isTransitive = false }

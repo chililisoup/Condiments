@@ -44,7 +44,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-//? if forgeLike
+//? if forge_like
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateBlock extends BaseEntityBlock implements IDestroyPreventable {
     private static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;

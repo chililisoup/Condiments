@@ -38,7 +38,7 @@ import java.util.Optional;
 
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-//? if forgeLike
+//? if forge_like
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity> {
     private final ItemRenderer itemRenderer;

@@ -1,4 +1,4 @@
-//? if forgeLike {
+//? if forge_like {
 /*package dev.chililisoup.condiments.loaders.neoforge;
 
 import dev.chililisoup.condiments.block.IDestroyPreventable;

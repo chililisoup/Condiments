@@ -47,7 +47,7 @@ public class CondimentsClient {
         *///?}
     }
 
-    //? if forgeLike {
+    //? if forge_like {
     /*public static void renderHud(RenderGuiEvent.Post event) {
         CondimentsHud.render(event.getGuiGraphics(), event.getPartialTick());
     }

@@ -76,7 +76,7 @@ class StonecutterConfiguration {
         val is120 = eval(deps.minecraft, arrayOf("<1.21"))
 
         Loader.entries.forEach { loader -> constants[loader.id()] = deps.loader == loader }
-        constants["forgeLike"] = deps.isForgeLike
+        constants["forge_like"] = deps.isForgeLike
 
         swaps["client_only"] = when {
             deps.isForge -> "@net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)"

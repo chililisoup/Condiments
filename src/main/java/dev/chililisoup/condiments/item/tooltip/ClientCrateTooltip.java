@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 
 //$ client_only
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-//? if forgeLike
+//? if forge_like
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class ClientCrateTooltip implements ClientTooltipComponent {
     private final ItemStack item;

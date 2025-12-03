@@ -32,7 +32,7 @@ import dev.chililisoup.condiments.reg.ModComponents;
 import dev.chililisoup.condiments.config.CommonConfig;
 //?}
 
-//? if forgeLike
+//? if forge_like
 /*import dev.chililisoup.condiments.item.CrateItemHandler;*/
 
 //? if forge {
@@ -44,7 +44,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import java.util.function.Predicate;
 
-//? if forgeLike
+//? if forge_like
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateBlockEntity extends BlockEntity implements Container, Nameable {
     //? if < 1.21 {

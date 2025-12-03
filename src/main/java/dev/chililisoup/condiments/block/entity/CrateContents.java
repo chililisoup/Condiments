@@ -308,8 +308,11 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
             this.setCount(this.getCount() + increment);
         }
 
-        public void shrink(int decrement) {
-            this.setCount(this.getCount() - decrement);
+        public int shrink(int decrement) {
+            int clamped = Math.max(this.getCount() - decrement, 0);
+            int change = this.getCount() - clamped;
+            this.setCount(clamped);
+            return change;
         }
 
         public void clear() {
@@ -362,9 +365,13 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
             return itemType.isEmpty() || ItemStack.isSameItemSameComponents(itemType, stack);
         }
 
-        public int getToAdd(ItemStack stack) {
+        public int getToAdd(ItemStack stack, int maxAmount) {
             if (!this.canAdd(stack)) return 0;
-            return Math.min(this.getMaxAmountToAdd(stack), stack.getCount());
+            return Math.min(this.getMaxAmountToAdd(stack), maxAmount);
+        }
+
+        public int getToAdd(ItemStack stack) {
+            return getToAdd(stack, stack.getCount());
         }
 
         public int addFromStack(ItemStack stack, boolean simulate) {
@@ -381,6 +388,18 @@ public record CrateContents(@Nullable ItemRecord itemRecord, int count, Boolean 
 
         public int addFromStack(ItemStack stack) {
             return this.addFromStack(stack, false);
+        }
+
+        public int addFromItem(Item item, int maxAmount, boolean simulate) {
+            ItemStack stack = item.getDefaultInstance();
+            if (this.canAdd(stack)) this.setItemType(stack);
+            else return 0;
+
+            int amt = this.getToAdd(stack, maxAmount);
+            if (amt == 0) return 0;
+
+            if (!simulate) this.grow(amt);
+            return amt;
         }
 
         public int addFromSlot(Slot slot, Player player) {

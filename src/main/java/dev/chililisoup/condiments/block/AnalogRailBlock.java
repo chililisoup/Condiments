@@ -207,7 +207,7 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
         builder.add(SHAPE, POWER, WATERLOGGED);
     }
 
-    //? if forgeLike {
+    //? if forge_like {
     /*public float getRailMaxSpeed(BlockState state, Level level, BlockPos pos, AbstractMinecart cart) {
         return (float) getMaxSpeed(cart);
     }

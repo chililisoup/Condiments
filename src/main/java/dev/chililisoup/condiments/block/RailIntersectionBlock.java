@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 //? if >= 1.21
 import com.mojang.serialization.MapCodec;
 
-//? if forgeLike {
+//? if forge_like {
 /*import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.BlockGetter;
@@ -63,7 +63,7 @@ public class RailIntersectionBlock extends BaseRailBlock implements CondimentsRa
         return RailShape.EAST_WEST;
     }
 
-    //? if forgeLike {
+    //? if forge_like {
     /*@Override
     @ParametersAreNonnullByDefault
     public @NotNull RailShape getRailDirection(BlockState state, BlockGetter blockGetter, BlockPos pos, @Nullable AbstractMinecart minecart) {

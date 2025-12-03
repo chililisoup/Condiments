@@ -1,7 +1,7 @@
 //? if fabric && < 1.21 {
 /*package dev.chililisoup.condiments.compat.create.client;
 
-import com.jozufozu.flywheel.core.virtual.VirtualRenderWorld;
+import com.simibubi.create.foundation.virtualWorld.VirtualRenderWorld;
 import net.minecraft.world.level.Level;
 
 //$ client_only

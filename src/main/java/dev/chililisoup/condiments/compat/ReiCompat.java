@@ -11,7 +11,7 @@ import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay;
 import net.minecraft.network.chat.Component;
 
-//? if forgeLike
+//? if forge_like
 /*@me.shedaniel.rei.forge.REIPluginClient*/
 public class ReiCompat implements REIClientPlugin {
     @Override

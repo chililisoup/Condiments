@@ -46,7 +46,7 @@ import java.util.function.Supplier;
 import java.util.List;
 import java.util.Optional;
 
-//? if forgeLike
+//? if forge_like
 /*@javax.annotation.ParametersAreNonnullByDefault*/
 public class CrateItem extends BlockItem
 //? if < 1.21
