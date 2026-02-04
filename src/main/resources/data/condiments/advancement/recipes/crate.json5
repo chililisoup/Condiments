@@ -1,12 +1,20 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "crates"
+    }
+  ],
   "parent": "condiments:recipes/root",
   "criteria": {
-    "has_waxed_iron_block": {
+    "has_barrel": {
       "conditions": {
         "items": [
           {
             "items": [
-              "condiments:waxed_iron_block"
+              "minecraft:barrel"
             ]
           }
         ]
@@ -15,20 +23,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "condiments:iron_ingot_from_waxed_iron_block"
+        "recipe": "condiments:crate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_waxed_iron_block",
+      "has_barrel",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "condiments:iron_ingot_from_waxed_iron_block"
+      "condiments:crate"
     ]
   }
 }

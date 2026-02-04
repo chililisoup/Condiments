@@ -51,6 +51,8 @@
   "tag.item.condiments.crate_unlocking_items": "Crate Unlocking Items",
   "tag.item.condiments.crate_auto_pickup_upgrade_items": "Crate Auto-Pickup Upgrade Items",
 
+  "condiments.configuration.feature_toggles": "Feature Toggles",
+
   "condiments.configuration.crates": "Crates",
   "condiments.configuration.crate_max_contained_stacks": "Max Contained Stacks",
   "condiments.configuration.empty_crate_stack_size": "Empty Crate Stack Size",

@@ -1,0 +1,12 @@
+{
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "crates"
+    }
+  ],
+  "type": "condiments:crate_unlocking",
+  "category": "misc"
+}

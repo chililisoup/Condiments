@@ -1,4 +1,12 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "analog_rail"
+    }
+  ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [

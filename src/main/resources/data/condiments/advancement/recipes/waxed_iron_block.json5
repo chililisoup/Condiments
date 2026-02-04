@@ -1,4 +1,12 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "blackened_iron"
+    }
+  ],
   "parent": "condiments:recipes/root",
   "criteria": {
     "has_iron_block": {

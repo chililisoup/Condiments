@@ -7,16 +7,20 @@
       "flag": "saucer_light"
     },
     {
-      //$ condition_flag
-      "condition": "condiments:flag",
-      "flag": "blackened_iron"
+      //$ condition_not
+      "condition": "fabric:not",
+      "value": {
+        //$ condition_flag
+        "condition": "condiments:flag",
+        "flag": "blackened_iron"
+      }
     }
   ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
     "B": {
-      "item": "condiments:blackened_iron_ingot"
+      "item": "minecraft:iron_ingot"
     },
     "L": {
       "item": "minecraft:redstone_lamp"

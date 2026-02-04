@@ -1,24 +1,32 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "polished_wood"
+    }
+  ],
   "parent": "condiments:recipes/root",
   "criteria": {
-    "has_redstone_lamp": {
+    "has_log": {
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:redstone_lamp"
+              "minecraft:stripped_oak_log"
             ]
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_quartz": {
+    "has_honeycomb": {
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:quartz"
+              "minecraft:honeycomb"
             ]
           }
         ]
@@ -27,24 +35,24 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "condiments:redstone_led"
+        "recipe": "condiments:polished_wood/polished_oak_log"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_redstone_lamp",
+      "has_log",
       "has_the_recipe"
     ],
     [
-      "has_quartz",
+      "has_honeycomb",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "condiments:redstone_led"
+      "condiments:polished_wood/polished_oak_log"
     ]
   }
 }

@@ -94,6 +94,23 @@ class StonecutterConfiguration {
             else -> "\"id\":"
         }
 
+        swaps["load_conditions"] = when {
+            deps.isForge -> "\"conditions\": ["
+            deps.isFabric -> "\"fabric:load_conditions\": ["
+            else -> "\"neoforge:conditions\": ["
+        }
+
+        swaps["condition_flag"] = when {
+            deps.isForgeLike -> "\"type\": \"condiments:flag\","
+            else -> "\"condition\": \"condiments:flag\","
+        }
+
+        swaps["condition_not"] = when {
+            deps.isForge -> "\"type\": \"forge:not\","
+            deps.isFabric -> "\"condition\": \"fabric:not\","
+            else -> "\"type\": \"neoforge:not\","
+        }
+
         replacements["ItemStack.isSameItemSameTags" to "ItemStack.isSameItemSameComponents"] = !is120
         replacements["new ResourceLocation" to "ResourceLocation.fromNamespaceAndPath"] = !is120
         replacements["BlockBehaviour.Properties.copy" to "BlockBehaviour.Properties.ofFullCopy"] = !is120

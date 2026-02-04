@@ -3,6 +3,7 @@ package dev.chililisoup.condiments.item.crafting;
 import dev.chililisoup.condiments.Condiments;
 import dev.chililisoup.condiments.block.CrateBlock;
 import dev.chililisoup.condiments.block.entity.CrateContents;
+import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.reg.ModBlocks;
 import dev.chililisoup.condiments.reg.ModItemTags;
 import dev.chililisoup.condiments.reg.ModItems;
@@ -15,8 +16,8 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ModRecipeDisplays {
     //? if < 1.21 {
@@ -26,10 +27,13 @@ public class ModRecipeDisplays {
     public static List<RecipeHolder<CraftingRecipe>> getAll() {
         ArrayList<RecipeHolder<CraftingRecipe>> combined = new ArrayList<>();
     //?}
-        combined.addAll(crateColoringRecipe());
-        combined.addAll(crateLockingRecipe());
-        combined.addAll(crateUnlockingRecipe());
-        combined.addAll(crateAutoPickupUpgradeRecipe());
+
+        if (CommonConfig.CRATES.get()) {
+            combined.addAll(crateColoringRecipe());
+            combined.addAll(crateLockingRecipe());
+            combined.addAll(crateUnlockingRecipe());
+            combined.addAll(crateAutoPickupUpgradeRecipe());
+        }
 
         return combined;
     }
@@ -149,8 +153,9 @@ public class ModRecipeDisplays {
         return recipeList;
     }
 
-    public static Map<List<ItemLike>, List<String>> ingredientInfos() {
-        return Map.of(
+    public static HashMap<List<ItemLike>, List<String>> ingredientInfos() {
+        HashMap<List<ItemLike>, List<String>> infos = new HashMap<>();
+        if (CommonConfig.BLACKENED_IRON.get()) infos.put(
                 List.of(
                         ModBlocks.WAXED_IRON_BLOCK.get(),
                         ModBlocks.BLACKENED_IRON_BLOCK.get(),
@@ -158,6 +163,8 @@ public class ModRecipeDisplays {
                 ),
                 List.of("condiments.ingredient_info.blackened_iron_block")
         );
+
+        return infos;
     }
 
 }

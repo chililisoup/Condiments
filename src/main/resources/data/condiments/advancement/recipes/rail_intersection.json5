@@ -1,12 +1,20 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "rail_intersection"
+    }
+  ],
   "parent": "condiments:recipes/root",
   "criteria": {
-    "has_log": {
+    "has_rail": {
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:oak_log"
+              "minecraft:rail"
             ]
           }
         ]
@@ -15,20 +23,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "condiments:wood_walls/oak_wall"
+        "recipe": "condiments:rail_intersection"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_log",
+      "has_rail",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "condiments:wood_walls/oak_wall"
+      "condiments:rail_intersection"
     ]
   }
 }

@@ -1,4 +1,12 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "polished_wood"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "group": "polished_logs_to_wood",

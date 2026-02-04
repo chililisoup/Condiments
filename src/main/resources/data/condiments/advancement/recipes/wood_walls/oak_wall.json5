@@ -1,4 +1,12 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "wood_walls"
+    }
+  ],
   "parent": "condiments:recipes/root",
   "criteria": {
     "has_log": {
@@ -6,7 +14,7 @@
         "items": [
           {
             "items": [
-              "condiments:polished_oak_log"
+              "minecraft:oak_log"
             ]
           }
         ]
@@ -15,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "condiments:polished_wood/polished_oak_wood"
+        "recipe": "condiments:wood_walls/oak_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,8 +36,7 @@
   ],
   "rewards": {
     "recipes": [
-      "condiments:polished_wood/polished_oak_wood",
-      "condiments:polished_wood/polished_oak_logs_to_wood"
+      "condiments:wood_walls/oak_wall"
     ]
   }
 }

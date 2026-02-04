@@ -1,4 +1,12 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "wood_accents"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "group": "wood_accents",

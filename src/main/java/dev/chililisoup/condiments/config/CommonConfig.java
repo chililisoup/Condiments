@@ -9,9 +9,22 @@ import net.mehvahdjukaar.moonlight.api.platform.configs.ConfigType;
 *///?} else
 import net.mehvahdjukaar.moonlight.api.platform.configs.ModConfigHolder;
 
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 public class CommonConfig {
+    private static final HashMap<String, Supplier<Boolean>> FEATURE_TOGGLES = new HashMap<>();
+    public static final Supplier<Boolean> WOOD_WALLS;
+    public static final Supplier<Boolean> WOOD_ACCENTS;
+    public static final Supplier<Boolean> POLISHED_WOOD;
+    public static final Supplier<Boolean> CRATES;
+    public static final Supplier<Boolean> RAIL_INTERSECTION;
+    public static final Supplier<Boolean> ANALOG_RAIL;
+    public static final Supplier<Boolean> BLACKENED_IRON;
+    public static final Supplier<Boolean> REDSTONE_LED;
+    public static final Supplier<Boolean> SAUCER_LIGHT;
+    public static final Supplier<Boolean> BRAZIER;
+
     public static final Supplier<Integer> CRATE_MAX_CONTAINED_STACKS;
     public static final Supplier<Integer> EMPTY_CRATE_STACK_SIZE;
     public static final Supplier<Boolean> CRATES_CONTAIN_EMPTY_CRATES;
@@ -25,10 +38,29 @@ public class CommonConfig {
     *///?} else
     public static final ModConfigHolder CONFIG_SPEC;
 
+    private static final Supplier<Boolean> TRUE = () -> true;
+
     public static void init() {}
+
+    public static boolean isEnabled(String key) {
+        return FEATURE_TOGGLES.getOrDefault(key, TRUE).get();
+    }
 
     static {
         ConfigBuilder builder = ConfigBuilder.create(Condiments.MOD_ID, ConfigType./*? if < 1.21 {*/ /*COMMON *//*?} else {*/ COMMON_SYNCED /*?}*/);
+
+        builder.push("feature_toggles");
+        WOOD_WALLS = featureToggle(builder, "wood_walls");
+        WOOD_ACCENTS = featureToggle(builder, "wood_accents");
+        POLISHED_WOOD = featureToggle(builder, "polished_wood");
+        CRATES = featureToggle(builder, "crates");
+        RAIL_INTERSECTION = featureToggle(builder, "rail_intersection");
+        ANALOG_RAIL = featureToggle(builder, "analog_rail");
+        BLACKENED_IRON = featureToggle(builder, "blackened_iron");
+        REDSTONE_LED = featureToggle(builder, "redstone_led");
+        SAUCER_LIGHT = featureToggle(builder, "saucer_light");
+        BRAZIER = featureToggle(builder, "brazier");
+        builder.pop();
 
         builder.push("crates");
         CRATE_MAX_CONTAINED_STACKS = builder.comment("How many full stacks of an item each crate can hold")
@@ -57,5 +89,11 @@ public class CommonConfig {
         CONFIG_SPEC = builder.build();
         CONFIG_SPEC.forceLoad();
         //?}
+    }
+
+    private static Supplier<Boolean> featureToggle(ConfigBuilder builder, String key) {
+        Supplier<Boolean> config = builder.define(key, true);
+        FEATURE_TOGGLES.put(key, config);
+        return config;
     }
 }

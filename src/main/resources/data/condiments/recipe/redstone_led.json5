@@ -1,4 +1,12 @@
 {
+  //$ load_conditions
+  "fabric:load_conditions": [
+    {
+      //$ condition_flag
+      "condition": "condiments:flag",
+      "flag": "redstone_led"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {

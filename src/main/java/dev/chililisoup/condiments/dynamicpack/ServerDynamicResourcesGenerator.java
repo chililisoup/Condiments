@@ -1,6 +1,7 @@
 package dev.chililisoup.condiments.dynamicpack;
 
 import dev.chililisoup.condiments.Condiments;
+import dev.chililisoup.condiments.config.CommonConfig;
 import dev.chililisoup.condiments.reg.ModBlockTags;
 import net.mehvahdjukaar.moonlight.api.item.WoodBasedBlockItem;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
@@ -58,9 +59,9 @@ public class ServerDynamicResourcesGenerator extends
     @Override
     public void regenerateDynamicAssets(Consumer<ResourceGenTask> executor) {
         executor.accept((manager, sink) -> {
-            addWoodWallData(manager, sink);
-            addWoodAccentData(manager, sink);
-            addPolishedWoodData(manager, sink);
+            if (CommonConfig.WOOD_WALLS.get()) addWoodWallData(manager, sink);
+            if (CommonConfig.WOOD_ACCENTS.get()) addWoodAccentData(manager, sink);
+            if (CommonConfig.POLISHED_WOOD.get()) addPolishedWoodData(manager, sink);
         });
     }
 

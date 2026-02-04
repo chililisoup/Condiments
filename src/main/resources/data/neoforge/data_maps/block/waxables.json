@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "condiments:flag",
+      "flag": "blackened_iron"
+    }
+  ],
   "values": {
     "minecraft:iron_block": {
       "waxed": "condiments:waxed_iron_block"

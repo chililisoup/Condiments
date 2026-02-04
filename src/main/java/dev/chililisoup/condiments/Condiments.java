@@ -5,13 +5,10 @@ import dev.chililisoup.condiments.dynamicpack.ServerDynamicResourcesGenerator;
 import dev.chililisoup.condiments.reg.ModBlockSetVariants;
 import dev.chililisoup.condiments.reg.*;
 import net.mehvahdjukaar.moonlight.api.platform.PlatHelper;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-//? if >= 1.21 {
-import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
-//?}
 
 public class Condiments {
 	public static final String MOD_ID = "condiments";
@@ -23,6 +20,7 @@ public class Condiments {
 
 	public static void init() {
 		CommonConfig.init();
+		RegHelper.registerSimpleRecipeCondition(loc("flag"), CommonConfig::isEnabled);
 
         //? if > 1.21
 		ModComponents.init();
