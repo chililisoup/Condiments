@@ -43,52 +43,52 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
         RailShape railShape = state.getValue(SHAPE);
         switch (railShape) {
             case NORTH_SOUTH:
-                if (searchForward) ++z;
-                else --z;
-                ascending = false;
+                if (searchForward) z++;
+                else z--;
                 break;
             case EAST_WEST:
                 if (searchForward) --x;
-                else ++x;
-                ascending = false;
+                else x++;
                 break;
             case ASCENDING_EAST:
                 if (searchForward) --x;
                 else {
-                    ++x;
-                    ++y;
+                    x++;
+                    y++;
+                    ascending = false;
                 }
                 railShape = RailShape.EAST_WEST;
                 break;
             case ASCENDING_WEST:
                 if (searchForward) {
-                    --x;
-                    ++y;
-                } else ++x;
+                    x--;
+                    y++;
+                    ascending = false;
+                } else x++;
                 railShape = RailShape.EAST_WEST;
                 break;
             case ASCENDING_NORTH:
-                if (searchForward) ++z;
+                if (searchForward) z++;
                 else {
-                    --z;
-                    ++y;
+                    z--;
+                    y++;
+                    ascending = false;
                 }
                 railShape = RailShape.NORTH_SOUTH;
                 break;
             case ASCENDING_SOUTH:
                 if (searchForward) {
-                    ++z;
-                    ++y;
-                } else --z;
+                    z++;
+                    y++;
+                    ascending = false;
+                } else z--;
                 railShape = RailShape.NORTH_SOUTH;
         }
 
         int flatSignal = this.getConnectedPower(level, new BlockPos(x, y, z), searchForward, recursionCount, railShape);
         if (flatSignal > 0) return flatSignal;
 
-        if (ascending) return 0;
-
-        return this.getConnectedPower(level, new BlockPos(x, y - 1, z), searchForward, recursionCount, railShape);
+        return ascending ? this.getConnectedPower(level, new BlockPos(x, y - 1, z), searchForward, recursionCount, railShape) : 0;
     }
 
     protected int getConnectedPower(Level level, BlockPos pos, boolean searchForward, int recursionCount, RailShape shape) {
@@ -102,15 +102,12 @@ public class AnalogRailBlock extends BaseRailBlock implements CondimentsRail {
         if (shape == RailShape.NORTH_SOUTH && (railShape == RailShape.EAST_WEST || railShape == RailShape.ASCENDING_EAST || railShape == RailShape.ASCENDING_WEST))
             return 0;
 
-        int power = blockState.getValue(POWER);
-        if (power > 0) {
-            int signal = level.getBestNeighborSignal(pos);
-            if (signal > 14) return signal;
+        if (blockState.getValue(POWER) <= 0) return 0;
 
-            return Math.max(this.findAnalogRailSignal(level, pos, blockState, searchForward, recursionCount + 1), signal);
-        }
+        int signal = level.getBestNeighborSignal(pos);
+        if (signal > 14) return signal;
 
-        return 0;
+        return Math.max(this.findAnalogRailSignal(level, pos, blockState, searchForward, recursionCount + 1), signal);
     }
 
     @Override
