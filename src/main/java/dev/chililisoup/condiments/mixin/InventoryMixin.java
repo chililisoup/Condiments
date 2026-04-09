@@ -22,7 +22,7 @@ public abstract class InventoryMixin {
             if (!(crateItem.getItem() instanceof CrateItem)) continue;
 
             CrateContents crateContents = CrateContents.fromCrateItem(crateItem);
-            if (crateContents.itemRecord() == null) continue;
+            if (!crateContents.autoPickup() || crateContents.itemRecord() == null) continue;
 
             CrateContents.Mutable mutable = crateContents.toMutable();
             if (mutable.addFromStack(stack) == 0) continue;
